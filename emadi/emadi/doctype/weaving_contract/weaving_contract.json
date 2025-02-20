@@ -1,0 +1,316 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "WC-.#####",
+ "creation": "2025-02-20 20:20:20.286959",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "contract_no",
+  "weaver",
+  "construction",
+  "fabric_qty",
+  "column_break_gfc3m",
+  "fabric_type",
+  "description",
+  "greige_request_no",
+  "column_break_g4vjm",
+  "date",
+  "type",
+  "selvedge",
+  "column_break_w4xxy",
+  "weave",
+  "erp_doc",
+  "mat_id",
+  "section_break_pgtlb",
+  "bom_items",
+  "section_break_n01kw",
+  "total_consumption",
+  "column_break_ciiwd",
+  "total_yarn",
+  "column_break_n64sz",
+  "total_bags",
+  "costing_section",
+  "sizing_rate_per_lbs",
+  "column_break_r20ol",
+  "sizing_rate_per_meter",
+  "column_break_ge4bg",
+  "weaving_rate_per_pick",
+  "column_break_c4hyy",
+  "weaving_rate_per_meter",
+  "column_break_mptqi",
+  "total_charges_per_meter",
+  "loom_details_section",
+  "loom_type",
+  "column_break_fhbmy",
+  "loom_size",
+  "column_break_zexb4",
+  "no_of_loom",
+  "column_break_cbtk9",
+  "tolerance",
+  "column_break_u1qus",
+  "piece_length",
+  "column_break_slcuw",
+  "payment_terms"
+ ],
+ "fields": [
+  {
+   "fieldname": "contract_no",
+   "fieldtype": "Data",
+   "label": "Contract No"
+  },
+  {
+   "fieldname": "weaver",
+   "fieldtype": "Link",
+   "label": "Weaver",
+   "options": "Customer"
+  },
+  {
+   "fieldname": "fabric_qty",
+   "fieldtype": "Float",
+   "label": "Fabric Qty"
+  },
+  {
+   "fieldname": "fabric_type",
+   "fieldtype": "Link",
+   "label": "Fabric Type",
+   "options": "Fabric Type"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "fieldname": "greige_request_no",
+   "fieldtype": "Int",
+   "label": "Greige Request No"
+  },
+  {
+   "fieldname": "date",
+   "fieldtype": "Date",
+   "label": "Date"
+  },
+  {
+   "fieldname": "type",
+   "fieldtype": "Link",
+   "label": "Type",
+   "options": "Weaving Type"
+  },
+  {
+   "fieldname": "selvedge",
+   "fieldtype": "Link",
+   "label": "Selvedge",
+   "options": "Selvedge"
+  },
+  {
+   "fieldname": "weave",
+   "fieldtype": "Link",
+   "label": "Weave",
+   "options": "Weave"
+  },
+  {
+   "fieldname": "erp_doc",
+   "fieldtype": "Data",
+   "label": "ERP Doc#"
+  },
+  {
+   "fieldname": "mat_id",
+   "fieldtype": "Data",
+   "label": "Mat ID"
+  },
+  {
+   "fieldname": "column_break_gfc3m",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_g4vjm",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_w4xxy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "section_break_pgtlb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "bom_items",
+   "fieldtype": "Table",
+   "label": "BOM Items",
+   "options": "BOM Items"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_consumption",
+   "fieldtype": "Float",
+   "label": "Total Consumption",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_yarn",
+   "fieldtype": "Float",
+   "label": "Total Yarn",
+   "read_only": 1
+  },
+  {
+   "default": "0",
+   "fieldname": "total_bags",
+   "fieldtype": "Int",
+   "label": "Total Bags",
+   "read_only": 1
+  },
+  {
+   "fieldname": "section_break_n01kw",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_ciiwd",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_n64sz",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "costing_section",
+   "fieldtype": "Section Break",
+   "label": "Costing"
+  },
+  {
+   "fieldname": "sizing_rate_per_lbs",
+   "fieldtype": "Float",
+   "label": "Sizing Rate Per LBS"
+  },
+  {
+   "fieldname": "column_break_r20ol",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "sizing_rate_per_meter",
+   "fieldtype": "Float",
+   "label": "Sizing Rate Per Meter"
+  },
+  {
+   "fieldname": "column_break_ge4bg",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weaving_rate_per_pick",
+   "fieldtype": "Data",
+   "label": "Weaving Rate Per Pick"
+  },
+  {
+   "fieldname": "column_break_c4hyy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "weaving_rate_per_meter",
+   "fieldtype": "Data",
+   "label": "Weaving rate per Meter"
+  },
+  {
+   "fieldname": "column_break_mptqi",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "total_charges_per_meter",
+   "fieldtype": "Data",
+   "label": "Total Charges Per Meter",
+   "read_only": 1
+  },
+  {
+   "fieldname": "loom_details_section",
+   "fieldtype": "Section Break",
+   "label": "Loom Details"
+  },
+  {
+   "fieldname": "loom_type",
+   "fieldtype": "Link",
+   "label": "Loom Type",
+   "options": "Loom Type"
+  },
+  {
+   "fieldname": "loom_size",
+   "fieldtype": "Float",
+   "label": "Loom Size"
+  },
+  {
+   "fieldname": "no_of_loom",
+   "fieldtype": "Int",
+   "label": "No Of Loom"
+  },
+  {
+   "fieldname": "tolerance",
+   "fieldtype": "Percent",
+   "label": "Tolerance %"
+  },
+  {
+   "fieldname": "piece_length",
+   "fieldtype": "Data",
+   "label": "Piece Length"
+  },
+  {
+   "fieldname": "payment_terms",
+   "fieldtype": "Link",
+   "label": "Payment Terms",
+   "options": "Payment Term"
+  },
+  {
+   "fieldname": "column_break_fhbmy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_zexb4",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_cbtk9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_u1qus",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "column_break_slcuw",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "construction",
+   "fieldtype": "Link",
+   "label": "Construction",
+   "options": "Item"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2025-02-20 21:29:30.404669",
+ "modified_by": "Administrator",
+ "module": "Emadi",
+ "name": "Weaving Contract",
+ "naming_rule": "Expression (old style)",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
