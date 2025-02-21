@@ -53,7 +53,8 @@
   "column_break_u1qus",
   "piece_length",
   "column_break_slcuw",
-  "payment_terms"
+  "payment_terms",
+  "amended_from"
  ],
  "fields": [
   {
@@ -286,11 +287,26 @@
    "fieldtype": "Link",
    "label": "Construction",
    "options": "Item"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Weaving Contract",
+   "print_hide": 1,
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
- "links": [],
- "modified": "2025-02-20 21:29:30.404669",
+ "is_submittable": 1,
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "weaving_contract"
+  }
+ ],
+ "modified": "2025-02-21 17:53:30.622374",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Weaving Contract",

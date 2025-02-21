@@ -3,6 +3,25 @@
 
 frappe.ui.form.on('Weaving Contract', {
 	refresh: function(frm) {
+		
+		if (frm.doc.docstatus == 1) {
+            frm.add_custom_button(__('Create Stock Entry'), function() {
+                frappe.call({
+                    method: "emadi.emadi.events.create_stock_entry_from_weaving_contract.create_stock_entry_from_weaving_contract",
+                    args: {
+                        weaving_contract: frm.doc.name
+                    },
+                    callback: function(r) {
+                        if (!r.exc) {
+							frappe.model.sync(r.message);
+							frappe.set_route("Form", r.message.doctype, r.message.name);
+						}
+                    }
+                });
+            }).css('background-color', '#ff9800').css('color', '#ffffff','font-weight','bold');
+		}
+		
+		
 		frm.set_query('construction', function() {
 			return {
 				"filters": {
