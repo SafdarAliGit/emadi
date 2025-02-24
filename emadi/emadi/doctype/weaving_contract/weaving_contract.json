@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "WC-.#####",
+ "autoname": "naming_series:",
  "creation": "2025-02-20 20:20:20.286959",
  "default_view": "List",
  "doctype": "DocType",
@@ -16,6 +16,7 @@
   "fabric_type",
   "description",
   "greige_request_no",
+  "naming_series",
   "column_break_g4vjm",
   "date",
   "type",
@@ -296,6 +297,14 @@
    "options": "Weaving Contract",
    "print_hide": 1,
    "read_only": 1
+  },
+  {
+   "fieldname": "naming_series",
+   "fieldtype": "Select",
+   "in_list_view": 1,
+   "label": "Series",
+   "options": "WC-.#####",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -304,13 +313,21 @@
   {
    "link_doctype": "Stock Entry",
    "link_fieldname": "weaving_contract"
+  },
+  {
+   "link_doctype": "Sizing Program",
+   "link_fieldname": "weaving_contract"
+  },
+  {
+   "link_doctype": "Material Request",
+   "link_fieldname": "weaving_contract"
   }
  ],
- "modified": "2025-02-21 17:53:30.622374",
+ "modified": "2025-02-24 18:12:55.838043",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Weaving Contract",
- "naming_rule": "Expression (old style)",
+ "naming_rule": "By \"Naming Series\" field",
  "owner": "Administrator",
  "permissions": [
   {

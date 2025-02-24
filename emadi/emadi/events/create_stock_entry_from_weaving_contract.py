@@ -6,7 +6,10 @@ def create_stock_entry_from_weaving_contract(weaving_contract):
     # Fetch the Weaving Contract document
     contract = frappe.get_doc("Weaving Contract", weaving_contract)
     se = frappe.db.get_value("Stock Entry", {"weaving_contract": weaving_contract}, "name")
+    se_doc = None
     if se:
+        se_doc = frappe.get_doc("Stock Entry", se)
+    if se_doc and se_doc.docstatus != 2:
         frappe.throw(f"Stock Entry already created for {weaving_contract} Weaving Contract")
     # Create a new Stock Entry
     stock_entry = frappe.new_doc("Stock Entry")
