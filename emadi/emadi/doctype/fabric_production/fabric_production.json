@@ -1,0 +1,150 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "autoname": "format:FP-{quality}",
+ "creation": "2025-02-27 06:36:47.399222",
+ "default_view": "List",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "qty",
+  "column_break_2tj9a",
+  "quality",
+  "section_break_i2efb",
+  "fabric_production_item",
+  "section_break_rvqkq",
+  "amended_from",
+  "beam_item",
+  "column_break_tyek9",
+  "beam_lbs",
+  "column_break_vw783",
+  "beam_length",
+  "column_break_b6j54",
+  "beam_ends",
+  "consumption_weft_section",
+  "weft_item",
+  "column_break_iaxjt",
+  "yarn_qty"
+ ],
+ "fields": [
+  {
+   "fieldname": "qty",
+   "fieldtype": "Float",
+   "label": "Qty"
+  },
+  {
+   "fieldname": "column_break_2tj9a",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "quality",
+   "fieldtype": "Link",
+   "label": "Quality",
+   "options": "Fabric Construction"
+  },
+  {
+   "fieldname": "section_break_i2efb",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "fabric_production_item",
+   "fieldtype": "Table",
+   "label": "Fabric Production Item",
+   "options": "Fabric Production Item"
+  },
+  {
+   "fieldname": "section_break_rvqkq",
+   "fieldtype": "Section Break",
+   "label": "Consumption Warp"
+  },
+  {
+   "fieldname": "amended_from",
+   "fieldtype": "Link",
+   "label": "Amended From",
+   "no_copy": 1,
+   "options": "Fabric Production",
+   "print_hide": 1,
+   "read_only": 1
+  },
+  {
+   "fieldname": "beam_item",
+   "fieldtype": "Link",
+   "label": "Beam Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_tyek9",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "beam_lbs",
+   "fieldtype": "Float",
+   "label": "Beam Lbs"
+  },
+  {
+   "fieldname": "column_break_vw783",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "beam_length",
+   "fieldtype": "Float",
+   "label": "Beam Length"
+  },
+  {
+   "fieldname": "column_break_b6j54",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "beam_ends",
+   "fieldtype": "Float",
+   "label": "Beam Ends"
+  },
+  {
+   "fieldname": "consumption_weft_section",
+   "fieldtype": "Section Break",
+   "label": "Consumption Weft"
+  },
+  {
+   "fieldname": "weft_item",
+   "fieldtype": "Link",
+   "label": "Weft Item",
+   "options": "Item"
+  },
+  {
+   "fieldname": "column_break_iaxjt",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "yarn_qty",
+   "fieldtype": "Float",
+   "label": "Yarn Qty"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "is_submittable": 1,
+ "links": [],
+ "modified": "2025-02-27 06:47:48.604239",
+ "modified_by": "Administrator",
+ "module": "Emadi",
+ "name": "Fabric Production",
+ "naming_rule": "Expression",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}
