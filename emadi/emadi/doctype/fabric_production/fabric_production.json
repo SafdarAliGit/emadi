@@ -8,24 +8,18 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
-  "qty",
-  "column_break_2tj9a",
   "quality",
+  "column_break_2tj9a",
+  "qty",
+  "column_break_scnev",
+  "posting_date",
+  "column_break_dag5g",
+  "posting_time",
+  "column_break_z2fdh",
+  "target_warehouse",
   "section_break_i2efb",
   "fabric_production_item",
-  "section_break_rvqkq",
-  "amended_from",
-  "beam_item",
-  "column_break_tyek9",
-  "beam_lbs",
-  "column_break_vw783",
-  "beam_length",
-  "column_break_b6j54",
-  "beam_ends",
-  "consumption_weft_section",
-  "weft_item",
-  "column_break_iaxjt",
-  "yarn_qty"
+  "amended_from"
  ],
  "fields": [
   {
@@ -54,11 +48,6 @@
    "options": "Fabric Production Item"
   },
   {
-   "fieldname": "section_break_rvqkq",
-   "fieldtype": "Section Break",
-   "label": "Consumption Warp"
-  },
-  {
    "fieldname": "amended_from",
    "fieldtype": "Link",
    "label": "Amended From",
@@ -68,63 +57,47 @@
    "read_only": 1
   },
   {
-   "fieldname": "beam_item",
+   "fieldname": "column_break_scnev",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "Today",
+   "fieldname": "posting_date",
+   "fieldtype": "Date",
+   "label": "Posting Date"
+  },
+  {
+   "fieldname": "column_break_z2fdh",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "target_warehouse",
    "fieldtype": "Link",
-   "label": "Beam Item",
-   "options": "Item"
+   "in_list_view": 1,
+   "label": "Target Warehouse",
+   "options": "Warehouse",
+   "reqd": 1
   },
   {
-   "fieldname": "column_break_tyek9",
+   "fieldname": "column_break_dag5g",
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "beam_lbs",
-   "fieldtype": "Float",
-   "label": "Beam Lbs"
-  },
-  {
-   "fieldname": "column_break_vw783",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "beam_length",
-   "fieldtype": "Float",
-   "label": "Beam Length"
-  },
-  {
-   "fieldname": "column_break_b6j54",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "beam_ends",
-   "fieldtype": "Float",
-   "label": "Beam Ends"
-  },
-  {
-   "fieldname": "consumption_weft_section",
-   "fieldtype": "Section Break",
-   "label": "Consumption Weft"
-  },
-  {
-   "fieldname": "weft_item",
-   "fieldtype": "Link",
-   "label": "Weft Item",
-   "options": "Item"
-  },
-  {
-   "fieldname": "column_break_iaxjt",
-   "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "yarn_qty",
-   "fieldtype": "Float",
-   "label": "Yarn Qty"
+   "default": "Now",
+   "fieldname": "posting_time",
+   "fieldtype": "Time",
+   "label": "Posting Time"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
- "links": [],
- "modified": "2025-02-27 06:47:48.604239",
+ "links": [
+  {
+   "link_doctype": "Stock Entry",
+   "link_fieldname": "fabric_production"
+  }
+ ],
+ "modified": "2025-03-03 19:58:21.026694",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",

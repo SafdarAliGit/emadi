@@ -9,6 +9,10 @@
  "field_order": [
   "for",
   "yarn_count",
+  "warehouse",
+  "available_qty",
+  "beam_length",
+  "beam_ends",
   "consumption",
   "yarn_qty"
  ],
@@ -38,12 +42,39 @@
    "fieldtype": "Float",
    "in_list_view": 1,
    "label": "Yarn Qty"
+  },
+  {
+   "fieldname": "warehouse",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Warehouse",
+   "options": "Warehouse"
+  },
+  {
+   "default": "0",
+   "fieldname": "available_qty",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Available Qty",
+   "read_only": 1
+  },
+  {
+   "fieldname": "beam_length",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Beam Length"
+  },
+  {
+   "fieldname": "beam_ends",
+   "fieldtype": "Float",
+   "in_list_view": 1,
+   "label": "Beam Ends"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-27 06:31:36.040926",
+ "modified": "2025-03-03 19:00:29.954082",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production Item",

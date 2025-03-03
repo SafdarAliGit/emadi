@@ -5,23 +5,9 @@ frappe.ui.form.on('Fabric Production', {
 	refresh: function(frm) {
 		frm.set_query('yarn_count','fabric_production_item', function() {
 			return {
-				"filters": {
-					"item_group": "Yarn"
-				}
-			}
-		})
-		frm.set_query('beam_item', function() {
-			return {
-				"filters": {
-					"item_group": "Beam"
-				}
-			}
-		})
-		frm.set_query('weft_item', function() {
-			return {
-				"filters": {
-					"item_group": "Yarn"
-				}
+				"filters": [
+					["item_group", "in", ["Yarn","Beam"]]
+				]
 			}
 		})
 	},
@@ -54,3 +40,28 @@ frappe.ui.form.on('Fabric Production', {
         frm.trigger("quality");
     }
 });
+
+frappe.ui.form.on('Fabric Production Item', {
+    
+    warehouse: function(frm,cdt,cdn) {
+        var row = locals[cdt][cdn];
+        if (row.yarn_count && row.warehouse) {
+            frappe.call({
+                method: "emadi.emadi.events.fetch_current_stock.fetch_current_stock",
+                args: {
+                    item_code: row.yarn_count,
+                    warehouse: row.warehouse
+                },
+                callback: function(r) {
+                    if (r.message) {
+                        frappe.model.set_value(cdt, cdn, "available_qty", r.message);
+                    }
+                }
+            });
+        }
+    },
+    yarn_count: function(frm) {
+        // Recalculate when qty changes
+        row.trigger("warehouse");
+    }
+})
