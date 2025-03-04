@@ -11,6 +11,13 @@ frappe.ui.form.on('Fabric Construction', {
 				}
 			}
 		});
+		frm.set_query('fabric_item', function() {
+			return {
+				"filters": {
+					"item_group": "Fabric"
+				}
+			}
+		});
 
 		frm.set_query('yarn_count','fabric_construction_item', function() {
 			return {

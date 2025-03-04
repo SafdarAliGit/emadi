@@ -9,6 +9,8 @@
  "engine": "InnoDB",
  "field_order": [
   "quality",
+  "column_break_hwq2r",
+  "fabric_item",
   "column_break_rlujg",
   "fabric_type",
   "section_break_lpno9",
@@ -19,8 +21,10 @@
   {
    "fieldname": "quality",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Quality",
    "options": "Item",
+   "reqd": 1,
    "unique": 1
   },
   {
@@ -51,12 +55,24 @@
   {
    "fieldname": "section_break_lpno9",
    "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "column_break_hwq2r",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fabric_item",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Fabric Item",
+   "options": "Item",
+   "reqd": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-02-27 06:23:57.692323",
+ "modified": "2025-03-04 16:26:53.764242",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Construction",

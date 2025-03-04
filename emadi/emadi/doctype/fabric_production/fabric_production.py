@@ -21,13 +21,14 @@ class FabricProduction(Document):
 			# Append source item
 			it = doc.append("items", {})
 			it.t_warehouse = target_warehouse
-			it.item_code = self.quality
+			it.item_code = self.fabric_item
 			it.qty = self.qty
 			it.is_finished_item = 1
 			it.allow_zero_valuation_rate = 1
 				
 			# Append target items using a loop
 			for item in self.fabric_production_item:
+				it = doc.append("items", {})
 				it.s_warehouse = item.warehouse
 				it.item_code = item.yarn_count
 				it.qty = item.yarn_qty

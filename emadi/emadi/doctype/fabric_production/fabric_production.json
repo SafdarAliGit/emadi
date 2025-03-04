@@ -11,12 +11,14 @@
   "quality",
   "column_break_2tj9a",
   "qty",
+  "column_break_z2fdh",
+  "target_warehouse",
+  "column_break_q4dtd",
+  "fabric_item",
   "column_break_scnev",
   "posting_date",
   "column_break_dag5g",
   "posting_time",
-  "column_break_z2fdh",
-  "target_warehouse",
   "section_break_i2efb",
   "fabric_production_item",
   "amended_from"
@@ -87,6 +89,18 @@
    "fieldname": "posting_time",
    "fieldtype": "Time",
    "label": "Posting Time"
+  },
+  {
+   "fetch_from": "quality.fabric_item",
+   "fieldname": "fabric_item",
+   "fieldtype": "Link",
+   "label": "Fabric Item",
+   "options": "Item",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_q4dtd",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -97,7 +111,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-03-03 19:58:21.026694",
+ "modified": "2025-03-04 16:32:57.231180",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",
