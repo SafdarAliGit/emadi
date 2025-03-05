@@ -19,6 +19,7 @@
   "naming_series",
   "column_break_g4vjm",
   "date",
+  "time",
   "type",
   "selvedge",
   "column_break_w4xxy",
@@ -305,6 +306,13 @@
    "label": "Series",
    "options": "WC-.#####",
    "reqd": 1
+  },
+  {
+   "default": "Now",
+   "fieldname": "time",
+   "fieldtype": "Time",
+   "label": "Time",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
@@ -321,9 +329,13 @@
   {
    "link_doctype": "Material Request",
    "link_fieldname": "weaving_contract"
+  },
+  {
+   "link_doctype": "Delivery Note",
+   "link_fieldname": "weaving_contract"
   }
  ],
- "modified": "2025-02-24 18:12:55.838043",
+ "modified": "2025-03-05 17:09:53.938967",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Weaving Contract",

@@ -3,6 +3,23 @@
 
 frappe.ui.form.on('Weaving Contract', {
 	refresh: function(frm) {
+
+		if (frm.doc.docstatus == 1) {
+            frm.add_custom_button(__('Create DO'), function() {
+                frappe.call({
+                    method: "emadi.emadi.events.create_dn.create_dn",
+                    args: {
+                        weaving_contract: frm.doc.name
+                    },
+                    callback: function(r) {
+                        if (!r.exc) {
+							frappe.model.sync(r.message);
+							frappe.set_route("Form", r.message.doctype, r.message.name);
+						}
+                    }
+                });
+            }).css('background-color', '#06599c').css('color', '#ffffff','font-weight','bold');
+		}
 		
 		if (frm.doc.docstatus == 1) {
             frm.add_custom_button(__('Stock Entry'), function() {
