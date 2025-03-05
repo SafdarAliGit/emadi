@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "autoname": "format:FP-{quality}",
+ "autoname": "format:FP-{fabric_item}-{######}",
  "creation": "2025-02-27 06:36:47.399222",
  "default_view": "List",
  "doctype": "DocType",
@@ -111,7 +111,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-03-04 16:32:57.231180",
+ "modified": "2025-03-05 15:12:44.694069",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",
