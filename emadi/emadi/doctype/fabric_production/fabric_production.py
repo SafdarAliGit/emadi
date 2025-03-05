@@ -32,6 +32,7 @@ class FabricProduction(Document):
 				it.s_warehouse = item.warehouse
 				it.item_code = item.yarn_count
 				it.qty = item.yarn_qty
+				it.allow_zero_valuation_rate = 1
 					
 
 			try:

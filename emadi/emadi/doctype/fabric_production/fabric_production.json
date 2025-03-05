@@ -27,7 +27,8 @@
   {
    "fieldname": "qty",
    "fieldtype": "Float",
-   "label": "Qty"
+   "label": "Qty",
+   "reqd": 1
   },
   {
    "fieldname": "column_break_2tj9a",
@@ -96,7 +97,8 @@
    "fieldtype": "Link",
    "label": "Fabric Item",
    "options": "Item",
-   "read_only": 1
+   "read_only": 1,
+   "reqd": 1
   },
   {
    "fieldname": "column_break_q4dtd",
@@ -111,7 +113,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-03-05 15:12:44.694069",
+ "modified": "2025-03-05 15:51:28.337667",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",
