@@ -23,7 +23,7 @@ frappe.query_reports["Weaving Stock Report"] = {
 			"label": "Brand",
 			"fieldtype": "Link",
 			"options": "Brand",
-			"reqd": 0
+			"reqd": 1
 		}
 	]
 };
