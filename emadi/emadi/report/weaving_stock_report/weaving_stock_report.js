@@ -24,6 +24,20 @@ frappe.query_reports["Weaving Stock Report"] = {
 			"fieldtype": "Link",
 			"options": "Brand",
 			"reqd": 0
+		},
+		{
+			"fieldname": "item_code",	
+			"label": "Yarn Item",
+			"fieldtype": "Link",
+			"options": "Item",
+			"reqd": 0,
+			"get_query": function() {
+				return {
+					"filters": {
+						"item_group": "Yarn"
+					}
+				};
+			}
 		}
 	]
 };

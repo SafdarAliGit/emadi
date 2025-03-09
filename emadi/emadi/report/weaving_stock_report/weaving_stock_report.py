@@ -33,6 +33,8 @@ def get_conditions_se(filters, doctype):
         conditions.append(f"`{doctype}`.posting_date <= %(to_date)s")
     if filters.get("brand"):
         conditions.append(f"`sed`.brand = %(brand)s")
+    if filters.get("item_code"):
+        conditions.append(f"`sed`.item_code = %(item_code)s")
     return " AND ".join(conditions) if conditions else "1=1"
 
 def get_conditions_dn(filters, doctype):
@@ -44,6 +46,8 @@ def get_conditions_dn(filters, doctype):
         conditions.append(f"`{doctype}`.posting_date <= %(to_date)s")
     if filters.get("brand"):
         conditions.append(f"`dni`.brand = %(brand)s")
+    if filters.get("item_code"):
+        conditions.append(f"`dni`.yarn_count = %(item_code)s")
     return " AND ".join(conditions) if conditions else "1=1"
 
 
@@ -74,13 +78,13 @@ def get_data(filters):
     
     weaving_stock_result = frappe.db.sql(weaving_stock, filters, as_dict=1)
 
-    total_qty = 0
+    total_qty_se = 0
     for i in weaving_stock_result:
-        total_qty += i.get('qty',0)
+        total_qty_se += i.get('qty',0)
 
     weaving_stock_heading = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 14px;font-weight: bold;'>Stock Entry</span>", "item_code": "", "qty": "", "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
     weaving_stock_result = weaving_stock_heading + weaving_stock_result
-    weaving_stock_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
+    weaving_stock_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty_se, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
 
     weaving_stock_result.extend(weaving_stock_total)
     
@@ -108,19 +112,22 @@ def get_data(filters):
     """.format(conditions=get_conditions_dn(filters, "dn"))
 
     dn_stock_result = frappe.db.sql(dn_stock, filters, as_dict=1)
-    total_qty = 0
+    total_qty_dn = 0
     for i in dn_stock_result:
-        total_qty += i.get('qty',0)
+        total_qty_dn += i.get('qty',0)
 
     dn_stock_heading = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 14px;font-weight: bold;'>Delivery Note</span>", "item_code": "", "qty": "", "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
     dn_stock_result = dn_stock_heading + dn_stock_result
-    dn_stock_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": '', "consumption": ""}]
+    dn_stock_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty_dn, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": '', "consumption": ""}]
     dn_stock_result.extend(dn_stock_total)
+
+    stock_balance_row = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 12px;font-weight: bold;'>Stock Balance</span>", "item_code": "", "qty": total_qty_se - total_qty_dn, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
 
 
 
     data.extend(weaving_stock_result)
     data.extend(dn_stock_result)
+    data.extend(stock_balance_row)  
     return data
 
 
