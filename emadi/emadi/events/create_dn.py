@@ -31,7 +31,7 @@ def create_dn(weaving_contract):
         "qty": 0,
         "rate": contract.total_charges_per_meter,
         "uom": "Meter",
-        "stock_uom": "Meter",
+        "stock_uom": "Meter"
     })
     
     if contract.get("bom_items"):
@@ -42,6 +42,7 @@ def create_dn(weaving_contract):
                 "consumption": item.get("consumption"),
                 "yarn_qty": 0,
                 "uom": item.uom,
+                "brand": item.brand
             })
 
     # Save and submit the Delivery Note

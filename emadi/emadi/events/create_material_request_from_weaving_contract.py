@@ -29,7 +29,8 @@ def create_material_request_from_weaving_contract(weaving_contract):
             "bags":item.required_bags,
             "uom":item.uom,
             "stock_uom":item.uom,
-            "description":item.yarn_count
+            "description":item.yarn_count,
+            "brand": item.brand
         })
 
     # Return the Stock Entry name to open in the form view

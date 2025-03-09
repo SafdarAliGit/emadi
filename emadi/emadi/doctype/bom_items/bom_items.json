@@ -17,7 +17,8 @@
   "delivery_sechdule_section",
   "delivery_sechdule",
   "delivery_quantity",
-  "delivery_date"
+  "delivery_date",
+  "brand"
  ],
  "fields": [
   {
@@ -94,12 +95,18 @@
    "fieldname": "delivery_sechdule",
    "fieldtype": "Heading",
    "label": "Delivery Sechdule"
+  },
+  {
+   "fieldname": "brand",
+   "fieldtype": "Link",
+   "label": "Brand",
+   "options": "Brand"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-02-20 21:22:43.993151",
+ "modified": "2025-03-08 17:07:13.636413",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "BOM Items",
