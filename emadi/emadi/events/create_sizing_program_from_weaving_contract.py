@@ -16,6 +16,18 @@ def create_sizing_program_from_weaving_contract(weaving_contract):
     sizing_program = frappe.new_doc("Sizing Program")
     sizing_program.weaving_contract = weaving_contract  # Link back to Weaving Contract
     sizing_program.weaver = contract.weaver  # Link back to Weaving Contract
+    sizing_program.fabric_construction = contract.construction
+    
+    brand = None
+    yarn_count = None
+    for i in contract.bom_items:
+        if i.get("for") == "Warp":  # Assuming 'for' is stored in 'for_value' field
+            brand = i.brand
+            yarn_count = i.yarn_count
+            break  
+    sizing_program.item = brand
+    sizing_program.yarn_count = yarn_count
+ 
 
     # Return the Sizing Program name to open in the form view
     return sizing_program
