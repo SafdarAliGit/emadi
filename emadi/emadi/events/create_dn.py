@@ -7,11 +7,11 @@ def create_dn(weaving_contract):
     contract = frappe.get_doc("Weaving Contract", weaving_contract)
 
     # Check if a Delivery Note already exists and is not canceled
-    existing_dn = frappe.db.get_value("Delivery Note", {"weaving_contract": weaving_contract}, "name")
-    if existing_dn:
-        existing_dn_doc = frappe.get_doc("Delivery Note", existing_dn)
-        if existing_dn_doc.docstatus != 2:  # Not canceled
-            frappe.throw(f"Delivery Note already exists for Weaving Contract {weaving_contract}: {existing_dn}")
+    # existing_dn = frappe.db.get_value("Delivery Note", {"weaving_contract": weaving_contract}, "name")
+    # if existing_dn:
+    #     existing_dn_doc = frappe.get_doc("Delivery Note", existing_dn)
+    #     if existing_dn_doc.docstatus != 2:  # Not canceled
+    #         frappe.throw(f"Delivery Note already exists for Weaving Contract {weaving_contract}: {existing_dn}")
 
     # Create a new Delivery Note
     delivery_note = frappe.new_doc("Delivery Note")
