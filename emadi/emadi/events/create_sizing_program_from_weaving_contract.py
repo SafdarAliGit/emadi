@@ -26,7 +26,7 @@ def create_sizing_program_from_weaving_contract(weaving_contract):
             yarn_count = i.yarn_count
             break  
     sizing_program.item = brand
-    sizing_program.yarn_count = yarn_count
+    sizing_program.yarn_count = float(yarn_count[:2])
  
 
     # Return the Sizing Program name to open in the form view
