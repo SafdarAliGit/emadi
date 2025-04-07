@@ -118,13 +118,11 @@ doctype_js = {"Delivery Note" : "public/js/dn.js","Stock Entry" : "public/js/sto
 # ---------------
 # Hook on document methods and events
 
-# doc_events = {
-#	"*": {
-#		"on_update": "method",
-#		"on_cancel": "method",
-#		"on_trash": "method"
-#	}
-# }
+doc_events = {
+    "Delivery Note": {
+        "on_submit": "emadi.emadi.events.create_dn.onsubmit"
+    }
+}
 
 # Scheduled Tasks
 # ---------------

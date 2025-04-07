@@ -1,6 +1,28 @@
 import frappe
 from frappe.model.document import Document
 
+def onsubmit(doc, method):
+	stock_entry = frappe.new_doc("Stock Entry")
+	stock_entry.stock_entry_type = "Fabric Delivered"
+	stock_entry.posting_date = doc.posting_date
+	stock_entry.posting_time = doc.posting_time
+	stock_entry.company = doc.company
+
+	# Add item row
+	stock_entry.append("items", {
+		"item_code": doc.fabric_item,
+		"qty": doc.fabric_qty,
+		"s_warehouse": doc.set_warehouse,
+		"uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
+        "allow_zero_valuation_rate": 1
+	})
+
+	# Link to Delivery Note
+	stock_entry.custom_delivery_note_no = doc.name
+
+	stock_entry.insert()
+	stock_entry.submit()
+
 @frappe.whitelist()
 def create_dn(weaving_contract):
     # Fetch the Weaving Contract document
