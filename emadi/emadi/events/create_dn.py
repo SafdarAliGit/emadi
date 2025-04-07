@@ -31,7 +31,9 @@ def create_dn(weaving_contract):
         "qty": 0,
         "rate": contract.total_charges_per_meter,
         "uom": "Meter",
-        "stock_uom": "Meter"
+        "stock_uom": "Meter",
+        "custom_fabric_item": contract.construction
+
     })
     
     if contract.get("bom_items"):
