@@ -19,7 +19,8 @@
   "delivery_sechdule",
   "delivery_quantity",
   "delivery_date",
-  "brand"
+  "brand",
+  "weaving_contract"
  ],
  "fields": [
   {
@@ -103,12 +104,18 @@
    "label": "Brand",
    "options": "Brand",
    "read_only": 1
+  },
+  {
+   "fieldname": "weaving_contract",
+   "fieldtype": "Link",
+   "label": "Weaving Contract",
+   "options": "Weaving Contract"
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-03-09 06:01:13.867641",
+ "modified": "2025-04-08 18:36:39.339888",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "BOM Items Dn",

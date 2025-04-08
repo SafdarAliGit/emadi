@@ -67,7 +67,8 @@ def create_dn(weaving_contract):
                 "consumption": item.get("consumption"),
                 "yarn_qty": 0,
                 "uom": item.uom,
-                "brand": item.brand
+                "brand": item.brand,
+                "weaving_contract": weaving_contract
             })
 
     # Save and submit the Delivery Note
