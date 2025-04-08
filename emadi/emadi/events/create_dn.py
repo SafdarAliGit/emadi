@@ -3,6 +3,7 @@ from frappe.model.document import Document
 
 def onsubmit(doc, method):
 	stock_entry = frappe.new_doc("Stock Entry")
+	stock_entry.set_posting_time = 1
 	stock_entry.stock_entry_type = "Fabric Delivered"
 	stock_entry.posting_date = doc.posting_date
 	stock_entry.posting_time = doc.posting_time
