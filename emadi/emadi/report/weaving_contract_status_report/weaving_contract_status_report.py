@@ -67,7 +67,7 @@ def get_data(filters):
         FROM `tabStock Entry Detail` AS sed
         JOIN `tabStock Entry` AS se ON se.name = sed.parent
         WHERE se.docstatus = 1  -- Ensure Stock Entry is not cancelled
-        GROUP BY sed.weaving_contract
+        GROUP BY sed.item_code
     ) sed ON sed.weaving_contract = wc.name
     LEFT JOIN ( 
         SELECT custom_weaving_contract, SUM(IFNULL(qty, 0)) AS qty 
