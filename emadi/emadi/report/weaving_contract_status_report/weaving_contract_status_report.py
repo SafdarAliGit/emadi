@@ -60,19 +60,19 @@ def get_data(filters):
     LEFT JOIN ( 
         SELECT weaving_contract, SUM(IFNULL(yarn_qty, 0)) AS consumed 
         FROM `tabBOM Items Dn` 
-        GROUP BY weaving_contract  -- Corrected group by clause
+        GROUP BY weaving_contract  
     ) bom_item_dn ON bom_item_dn.weaving_contract = wc.name
     LEFT JOIN ( 
         SELECT sed.weaving_contract, SUM(IFNULL(sed.qty, 0)) AS qty 
         FROM `tabStock Entry Detail` AS sed
         JOIN `tabStock Entry` AS se ON se.name = sed.parent
         WHERE se.docstatus = 1 
-        GROUP BY sed.item_code, sed.weaving_contract
+        GROUP BY sed.weaving_contract
     ) sed ON sed.weaving_contract = wc.name
     LEFT JOIN ( 
         SELECT custom_weaving_contract, SUM(IFNULL(qty, 0)) AS qty 
         FROM `tabDelivery Note Item` 
-        GROUP BY custom_weaving_contract  -- Corrected group by clause
+        GROUP BY custom_weaving_contract  
     ) dni ON dni.custom_weaving_contract = wc.name
     WHERE 
     wc.docstatus = 1
@@ -82,7 +82,7 @@ def get_data(filters):
 
     data = frappe.db.sql(query, filters, as_dict=True)
     # TO REMOVE DUPLICATES
-    keys_to_check = ['contract_name', 'weaver', 'construction']
+    keys_to_check = ['contract_name', 'weaver', 'construction','fabric']
     seen_values = []
 
     for entry in data:
