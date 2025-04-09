@@ -16,7 +16,7 @@ def get_columns():
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
         {"label": "Consumption Per LbS", "fieldname": "consumption", "fieldtype": "Float", "width": 140},
         {"label": "Yarn Required", "fieldname": "required", "fieldtype": "Float", "width": 120},
-        {"label": "Yarn Received", "fieldname": "received", "fieldtype": "Float", "width": 120},
+        {"label": "Yarn Received", "fieldname": "received", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Consumed", "fieldname": "consumed", "fieldtype": "Float", "width": 120},
         {"label": "Balance Yarn", "fieldname": "balance_yarn", "fieldtype": "Float", "width": 120},
         {"label": "Balance Fabric", "fieldname": "balance_fabric", "fieldtype": "Data", "width": 120}
@@ -81,7 +81,7 @@ def get_data(filters):
 
     data = frappe.db.sql(query, filters, as_dict=True)
     # TO REMOVE DUPLICATES
-    keys_to_check = ['contract_name', 'weaver', 'construction', 'fabric','balance_fabric']
+    keys_to_check = ['contract_name', 'weaver', 'construction', 'fabric','balance_fabric', 'received']
     seen_values = []
 
     for entry in data:
