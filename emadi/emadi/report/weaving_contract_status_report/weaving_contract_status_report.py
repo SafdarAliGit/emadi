@@ -60,23 +60,24 @@ def get_data(filters):
     LEFT JOIN ( 
         SELECT weaving_contract, SUM(IFNULL(yarn_qty, 0)) AS consumed 
         FROM `tabBOM Items Dn` 
-        GROUP BY weaving_contract
+        GROUP BY weaving_contract  -- Corrected group by clause
     ) bom_item_dn ON bom_item_dn.weaving_contract = wc.name
     LEFT JOIN ( 
         SELECT sed.weaving_contract, SUM(IFNULL(sed.qty, 0)) AS qty 
         FROM `tabStock Entry Detail` AS sed
         JOIN `tabStock Entry` AS se ON se.name = sed.parent
-        WHERE se.docstatus = 1  -- Ensure Stock Entry is not cancelled
-        GROUP BY sed.item_code
+        WHERE se.docstatus = 1 
+        GROUP BY sed.item_code, sed.weaving_contract  -- Corrected group by clause
     ) sed ON sed.weaving_contract = wc.name
     LEFT JOIN ( 
         SELECT custom_weaving_contract, SUM(IFNULL(qty, 0)) AS qty 
         FROM `tabDelivery Note Item` 
-        GROUP BY custom_weaving_contract
+        GROUP BY custom_weaving_contract  -- Corrected group by clause
     ) dni ON dni.custom_weaving_contract = wc.name
     WHERE 
-        wc.docstatus = 1
-        {conditions}
+    wc.docstatus = 1
+    {conditions}
+
     """
 
     data = frappe.db.sql(query, filters, as_dict=True)
