@@ -44,23 +44,37 @@ def get_data(filters):
 
     query = f"""
         SELECT 
-            wc.name AS contract_name,
-            wc.weaver,
-            wc.construction,	
-            wc.fabric_qty AS fabric,
-            bom_item.yarn_count,
-            bom_item.consumption,
-            bom_item.yarn_qty AS required,
-            sed.qty AS received,
-            bom_item_dn.yarn_qty AS consumed,
-            (IFNULL(sed.qty, 0) - IFNULL(dni.qty, 0)) AS balance_yarn,
-            (IFNULL(wc.fabric_qty, 0) - IFNULL(dni.qty, 0)) AS balance_fabric
-        FROM `tabWeaving Contract` AS wc
-        LEFT JOIN `tabBOM Items` AS bom_item ON bom_item.parent = wc.name
-        LEFT JOIN `tabStock Entry Detail` AS sed ON sed.weaving_contract = wc.name
-        LEFT JOIN `tabDelivery Note Item` AS dni ON dni.custom_weaving_contract = wc.name
-        LEFT JOIN `tabBOM Items Dn` AS bom_item_dn ON bom_item_dn.weaving_contract = wc.name
-        WHERE 1=1 {conditions}
+    wc.name AS contract_name,
+    wc.weaver,
+    wc.construction,    
+    wc.fabric_qty AS fabric,
+    bom_item.yarn_count,
+    bom_item.consumption,
+    bom_item.yarn_qty AS required,
+    sed.qty AS received,
+    bom_item_dn.consumed,
+    (IFNULL(sed.qty, 0) - IFNULL(dni.qty, 0)) AS balance_yarn,
+    (IFNULL(wc.fabric_qty, 0) - IFNULL(dni.qty, 0)) AS balance_fabric
+    FROM `tabWeaving Contract` AS wc
+    JOIN `tabBOM Items` AS bom_item ON bom_item.parent = wc.name
+    LEFT JOIN ( 
+        SELECT weaving_contract, SUM(IFNULL(yarn_qty, 0)) AS consumed 
+        FROM `tabBOM Items Dn` 
+        GROUP BY weaving_contract
+    ) bom_item_dn ON bom_item_dn.weaving_contract = wc.name
+
+    LEFT JOIN ( 
+        SELECT weaving_contract, SUM(IFNULL(qty, 0)) AS qty 
+        FROM `tabStock Entry Detail` 
+        GROUP BY weaving_contract
+    ) sed ON sed.weaving_contract = wc.name
+    LEFT JOIN ( 
+        SELECT custom_weaving_contract, SUM(IFNULL(qty, 0)) AS qty 
+        FROM `tabDelivery Note Item` 
+        GROUP BY custom_weaving_contract
+    ) dni ON dni.custom_weaving_contract = wc.name
+    WHERE 1=1 {conditions}
+
     """
 
     data = frappe.db.sql(query, filters, as_dict=True)
