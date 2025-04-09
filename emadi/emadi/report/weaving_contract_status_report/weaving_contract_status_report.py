@@ -67,7 +67,7 @@ def get_data(filters):
         FROM `tabStock Entry Detail` AS sed
         JOIN `tabStock Entry` AS se ON se.name = sed.parent
         WHERE se.docstatus = 1 
-        GROUP BY sed.item_code, sed.weaving_contract  -- Corrected group by clause
+        GROUP BY sed.item_code, sed.weaving_contract
     ) sed ON sed.weaving_contract = wc.name
     LEFT JOIN ( 
         SELECT custom_weaving_contract, SUM(IFNULL(qty, 0)) AS qty 
@@ -82,7 +82,7 @@ def get_data(filters):
 
     data = frappe.db.sql(query, filters, as_dict=True)
     # TO REMOVE DUPLICATES
-    keys_to_check = ['contract_name', 'weaver', 'construction', 'fabric','balance_fabric', 'received']
+    keys_to_check = ['contract_name', 'weaver', 'construction', 'fabric','balance_fabric', 'received', 'consumed', 'balance_yarn','required', 'yarn_count', 'consumption']
     seen_values = []
 
     for entry in data:
