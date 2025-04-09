@@ -9,10 +9,10 @@ def execute(filters=None):
 
 def get_columns():
 	columns = [
-		{"label": "Contract No", "fieldname": "contract", "fieldtype": "Link", "options": "Weaving Contract", "width": 120},
+		{"label": "Contract No", "fieldname": "contract_name", "fieldtype": "Link", "options": "Weaving Contract", "width": 120},
         {"label": "Weaver", "fieldname": "weaver", "fieldtype": "Link", "options": "Customer", "width": 120},
         {"label": "Construction", "fieldname": "construction", "fieldtype": "Link", "options": "Item", "width": 120},
-        {"label": "Fabric Qty", "fieldname": "fabric_qty", "fieldtype": "Float", "width": 100},
+        {"label": "Fabric Qty", "fieldname": "fabric", "fieldtype": "Float", "width": 100},
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
         {"label": "Consumption Per LbS", "fieldname": "consumption", "fieldtype": "Float", "width": 140},
         {"label": "Yarn Required", "fieldname": "required", "fieldtype": "Float", "width": 120},
@@ -47,7 +47,7 @@ def get_data(filters):
             wc.name AS contract_name,
             wc.weaver,
             wc.construction,	
-            wc.fabric_qty,
+            wc.fabric_qty AS fabric,
             bom_item.yarn_count,
             bom_item.consumption,
             bom_item.yarn_qty AS required,
@@ -64,4 +64,18 @@ def get_data(filters):
     """
 
     data = frappe.db.sql(query, filters, as_dict=True)
+    # TO REMOVE DUPLICATES
+    keys_to_check = ['contract_name', 'weaver', 'construction', 'fabric']
+    seen_values = []
+
+    for entry in data:
+        key_values = tuple(entry[key] for key in keys_to_check)
+
+        if key_values in seen_values:
+            for key in keys_to_check:
+                entry[key] = None
+        else:
+            seen_values.append(key_values)
+
+    # END
     return data
