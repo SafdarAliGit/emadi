@@ -13,7 +13,7 @@ def onsubmit(doc, method):
 
         stock_entry.append("items", {
             "item_code": doc.fabric_item,
-            "qty": doc.fabric_qty,
+            "qty": abs(doc.fabric_qty),
             "t_warehouse": doc.set_warehouse,
             "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
             "allow_zero_valuation_rate": 1
