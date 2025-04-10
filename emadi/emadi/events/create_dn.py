@@ -9,7 +9,7 @@ def onsubmit(doc, method):
         stock_entry.posting_date = doc.posting_date
         stock_entry.posting_time = doc.posting_time
         stock_entry.company = doc.company
-        stock_entry["return"] = 1
+        stock_entry.return_entry = 1
 
         stock_entry.append("items", {
             "item_code": doc.fabric_item,
