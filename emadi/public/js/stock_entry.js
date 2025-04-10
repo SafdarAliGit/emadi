@@ -1,6 +1,6 @@
 frappe.ui.form.on('Stock Entry', {
     refresh: function(frm) {
-        calculate_total_qty(frm)
+        // calculate_total_qty(frm)
     }
 });
 
