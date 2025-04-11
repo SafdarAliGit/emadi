@@ -20,7 +20,7 @@ def get_columns():
         {"label": "Fabric Qty", "fieldname": "fabric_qty", "fieldtype": "Data", "width": 120},
         {"label": "Quantity", "fieldname": "qty", "fieldtype": "Data", "width": 120},
         {"label": "Bags", "fieldname": "bags", "fieldtype": "Data", "width": 120},
-        {"label": "Brand", "fieldname": "brand", "fieldtype": "Data", "width": 120}
+        {"label": "Customer Brand", "fieldname": "brand", "fieldtype": "Data", "width": 120}
     ]
     return columns
 
@@ -64,7 +64,7 @@ def get_data(filters):
             '' AS fabric_item,
             '' AS fabric_qty,
             '' AS consumption,
-            sed.bags,
+            sed.qty_pcs AS bags,
             sed.custom_customer_brand AS brand
 
         FROM 
