@@ -14,13 +14,11 @@ def get_columns():
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 120},
 		{"label": "Item", "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 150},
         {"label": "Fabric Item", "fieldname": "fabric_item", "fieldtype": "Link", "options": "Item", "width": 150},
-        {"label":"Consumption", "fieldname": "consumption", "fieldtype": "Float", "width": 120},
+        {"label":"Consumption", "fieldname": "consumption", "fieldtype": "Data", "width": 120},
         {"label": "For", "fieldname": "about", "fieldtype": "Data", "width": 120},
         {"label": "Target Warehouse", "fieldname": "t_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 180},
-        {"label": "Fabric Qty", "fieldname": "fabric_qty", "fieldtype": "Float", "width": 120},
-        {"label": "Quantity", "fieldname": "qty", "fieldtype": "Float", "width": 120},
-        {"label": "Returned", "fieldname": "returned", "fieldtype": "Float", "width": 120},
-        {"label": "Balance", "fieldname": "balance", "fieldtype": "Float", "width": 120}
+        {"label": "Fabric Qty", "fieldname": "fabric_qty", "fieldtype": "Data", "width": 120},
+        {"label": "Quantity", "fieldname": "qty", "fieldtype": "Data", "width": 120}
     ]
     return columns
 
@@ -58,9 +56,7 @@ def get_data(filters):
             se.posting_date,
             se.name AS stock_entry_name,
             sed.item_code,
-            (CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END) AS qty,
-            (CASE WHEN se.stock_entry_type = 'Yarn Return to customer' THEN sed.qty ELSE 0 END) AS returned,
-            (CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END) - (CASE WHEN se.stock_entry_type = 'Yarn Return to customer' THEN sed.qty ELSE 0 END) AS balance,
+            (CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE sed.qty * -1 END) AS qty,
             sed.for AS about,
             sed.t_warehouse,
             '' AS fabric_item,
@@ -74,7 +70,7 @@ def get_data(filters):
         WHERE 
             se.docstatus = 1
             AND
-            se.stock_entry_type IN ('Material Receipt', 'Yarn Return to customer')
+            se.stock_entry_type IN ('Material Receipt', 'Material Issue')
             AND
             {conditions}
     """.format(conditions=get_conditions_se(filters, "se"))
@@ -100,8 +96,6 @@ def get_data(filters):
             dni.yarn_count AS item_code,
             dni.consumption,
             dni.yarn_qty AS qty,
-            '' AS returned,
-            '' AS balance,
             dni.for AS about,
             '' AS t_warehouse
             
