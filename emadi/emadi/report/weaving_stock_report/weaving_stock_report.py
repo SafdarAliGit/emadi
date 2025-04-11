@@ -14,11 +14,13 @@ def get_columns():
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 120},
 		{"label": "Item", "fieldname": "item_code", "fieldtype": "Link", "options": "Item", "width": 150},
         {"label": "Fabric Item", "fieldname": "fabric_item", "fieldtype": "Link", "options": "Item", "width": 150},
-        {"label":"Consumption", "fieldname": "consumption", "fieldtype": "Data", "width": 120},
+        {"label":"Consumption", "fieldname": "consumption", "fieldtype": "Float", "width": 120, "precision": 4},
         {"label": "For", "fieldname": "about", "fieldtype": "Data", "width": 120},
         {"label": "Target Warehouse", "fieldname": "t_warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 180},
         {"label": "Fabric Qty", "fieldname": "fabric_qty", "fieldtype": "Data", "width": 120},
-        {"label": "Quantity", "fieldname": "qty", "fieldtype": "Data", "width": 120}
+        {"label": "Quantity", "fieldname": "qty", "fieldtype": "Data", "width": 120},
+        {"label": "Bags", "fieldname": "bags", "fieldtype": "Data", "width": 120},
+        {"label": "Brand", "fieldname": "brand", "fieldtype": "Data", "width": 120}
     ]
     return columns
 
@@ -61,7 +63,9 @@ def get_data(filters):
             sed.t_warehouse,
             '' AS fabric_item,
             '' AS fabric_qty,
-            '' AS consumption
+            '' AS consumption,
+            sed.bags,
+            sed.custom_customer_brand AS brand
 
         FROM 
             `tabStock Entry` se
@@ -73,6 +77,8 @@ def get_data(filters):
             se.stock_entry_type IN ('Material Receipt', 'Material Issue')
             AND
             {conditions}
+        ORDER BY 
+            se.posting_date
     """.format(conditions=get_conditions_se(filters, "se"))
     
     weaving_stock_result = frappe.db.sql(weaving_stock, filters, as_dict=1)
@@ -97,8 +103,9 @@ def get_data(filters):
             dni.consumption,
             dni.yarn_qty AS qty,
             dni.for AS about,
-            '' AS t_warehouse
-            
+            '' AS t_warehouse,
+            '' AS bags,
+            '' AS brand
 
         FROM 
             `tabDelivery Note` dn
@@ -108,6 +115,8 @@ def get_data(filters):
             dn.docstatus = 1
             AND
             {conditions}
+        ORDER BY 
+            dn.posting_date
     """.format(conditions=get_conditions_dn(filters, "dn"))
 
     dn_stock_result = frappe.db.sql(dn_stock, filters, as_dict=1)
