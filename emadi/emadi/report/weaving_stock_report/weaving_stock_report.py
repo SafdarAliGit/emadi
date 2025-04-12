@@ -33,7 +33,7 @@ def get_conditions_se(filters, doctype):
     if filters.get("to_date"):
         conditions.append(f"`{doctype}`.posting_date <= %(to_date)s")
     if filters.get("brand"):
-        conditions.append(f"`sed`.brand = %(brand)s")
+        conditions.append(f"`sed`.custom_customer_brand = %(brand)s")
     if filters.get("item_code"):
         conditions.append(f"`sed`.item_code = %(item_code)s")
     return " AND ".join(conditions) if conditions else "1=1"
@@ -51,9 +51,61 @@ def get_conditions_dn(filters, doctype):
         conditions.append(f"`dni`.yarn_count = %(item_code)s")
     return " AND ".join(conditions) if conditions else "1=1"
 
+def get_opening_qty(filters):
+    from_date = filters.get("from_date")
+    brand = filters.get("brand")
+    yarn_count = filters.get("item_code")  # previously item_code
+
+    if not (from_date and yarn_count and brand):
+        return 0
+
+    # 1. Stock Entry Detail
+    opening_stock = frappe.db.sql("""
+        SELECT
+            COALESCE(SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END), 0) -
+            COALESCE(SUM(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END), 0) AS qty_receipt
+        FROM
+            `tabStock Entry Detail` sed
+        JOIN
+            `tabStock Entry` se ON se.name = sed.parent
+        WHERE
+            sed.item_code = %(yarn_count)s
+            AND sed.custom_customer_brand = %(brand)s
+            AND se.posting_date < %(from_date)s
+            AND se.docstatus = 1
+    """, {
+        "yarn_count": yarn_count,
+        "brand": brand,
+        "from_date": from_date
+    }, as_dict=1)
+
+    qty_receipt = opening_stock[0].qty_receipt if opening_stock else 0
+
+    # 2. BOM Items Dn (child of Delivery Note)
+    bom_consumption = frappe.db.sql("""
+        SELECT COALESCE(SUM(bom.consumption), 0) AS total
+        FROM `tabBOM Items Dn` bom
+        JOIN `tabDelivery Note` dn ON dn.name = bom.parent
+        WHERE
+            bom.yarn_count = %(yarn_count)s
+            AND bom.brand = %(brand)s
+            AND dn.posting_date < %(from_date)s
+            AND dn.docstatus = 1
+    """, {
+        "yarn_count": yarn_count,
+        "brand": brand,
+        "from_date": from_date
+    }, as_dict=1)
+
+    final_opening_qty = qty_receipt - bom_consumption[0].total
+    return final_opening_qty
+
 
 def get_data(filters):
     data = []
+    opening_qty = get_opening_qty(filters)
+    opening_row = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Opening Stock</span>", "item_code": "", "qty": opening_qty, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
+    data.extend(opening_row)
     weaving_stock = """SELECT 
             se.posting_date,
             se.name AS stock_entry_name,

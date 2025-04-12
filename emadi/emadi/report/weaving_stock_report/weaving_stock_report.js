@@ -23,14 +23,14 @@ frappe.query_reports["Weaving Stock Report"] = {
 			"label": "Brand",
 			"fieldtype": "Link",
 			"options": "Brand",
-			"reqd": 0
+			"reqd": 1
 		},
 		{
 			"fieldname": "item_code",	
 			"label": "Yarn Item",
 			"fieldtype": "Link",
 			"options": "Item",
-			"reqd": 0,
+			"reqd": 1,
 			"get_query": function() {
 				return {
 					"filters": {
