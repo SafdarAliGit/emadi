@@ -82,8 +82,8 @@ def get_opening_qty(filters):
     qty_receipt = opening_stock[0].qty_receipt if opening_stock else 0
 
     # 2. BOM Items Dn (child of Delivery Note)
-    bom_consumption = frappe.db.sql("""
-        SELECT COALESCE(SUM(bom.consumption), 0) AS total
+    total_yarn_qty = frappe.db.sql("""
+        SELECT COALESCE(SUM(bom.yarn_qty), 0) AS total_yarn_qty
         FROM `tabBOM Items Dn` bom
         JOIN `tabDelivery Note` dn ON dn.name = bom.parent
         WHERE
@@ -96,7 +96,7 @@ def get_opening_qty(filters):
         "brand": brand,
         "from_date": from_date
     }, as_dict=1)
-    consumption = bom_consumption[0].total if bom_consumption else 0
+    consumption = total_yarn_qty[0].total_yarn_qty if total_yarn_qty else 0
     final_opening_qty = qty_receipt - consumption
     return final_opening_qty
 
