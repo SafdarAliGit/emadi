@@ -33,7 +33,7 @@ def get_conditions_se(filters, doctype):
     if filters.get("to_date"):
         conditions.append(f"`{doctype}`.posting_date <= %(to_date)s")
     if filters.get("brand"):
-        conditions.append(f"`sed`.custom_customer_brand = %(brand)s")
+        conditions.append(f"`sed`.brand = %(brand)s")
     if filters.get("item_code"):
         conditions.append(f"`sed`.item_code = %(item_code)s")
     return " AND ".join(conditions) if conditions else "1=1"
@@ -70,7 +70,7 @@ def get_opening_qty(filters):
             `tabStock Entry` se ON se.name = sed.parent
         WHERE
             sed.item_code = %(yarn_count)s
-            AND sed.custom_customer_brand = %(brand)s
+            AND sed.brand = %(brand)s
             AND se.posting_date < %(from_date)s
             AND se.docstatus = 1
     """, {
@@ -96,8 +96,8 @@ def get_opening_qty(filters):
         "brand": brand,
         "from_date": from_date
     }, as_dict=1)
-
-    final_opening_qty = qty_receipt - bom_consumption[0].total
+    consumption = bom_consumption[0].total if bom_consumption else 0
+    final_opening_qty = qty_receipt - consumption
     return final_opening_qty
 
 
