@@ -135,6 +135,7 @@ def get_data(filters):
     
     weaving_stock_result = frappe.db.sql(weaving_stock, filters, as_dict=1)
 
+
     total_qty_se = 0
     for i in weaving_stock_result:
         total_qty_se += i.get('qty',0)
@@ -183,7 +184,7 @@ def get_data(filters):
     dn_stock_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty_dn, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": '', "consumption": ""}]
     dn_stock_result.extend(dn_stock_total)
 
-    stock_balance_row = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 12px;font-weight: bold;'>Stock Balance</span>", "item_code": "", "qty": total_qty_se - total_qty_dn, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
+    stock_balance_row = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 12px;font-weight: bold;'>Stock Balance</span>", "item_code": "", "qty":  (total_qty_se + opening_qty) - total_qty_dn , "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
 
 
 
