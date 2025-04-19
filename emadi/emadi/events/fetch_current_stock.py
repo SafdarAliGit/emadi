@@ -10,9 +10,9 @@ def fetch_current_stock(item_code, warehouse, set_no=None):
     try:
         if set_no:
             # Optionally validate that the batch matches the item
-            batch_doc = frappe.get_doc("Batch", set_no)
+            batch_qty = frappe.db.get_value("Batch", set_no, "batch_qty")
             # Return the batch quantity
-            return batch_doc.batch_qty or 0
+            return batch_qty or 0
 
         else:
             # Fetch latest qty from Stock Ledger Entry

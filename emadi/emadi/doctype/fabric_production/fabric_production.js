@@ -58,7 +58,8 @@ frappe.ui.form.on('Fabric Production Item', {
                 method: "emadi.emadi.events.fetch_current_stock.fetch_current_stock",
                 args: {
                     item_code: row.yarn_count,
-                    warehouse: row.warehouse
+                    warehouse: row.warehouse,
+                    set_no: row.set_no
                 },
                 callback: function(r) {
                     if (r.message) {
