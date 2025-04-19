@@ -9,7 +9,15 @@ frappe.ui.form.on('Fabric Production', {
 					["item_group", "in", ["Yarn","Beam"]]
 				]
 			}
-		})
+		});
+        frm.set_query('set_no', 'fabric_production_item', function(doc, cdt, cdn) {
+			let child = locals[cdt][cdn];
+			return {
+				filters: {
+					item: child.yarn_count
+				}
+			};
+		});
 	},
 	quality: function(frm) {
         if (frm.doc.quality && frm.doc.qty) {
