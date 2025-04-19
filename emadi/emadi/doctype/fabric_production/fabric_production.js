@@ -63,7 +63,7 @@ frappe.ui.form.on('Fabric Production Item', {
                 },
                 callback: function(r) {
                     if (r.message) {
-                        frappe.model.set_value(cdt, cdn, "available_qty", r.message);
+                        frappe.model.set_value(cdt, cdn, "available_qty", r.message || 0);
                     }
                 }
             });
