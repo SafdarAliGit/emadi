@@ -15,6 +15,7 @@ frappe.query_reports["Material Flow"] = {
 			"fieldname": "yarn_count",
 			"label": "Yarn Count",
 			"fieldtype": "Link",
+			"options": "Item",
 			// "reqd": 1,
 			"get_query": function() {
 				return {
