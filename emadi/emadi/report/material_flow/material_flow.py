@@ -16,7 +16,7 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        conditions += " AND item.item_code = %(yarn_count)s"
+        conditions += " AND sed.item_code = %(yarn_count)s"
 
     data = frappe.db.sql(f"""
         SELECT
