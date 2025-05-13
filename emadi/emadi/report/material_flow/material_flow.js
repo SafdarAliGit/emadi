@@ -20,7 +20,8 @@ frappe.query_reports["Material Flow"] = {
 			"get_query": function() {
 				return {
 					"filters": {
-						"maintain_stock": 1
+						"is_stock_item": 1,
+						"item_group": "Yarn"
 					}
 				};
 			}
