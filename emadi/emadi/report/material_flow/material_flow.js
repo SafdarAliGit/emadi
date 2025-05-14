@@ -25,6 +25,21 @@ frappe.query_reports["Material Flow"] = {
 					}
 				};
 			}
+		},
+		{
+			"fieldname": "fabric_item",
+			"label": "Fabric Item",
+			"fieldtype": "Link",
+			"options": "Item",
+			// "reqd": 1,
+			"get_query": function() {
+				return {
+					"filters": {
+						"is_stock_item": 1,
+						"item_group": "Fabric"
+					}
+				};
+			}
 		}
 	]
 };
