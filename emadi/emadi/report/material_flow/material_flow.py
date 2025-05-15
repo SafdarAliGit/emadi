@@ -27,7 +27,7 @@ def execute(filters=None):
 
     sizing_program_conditions = ""
     if filters.get("yarn_count"):
-        sizing_program_conditions += " AND fpi.yarn_count = %(yarn_count)s"
+        sizing_program_conditions += " AND spi.yarn_item = %(yarn_count)s"
     
     data = frappe.db.sql(f"""
         SELECT
