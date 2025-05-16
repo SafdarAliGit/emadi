@@ -5,6 +5,12 @@
 frappe.query_reports["Material Flow"] = {
 	"filters": [
 		{
+			"fieldname": "p",
+			"label": "Waste %",
+			"fieldtype": "Float",
+			"default": 10
+			},
+		{
 			"fieldname": "brand",
 			"label": "Brand",
 			"fieldtype": "Link",
