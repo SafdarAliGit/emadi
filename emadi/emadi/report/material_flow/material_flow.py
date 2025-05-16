@@ -132,11 +132,12 @@ def execute(filters=None):
     """, filters, as_dict=True)
     total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
     total_production_length = sum(row["bags"] or 0 for row in sizing_program_data)
+    ratio = total_warp / total_production_length
     if sizing_program_data:
         sizing_program_data.append({
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
-            "purpose": "",
+            "purpose": "Ratio: " + str(ratio),
             "bags": total_production_length,
             "lbs": total_warp,
             "gate_pass": ""
