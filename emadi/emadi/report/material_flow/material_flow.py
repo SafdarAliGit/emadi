@@ -74,7 +74,7 @@ def execute(filters=None):
             "purpose": "",
             "yarn_count": ""
         })
-    production_data = frappe.db.sql(f"""
+    weft_production_data = frappe.db.sql(f"""
         SELECT
             fp.posting_date,
             fp.name as gate_pass,
@@ -91,16 +91,16 @@ def execute(filters=None):
         ORDER BY
             fp.posting_date DESC
     """, filters, as_dict=True)
-    total_weft = sum(row["lbs"] or 0 for row in production_data)
-    if production_data:
-        production_data.append({
+    total_weft = sum(row["lbs"] or 0 for row in weft_production_data)
+    if weft_production_data:
+        weft_production_data.append({
             "posting_date": "<b>Total Weft</b>",
             "yarn_item": "",
             "purpose": "",
             "lbs": total_weft,
             "gate_pass": ""
         })
-    data.extend(production_data)
+    data.extend(weft_production_data)
     data.append({
             "posting_date": "<b style='font-size: 14px;'>Warp Consumption</b>",
             "gate_pass": "<b style='font-size: 12px;'>(Sizing Program)</b>",
@@ -136,9 +136,51 @@ def execute(filters=None):
             "gate_pass": ""
         })
     data.extend(sizing_program_data)
+
+    data.append({
+            "posting_date": "<b style='font-size: 14px;'>WARP Detail</b>",
+            "gate_pass": "<b style='font-size: 12px;'>(Fabric Production)</b>",
+            "yarn_item": "",
+            "brand": "",
+            "bags": "",
+            "lbs": "",
+            "purpose": "",
+            "yarn_count": ""
+        })
+
+    warp_production_data = frappe.db.sql(f"""
+        SELECT
+            fp.posting_date,
+            fp.name as gate_pass,
+            fp.quality as yarn_count,
+            fpi.yarn_count as yarn_item,
+            fpi.yarn_qty AS lbs
+        FROM
+            `tabFabric Production` fp
+        LEFT JOIN
+            `tabFabric Production Item` fpi ON fp.name = fpi.parent
+        WHERE
+            fp.docstatus = 1 {production_conditions}
+			AND fpi.for = 'Warp'
+        ORDER BY
+            fp.posting_date DESC
+    """, filters, as_dict=True)
+    total_warp = sum(row["lbs"] or 0 for row in warp_production_data)
+    if warp_production_data:
+        warp_production_data.append({
+            "posting_date": "<b>Total Warp</b>",
+            "yarn_item": "",
+            "purpose": "",
+            "lbs": total_warp,
+            "gate_pass": ""
+        })
+    data.extend(warp_production_data)
+
+
     yarn_balance = total_received - (total_weft + total_warp)
     yarn_balance_data = [{"posting_date": "<b>Yarn Balance</b>", "gate_pass": "", "yarn_item": "", "brand": "", "bags": "", "lbs": yarn_balance, "purpose": "", "yarn_count": ""}]
     data.extend(yarn_balance_data)
+    
     return columns, data
 
 
