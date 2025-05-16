@@ -14,18 +14,24 @@ def execute(filters=None):
     ]
 
     conditions = ""
+    weft_production_conditions = ""
+    sizing_program_conditions = ""
+    warp_production_conditions = ""
+
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
         conditions += " AND sed.item_code = %(yarn_count)s"
     
-    production_conditions = ""
+    
     if filters.get("yarn_count"):
-        production_conditions += " AND fpi.yarn_count = %(yarn_count)s"
+        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count)s"
     if filters.get("fabric_item"):
-        production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
 
-    sizing_program_conditions = ""
+    if filters.get("fabric_item"):
+        warp_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+
     if filters.get("fabric_item"):
         sizing_program_conditions += " AND sp.fabric_construction = %(fabric_item)s"
     
@@ -86,7 +92,7 @@ def execute(filters=None):
         LEFT JOIN
             `tabFabric Production Item` fpi ON fp.name = fpi.parent
         WHERE
-            fp.docstatus = 1 {production_conditions}
+            fp.docstatus = 1 {weft_production_conditions}
 			AND fpi.for = 'Weft'
         ORDER BY
             fp.posting_date DESC
@@ -160,7 +166,7 @@ def execute(filters=None):
         LEFT JOIN
             `tabFabric Production Item` fpi ON fp.name = fpi.parent
         WHERE
-            fp.docstatus = 1 {production_conditions}
+            fp.docstatus = 1 {warp_production_conditions}
 			AND fpi.for = 'Warp'
         ORDER BY
             fp.posting_date DESC
