@@ -185,11 +185,11 @@ def execute(filters=None):
     data.extend(warp_production_data)
 
 
-    yarn_balance = total_received - (total_weft + total_warp)
+    # yarn_balance = total_received - (total_weft + total_warp)
 
     waste_percentage_bags = float(total_production_length) * (float(p) / 100)
     remaining_bags = total_production_length - waste_percentage_bags
-    yarn_balance_data = [{"posting_date": "<b>Yarn Balance</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(waste_percentage_bags), "bags": "", "lbs": yarn_balance, "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
+    yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(waste_percentage_bags), "bags": "", "lbs":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
     data.extend(yarn_balance_data)
     
     return columns, data
