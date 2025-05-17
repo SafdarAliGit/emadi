@@ -43,7 +43,7 @@ def execute(filters=None):
             sed.item_code AS yarn_item,
             sed.brand,
             sed.qty_pcs AS bags,
-            sed.qty AS lbs,
+            ROUND(sed.qty, 5) AS lbs,
             sed.`for` AS purpose,
             sed.item_code AS yarn_count
         FROM
@@ -67,7 +67,7 @@ def execute(filters=None):
             "yarn_item": "",
             "brand": "",
             "bags": "",  # Optional: sum bags if needed
-            "lbs": total_received,
+            "lbs": round(total_received,2),
             "purpose": "",
             "yarn_count": ""
         })
@@ -87,7 +87,7 @@ def execute(filters=None):
             fp.name as gate_pass,
             fp.quality as yarn_count,
             fpi.yarn_count as yarn_item,
-            fpi.yarn_qty AS lbs
+            ROUND(fpi.yarn_qty, 5) AS lbs
         FROM
             `tabFabric Production` fp
         LEFT JOIN
@@ -104,7 +104,7 @@ def execute(filters=None):
             "posting_date": "<b>Total Weft</b>",
             "yarn_item": "",
             "purpose": "",
-            "lbs": total_weft,
+            "lbs": round(total_weft,2),
             "gate_pass": ""
         })
     data.extend(weft_production_data)
@@ -139,8 +139,8 @@ def execute(filters=None):
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
             "purpose": "Ratio: " + str(ratio),
-            "bags": total_production_length,
-            "lbs": total_warp,
+            "bags": round(total_production_length,2),
+            "lbs": round(total_warp,2),
             "gate_pass": ""
         })
     data.extend(sizing_program_data)
@@ -162,7 +162,7 @@ def execute(filters=None):
             fp.name as gate_pass,
             fp.quality as yarn_count,
             fpi.yarn_count as yarn_item,
-            fpi.yarn_qty AS lbs
+            ROUND(fpi.yarn_qty, 5) AS lbs
         FROM
             `tabFabric Production` fp
         LEFT JOIN
@@ -180,7 +180,7 @@ def execute(filters=None):
             "yarn_item": "",
             "purpose": "",
             "bags": "LBS : " + str(round(total_warp *(ratio if ratio else 1),2)),
-            "lbs": total_warp,
+            "lbs": round(total_warp,2),
             "gate_pass": ""
         })
     data.extend(warp_production_data)
