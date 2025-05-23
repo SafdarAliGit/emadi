@@ -1,5 +1,6 @@
 import frappe
 from collections import defaultdict
+import re
 
 def execute(filters=None):
     if not filters:
@@ -42,6 +43,7 @@ def get_columns():
         {"label": "Shift C Efficiency", "fieldname": "c_effeciency", "fieldtype": "Data", "width": 100},
     ]
     return columns
+import re
 
 def get_merged_looms_data(start_date, end_date):
     shift_a = frappe.db.sql("""
@@ -50,7 +52,6 @@ def get_merged_looms_data(start_date, end_date):
         JOIN `tabLoom Production` m ON d.parent = m.name
         WHERE m.shift = 'Shift-A'
           AND m.date >= %(start_date)s AND m.date <= %(end_date)s
-        ORDER BY d.loom
     """, {"start_date": start_date, "end_date": end_date}, as_dict=True)
 
     shift_b = frappe.db.sql("""
@@ -59,7 +60,6 @@ def get_merged_looms_data(start_date, end_date):
         JOIN `tabLoom Production` m ON d.parent = m.name
         WHERE m.shift = 'Shift-B'
           AND m.date >= %(start_date)s AND m.date <= %(end_date)s
-        ORDER BY d.loom
     """, {"start_date": start_date, "end_date": end_date}, as_dict=True)
 
     shift_c = frappe.db.sql("""
@@ -68,14 +68,25 @@ def get_merged_looms_data(start_date, end_date):
         JOIN `tabLoom Production` m ON d.parent = m.name
         WHERE m.shift = 'Shift-C'
           AND m.date >= %(start_date)s AND m.date <= %(end_date)s
-        ORDER BY d.loom
     """, {"start_date": start_date, "end_date": end_date}, as_dict=True)
 
-    max_len = max(len(shift_a), len(shift_b), len(shift_c))
+    def to_dict_by_loom(shift_data):
+        return {str(row['loom']): row for row in shift_data}
+
+    a_looms = to_dict_by_loom(shift_a)
+    b_looms = to_dict_by_loom(shift_b)
+    c_looms = to_dict_by_loom(shift_c)
+
+    # Natural alphanumeric sort key
+    def natural_sort_key(s):
+        return [int(text) if text.isdigit() else text.lower() for text in re.split(r'(\d+)', s)]
+
+    # All loom keys sorted naturally
+    all_looms = sorted(set(a_looms.keys()) | set(b_looms.keys()) | set(c_looms.keys()), key=natural_sort_key)
 
     merged_rows = []
 
-    # Add the header row
+    # Header row
     merged_rows.append({
         'parent': '',
 
@@ -98,31 +109,35 @@ def get_merged_looms_data(start_date, end_date):
         'c_effeciency': '<b style="color: blue;text-align: center;">----</b>',
     })
 
-    # Add actual data rows
-    for i in range(max_len):
+    # Data rows
+    for loom in all_looms:
         row = {
-            'parent': (shift_a[i]['parent'] if i < len(shift_a) else
-                       shift_b[i]['parent'] if i < len(shift_b) else
-                       shift_c[i]['parent'] if i < len(shift_c) else None),
+            'parent': (
+                a_looms.get(loom, {}).get('parent') or
+                b_looms.get(loom, {}).get('parent') or
+                c_looms.get(loom, {}).get('parent')
+            ),
 
-            'a_loom': shift_a[i]['loom'] if i < len(shift_a) else None,
-            'a_sizing_name': shift_a[i]['sizing_name'] if i < len(shift_a) else None,
-            'a_rpm': shift_a[i]['rpm'] if i < len(shift_a) else None,
-            'a_unit_per_rpm': shift_a[i]['unit_per_rpm'] if i < len(shift_a) else None,
-            'a_effeciency': shift_a[i]['effeciency'] if i < len(shift_a) else None,
+            'a_loom': a_looms.get(loom, {}).get('loom'),
+            'a_sizing_name': a_looms.get(loom, {}).get('sizing_name'),
+            'a_rpm': a_looms.get(loom, {}).get('rpm'),
+            'a_unit_per_rpm': a_looms.get(loom, {}).get('unit_per_rpm'),
+            'a_effeciency': a_looms.get(loom, {}).get('effeciency'),
 
-            'b_loom': shift_b[i]['loom'] if i < len(shift_b) else None,
-            'b_sizing_name': shift_b[i]['sizing_name'] if i < len(shift_b) else None,
-            'b_rpm': shift_b[i]['rpm'] if i < len(shift_b) else None,
-            'b_unit_per_rpm': shift_b[i]['unit_per_rpm'] if i < len(shift_b) else None,
-            'b_effeciency': shift_b[i]['effeciency'] if i < len(shift_b) else None,
+            'b_loom': b_looms.get(loom, {}).get('loom'),
+            'b_sizing_name': b_looms.get(loom, {}).get('sizing_name'),
+            'b_rpm': b_looms.get(loom, {}).get('rpm'),
+            'b_unit_per_rpm': b_looms.get(loom, {}).get('unit_per_rpm'),
+            'b_effeciency': b_looms.get(loom, {}).get('effeciency'),
 
-            'c_loom': shift_c[i]['loom'] if i < len(shift_c) else None,
-            'c_sizing_name': shift_c[i]['sizing_name'] if i < len(shift_c) else None,
-            'c_rpm': shift_c[i]['rpm'] if i < len(shift_c) else None,
-            'c_unit_per_rpm': shift_c[i]['unit_per_rpm'] if i < len(shift_c) else None,
-            'c_effeciency': shift_c[i]['effeciency'] if i < len(shift_c) else None,
+            'c_loom': c_looms.get(loom, {}).get('loom'),
+            'c_sizing_name': c_looms.get(loom, {}).get('sizing_name'),
+            'c_rpm': c_looms.get(loom, {}).get('rpm'),
+            'c_unit_per_rpm': c_looms.get(loom, {}).get('unit_per_rpm'),
+            'c_effeciency': c_looms.get(loom, {}).get('effeciency'),
         }
         merged_rows.append(row)
 
     return merged_rows
+
+
