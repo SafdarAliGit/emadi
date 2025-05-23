@@ -43,7 +43,7 @@ def get_columns():
         {"label": "Shift C Efficiency", "fieldname": "c_effeciency", "fieldtype": "Data", "width": 100},
     ]
     return columns
-import re
+
 
 def get_merged_looms_data(start_date, end_date):
     shift_a = frappe.db.sql("""
