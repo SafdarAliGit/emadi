@@ -59,7 +59,7 @@ def get_merged_looms_data(start_date, end_date):
     def fetch_shift_data(shift):
         return frappe.db.sql("""
             SELECT d.parent, d.loom, d.sizing_name, d.rpm, d.unit_per_rpm,
-                   ROUND(d.effeciency, 0) as effeciency, d.meters
+                   d.effeciency, d.meters
             FROM `tabLoom Production Items` d
             JOIN `tabLoom Production` m ON d.parent = m.name
             WHERE m.shift = %(shift)s
