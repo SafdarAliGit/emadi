@@ -23,7 +23,7 @@ def get_columns():
 
         # Shift A columns
         {"label": "Loom", "fieldname": "a_loom", "fieldtype": "Data", "width": 120},
-        {"label": "Quality Name", "fieldname": "a_sizing_name", "fieldtype": "Link", "options": "Item", "width": 140},
+        {"label": "Quality Name", "fieldname": "a_sizing_name", "fieldtype": "Data", "width": 140},
         {"label": "RPM", "fieldname": "a_rpm", "fieldtype": "Data", "width": 80},
         {"label": "Unit per RPM", "fieldname": "a_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Efficiency", "fieldname": "a_effeciency", "fieldtype": "Data", "width": 100},
@@ -33,7 +33,7 @@ def get_columns():
 
         # Shift B columns
         {"label": "Loom", "fieldname": "b_loom", "fieldtype": "Data", "width": 120},
-        {"label": "Quality Name", "fieldname": "b_sizing_name", "fieldtype": "Link", "options": "Item", "width": 140},
+        {"label": "Quality Name", "fieldname": "b_sizing_name", "fieldtype": "Data", "width": 140},
         {"label": "RPM", "fieldname": "b_rpm", "fieldtype": "Data", "width": 80},
         {"label": "Unit per RPM", "fieldname": "b_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Efficiency", "fieldname": "b_effeciency", "fieldtype": "Data", "width": 100},
@@ -43,7 +43,7 @@ def get_columns():
 
         # Shift C columns
         {"label": "Loom", "fieldname": "c_loom", "fieldtype": "Data", "width": 120},
-        {"label": "Quality Name", "fieldname": "c_sizing_name", "fieldtype": "Link", "options": "Item", "width": 140},
+        {"label": "Quality Name", "fieldname": "c_sizing_name", "fieldtype": "Data", "width": 140},
         {"label": "RPM", "fieldname": "c_rpm", "fieldtype": "Data", "width": 80},
         {"label": "Unit per RPM", "fieldname": "c_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Efficiency", "fieldname": "c_effeciency", "fieldtype": "Data", "width": 100},
@@ -83,7 +83,7 @@ def get_merged_looms_data(start_date, end_date):
 
     def get_summary(shift_data):
         total_meters = sum(float(row['meters'] or 0) for row in shift_data)
-        avg_eff = round(sum(float(row['effeciency'] or 0) for row in shift_data) / len(shift_data), 0) if shift_data else 0
+        avg_eff = round(sum(float(row['effeciency'] or 0) for row in shift_data) / len(shift_data), 2) if shift_data else 0
         return total_meters, avg_eff
 
     def get_combined_stats(*shifts):
