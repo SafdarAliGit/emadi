@@ -135,7 +135,12 @@ def get_merged_looms_data(start_date, end_date):
     })
 
     # Data rows
-    
+    def safe_float(val):
+        try:
+            return float(val)
+        except (TypeError, ValueError):
+            return 0.0
+
     for loom in all_looms:
         row = {
             'parent': (
@@ -171,7 +176,9 @@ def get_merged_looms_data(start_date, end_date):
             'stats_unit_per_rpm': float(a_looms.get(loom, {}).get('unit_per_rpm', 0)) + float(b_looms.get(loom, {}).get('unit_per_rpm', 0)) + float(c_looms.get(loom, {}).get('unit_per_rpm', 0)),
             'stats_effeciency': round((float(a_looms.get(loom, {}).get('effeciency', 0)) + float(b_looms.get(loom, {}).get('effeciency', 0)) + float(c_looms.get(loom, {}).get('effeciency', 0))) / 3, 0),
             'stats_meters': float(a_looms.get(loom, {}).get('meters', 0)) + float(b_looms.get(loom, {}).get('meters', 0)) + float(c_looms.get(loom, {}).get('meters', 0)),
-            'stats_actual_reading': float(a_looms.get(loom, {}).get('actual_reading', 0)) + float(b_looms.get(loom, {}).get('actual_reading', 0)) + float(c_looms.get(loom, {}).get('actual_reading', 0)),
+            'stats_actual_reading': safe_float(a_looms.get(loom, {}).get('actual_reading')) +
+                       safe_float(b_looms.get(loom, {}).get('actual_reading')) +
+                       safe_float(c_looms.get(loom, {}).get('actual_reading'))
         }
         merged_rows.append(row)
 
