@@ -19,40 +19,44 @@ def execute(filters=None):
 
 def get_columns():
     columns = [
-        {"label": "Transaction ID", "fieldname": "parent", "fieldtype": "Data", "width": 150},
+        {"label": "Transaction ID", "fieldname": "parent", "fieldtype": "Link", "options": "Loom Production", "width": 150},
 
         # Shift A columns
-        {"label": "Shift A Loom", "fieldname": "a_loom", "fieldtype": "Data", "width": 120},
-        {"label": "Shift A Sizing Name", "fieldname": "a_sizing_name", "fieldtype": "Data", "width": 140},
-        {"label": "Shift A RPM", "fieldname": "a_rpm", "fieldtype": "Data", "width": 80},
-        {"label": "Shift A Unit per RPM", "fieldname": "a_unit_per_rpm", "fieldtype": "Data", "width": 110},
-        {"label": "Shift A Efficiency", "fieldname": "a_effeciency", "fieldtype": "Data", "width": 100},
-        {"label": "Shift A Meters", "fieldname": "a_meters", "fieldtype": "Data", "width": 100},
-        {"label": "Shift A Actual Reading", "fieldname": "a_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Loom", "fieldname": "a_loom", "fieldtype": "Data", "width": 120},
+        {"label": "Quality Name", "fieldname": "a_sizing_name", "fieldtype": "Data", "width": 140},
+        {"label": "RPM", "fieldname": "a_rpm", "fieldtype": "Data", "width": 80},
+        {"label": "Unit per RPM", "fieldname": "a_unit_per_rpm", "fieldtype": "Data", "width": 110},
+        {"label": "Efficiency", "fieldname": "a_effeciency", "fieldtype": "Data", "width": 100},
+        {"label": "Actual Reading", "fieldname": "a_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Meters", "fieldname": "a_meters", "fieldtype": "Data", "width": 100},
+        
 
         # Shift B columns
-        {"label": "Shift B Loom", "fieldname": "b_loom", "fieldtype": "Data", "width": 120},
-        {"label": "Shift B Sizing Name", "fieldname": "b_sizing_name", "fieldtype": "Data", "width": 140},
-        {"label": "Shift B RPM", "fieldname": "b_rpm", "fieldtype": "Data", "width": 80},
-        {"label": "Shift B Unit per RPM", "fieldname": "b_unit_per_rpm", "fieldtype": "Data", "width": 110},
-        {"label": "Shift B Efficiency", "fieldname": "b_effeciency", "fieldtype": "Data", "width": 100},
-        {"label": "Shift B Meters", "fieldname": "b_meters", "fieldtype": "Data", "width": 100},
-        {"label": "Shift B Actual Reading", "fieldname": "b_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Loom", "fieldname": "b_loom", "fieldtype": "Data", "width": 120},
+        {"label": "Quality Name", "fieldname": "b_sizing_name", "fieldtype": "Data", "width": 140},
+        {"label": "RPM", "fieldname": "b_rpm", "fieldtype": "Data", "width": 80},
+        {"label": "Unit per RPM", "fieldname": "b_unit_per_rpm", "fieldtype": "Data", "width": 110},
+        {"label": "Efficiency", "fieldname": "b_effeciency", "fieldtype": "Data", "width": 100},
+        {"label": "Actual Reading", "fieldname": "b_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Meters", "fieldname": "b_meters", "fieldtype": "Data", "width": 100},
+        
 
         # Shift C columns
-        {"label": "Shift C Loom", "fieldname": "c_loom", "fieldtype": "Data", "width": 120},
-        {"label": "Shift C Sizing Name", "fieldname": "c_sizing_name", "fieldtype": "Data", "width": 140},
-        {"label": "Shift C RPM", "fieldname": "c_rpm", "fieldtype": "Data", "width": 80},
-        {"label": "Shift C Unit per RPM", "fieldname": "c_unit_per_rpm", "fieldtype": "Data", "width": 110},
-        {"label": "Shift C Efficiency", "fieldname": "c_effeciency", "fieldtype": "Data", "width": 100},
-        {"label": "Shift C Meters", "fieldname": "c_meters", "fieldtype": "Data", "width": 100},
-        {"label": "Shift C Actual Reading", "fieldname": "c_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Loom", "fieldname": "c_loom", "fieldtype": "Data", "width": 120},
+        {"label": "Quality Name", "fieldname": "c_sizing_name", "fieldtype": "Data", "width": 140},
+        {"label": "RPM", "fieldname": "c_rpm", "fieldtype": "Data", "width": 80},
+        {"label": "Unit per RPM", "fieldname": "c_unit_per_rpm", "fieldtype": "Data", "width": 110},
+        {"label": "Efficiency", "fieldname": "c_effeciency", "fieldtype": "Data", "width": 100},
+        {"label": "Actual Reading", "fieldname": "c_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Meters", "fieldname": "c_meters", "fieldtype": "Data", "width": 100},
+        
 
         # Stats columns
-        {"label": "Stats Unit per RPM", "fieldname": "stats_unit_per_rpm", "fieldtype": "Data", "width": 110},
-        {"label": "Stats Efficiency", "fieldname": "stats_effeciency", "fieldtype": "Data", "width": 100},
-        {"label": "Stats Meters", "fieldname": "stats_meters", "fieldtype": "Data", "width": 100},
-        {"label": "Stats Actual Reading", "fieldname": "stats_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Unit per RPM", "fieldname": "stats_unit_per_rpm", "fieldtype": "Data", "width": 110},
+        {"label": "Efficiency", "fieldname": "stats_effeciency", "fieldtype": "Data", "width": 100},
+        {"label": "Actual Reading", "fieldname": "stats_actual_reading", "fieldtype": "Data", "width": 100},
+        {"label": "Meters", "fieldname": "stats_meters", "fieldtype": "Data", "width": 100},
+        
     ]
     return columns
 
@@ -62,8 +66,8 @@ def get_merged_looms_data(start_date, end_date):
 
     def fetch_shift_data(shift):
         return frappe.db.sql("""
-            SELECT d.parent, d.loom, d.sizing_name, d.rpm, d.unit_per_rpm,
-                   d.effeciency, d.meters,d.actual_reading
+            SELECT d.parent, d.loom, d.sizing_name, d.rpm, round(d.unit_per_rpm,2) as unit_per_rpm,
+                   round(d.effeciency,2) as effeciency, round(d.meters,2) as meters,round(d.actual_reading,2) as actual_reading
             FROM `tabLoom Production Items` d
             JOIN `tabLoom Production` m ON d.parent = m.name
             WHERE m.shift = %(shift)s
@@ -109,29 +113,33 @@ def get_merged_looms_data(start_date, end_date):
 
         'a_loom': '<b style="color: green;text-align: center;">----</b>',
         'a_sizing_name': '<b style="color: green;text-align: center;">----</b>',
-        'a_rpm': '<b style="color: green;text-align: center;">Shift - A</b>',
-        'a_unit_per_rpm': '<b style="color: green;text-align: center;">----</b>',
+        'a_rpm': '<b style="color: green;text-align: center;">----</b>',
+        'a_unit_per_rpm': '<b style="color: green;text-align: center;">Shift - A</b>',
         'a_effeciency': '<b style="color: green;text-align: center;">----</b>',
+        'a_actual_reading': '<b style="color: green;text-align: center;">----</b>',
         'a_meters': '<b style="color: green;text-align: center;">----</b>',
 
         'b_loom': '<b style="color: orange;text-align: center;">----</b>',
         'b_sizing_name': '<b style="color: orange;text-align: center;">----</b>',
-        'b_rpm': '<b style="color: orange;text-align: center;">Shift - B</b>',
-        'b_unit_per_rpm': '<b style="color: orange;text-align: center;">----</b>',
+        'b_rpm': '<b style="color: orange;text-align: center;">----</b>',
+        'b_unit_per_rpm': '<b style="color: orange;text-align: center;">Shift - B</b>',
         'b_effeciency': '<b style="color: orange;text-align: center;">----</b>',
+        'b_actual_reading': '<b style="color: orange;text-align: center;">----</b>',
         'b_meters': '<b style="color: orange;text-align: center;">----</b>',
 
         'c_loom': '<b style="color: blue;text-align: center;">----</b>',
         'c_sizing_name': '<b style="color: blue;text-align: center;">----</b>',
-        'c_rpm': '<b style="color: blue;text-align: center;">Shift - C</b>',
-        'c_unit_per_rpm': '<b style="color: blue;text-align: center;">----</b>',
+        'c_rpm': '<b style="color: blue;text-align: center;">----</b>',
+        'c_unit_per_rpm': '<b style="color: blue;text-align: center;">Shift - C</b>',
         'c_effeciency': '<b style="color: blue;text-align: center;">----</b>',
+        'c_actual_reading': '<b style="color: blue;text-align: center;">----</b>',
         'c_meters': '<b style="color: blue;text-align: center;">----</b>',
 
         'stats_unit_per_rpm': '<b style="color: purple;text-align: center;">----</b>',
-        'stats_effeciency': '<b style="color: purple;text-align: center;">Stats</b>',
-        'stats_meters': '<b style="color: purple;text-align: center;">----</b>',
+        'stats_effeciency': '<b style="color: purple;text-align: center;">STATS</b>',
         'stats_actual_reading': '<b style="color: purple;text-align: center;">----</b>',
+        'stats_meters': '<b style="color: purple;text-align: center;">----</b>',
+        
     })
 
     # Data rows
