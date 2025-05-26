@@ -28,6 +28,7 @@ def get_columns():
         {"label": "Shift A Unit per RPM", "fieldname": "a_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Shift A Efficiency", "fieldname": "a_effeciency", "fieldtype": "Data", "width": 100},
         {"label": "Shift A Meters", "fieldname": "a_meters", "fieldtype": "Data", "width": 100},
+        {"label": "Shift A Actual Reading", "fieldname": "a_actual_reading", "fieldtype": "Data", "width": 100},
 
         # Shift B columns
         {"label": "Shift B Loom", "fieldname": "b_loom", "fieldtype": "Data", "width": 120},
@@ -36,6 +37,7 @@ def get_columns():
         {"label": "Shift B Unit per RPM", "fieldname": "b_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Shift B Efficiency", "fieldname": "b_effeciency", "fieldtype": "Data", "width": 100},
         {"label": "Shift B Meters", "fieldname": "b_meters", "fieldtype": "Data", "width": 100},
+        {"label": "Shift B Actual Reading", "fieldname": "b_actual_reading", "fieldtype": "Data", "width": 100},
 
         # Shift C columns
         {"label": "Shift C Loom", "fieldname": "c_loom", "fieldtype": "Data", "width": 120},
@@ -44,11 +46,13 @@ def get_columns():
         {"label": "Shift C Unit per RPM", "fieldname": "c_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Shift C Efficiency", "fieldname": "c_effeciency", "fieldtype": "Data", "width": 100},
         {"label": "Shift C Meters", "fieldname": "c_meters", "fieldtype": "Data", "width": 100},
+        {"label": "Shift C Actual Reading", "fieldname": "c_actual_reading", "fieldtype": "Data", "width": 100},
 
         # Stats columns
         {"label": "Stats Unit per RPM", "fieldname": "stats_unit_per_rpm", "fieldtype": "Data", "width": 110},
         {"label": "Stats Efficiency", "fieldname": "stats_effeciency", "fieldtype": "Data", "width": 100},
-        {"label": "Stats Meters", "fieldname": "stats_meters", "fieldtype": "Data", "width": 100},  
+        {"label": "Stats Meters", "fieldname": "stats_meters", "fieldtype": "Data", "width": 100},
+        {"label": "Stats Actual Reading", "fieldname": "stats_actual_reading", "fieldtype": "Data", "width": 100},
     ]
     return columns
 
@@ -59,7 +63,7 @@ def get_merged_looms_data(start_date, end_date):
     def fetch_shift_data(shift):
         return frappe.db.sql("""
             SELECT d.parent, d.loom, d.sizing_name, d.rpm, d.unit_per_rpm,
-                   d.effeciency, d.meters
+                   d.effeciency, d.meters,d.actual_reading
             FROM `tabLoom Production Items` d
             JOIN `tabLoom Production` m ON d.parent = m.name
             WHERE m.shift = %(shift)s
@@ -85,7 +89,8 @@ def get_merged_looms_data(start_date, end_date):
         sum_unit_per_rpm = sum(float(row['unit_per_rpm'] or 0) for row in combined)
         avg_eff = round(sum(float(row['effeciency'] or 0) for row in combined) / len(combined), 0) if combined else 0
         sum_meters = sum(float(row['meters'] or 0) for row in combined)
-        return sum_unit_per_rpm, avg_eff, sum_meters
+        sum_actual_reading = sum(float(row['actual_reading'] or 0) for row in combined)
+        return sum_unit_per_rpm, avg_eff, sum_meters,sum_actual_reading
 
     a_looms = to_dict_by_loom(shift_a)
     b_looms = to_dict_by_loom(shift_b)
@@ -126,6 +131,7 @@ def get_merged_looms_data(start_date, end_date):
         'stats_unit_per_rpm': '<b style="color: purple;text-align: center;">----</b>',
         'stats_effeciency': '<b style="color: purple;text-align: center;">Stats</b>',
         'stats_meters': '<b style="color: purple;text-align: center;">----</b>',
+        'stats_actual_reading': '<b style="color: purple;text-align: center;">----</b>',
     })
 
     # Data rows
@@ -144,6 +150,7 @@ def get_merged_looms_data(start_date, end_date):
             'a_unit_per_rpm': a_looms.get(loom, {}).get('unit_per_rpm'),
             'a_effeciency': a_looms.get(loom, {}).get('effeciency'),
             'a_meters': a_looms.get(loom, {}).get('meters'),
+            'a_actual_reading': a_looms.get(loom, {}).get('actual_reading'),
 
             'b_loom': b_looms.get(loom, {}).get('loom'),
             'b_sizing_name': b_looms.get(loom, {}).get('sizing_name'),
@@ -151,6 +158,7 @@ def get_merged_looms_data(start_date, end_date):
             'b_unit_per_rpm': b_looms.get(loom, {}).get('unit_per_rpm'),
             'b_effeciency': b_looms.get(loom, {}).get('effeciency'),
             'b_meters': b_looms.get(loom, {}).get('meters'),
+            'b_actual_reading': b_looms.get(loom, {}).get('actual_reading'),
 
             'c_loom': c_looms.get(loom, {}).get('loom'),
             'c_sizing_name': c_looms.get(loom, {}).get('sizing_name'),
@@ -158,10 +166,12 @@ def get_merged_looms_data(start_date, end_date):
             'c_unit_per_rpm': c_looms.get(loom, {}).get('unit_per_rpm'),
             'c_effeciency': c_looms.get(loom, {}).get('effeciency'),
             'c_meters': c_looms.get(loom, {}).get('meters'),
+            'c_actual_reading': c_looms.get(loom, {}).get('actual_reading'),
 
             'stats_unit_per_rpm': float(a_looms.get(loom, {}).get('unit_per_rpm', 0)) + float(b_looms.get(loom, {}).get('unit_per_rpm', 0)) + float(c_looms.get(loom, {}).get('unit_per_rpm', 0)),
             'stats_effeciency': round((float(a_looms.get(loom, {}).get('effeciency', 0)) + float(b_looms.get(loom, {}).get('effeciency', 0)) + float(c_looms.get(loom, {}).get('effeciency', 0))) / 3, 0),
             'stats_meters': float(a_looms.get(loom, {}).get('meters', 0)) + float(b_looms.get(loom, {}).get('meters', 0)) + float(c_looms.get(loom, {}).get('meters', 0)),
+            'stats_actual_reading': float(a_looms.get(loom, {}).get('actual_reading', 0)) + float(b_looms.get(loom, {}).get('actual_reading', 0)) + float(c_looms.get(loom, {}).get('actual_reading', 0)),
         }
         merged_rows.append(row)
 
@@ -170,7 +180,7 @@ def get_merged_looms_data(start_date, end_date):
     b_total_meters, b_avg_eff = get_summary(shift_b)
     c_total_meters, c_avg_eff = get_summary(shift_c)
 
-    stats_unit_per_rpm, stats_avg_eff, stats_meters = get_combined_stats(shift_a, shift_b, shift_c)
+    stats_unit_per_rpm, stats_avg_eff, stats_meters, stats_actual_reading = get_combined_stats(shift_a, shift_b, shift_c)
 
     merged_rows.append({
         'parent': '<b style="color:black;">Total / Average</b>',
@@ -199,6 +209,7 @@ def get_merged_looms_data(start_date, end_date):
         'stats_unit_per_rpm': f'<b style="color: purple;">Total: {stats_unit_per_rpm}</b>',
         'stats_effeciency': f'<b style="color: purple;">Avg: {stats_avg_eff}</b>',
         'stats_meters': f'<b style="color: purple;">Total: {stats_meters}</b>',
+        'stats_actual_reading': f'<b style="color: purple;">Total: {stats_actual_reading}</b>',
     })
 
     return merged_rows
