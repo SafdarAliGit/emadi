@@ -198,10 +198,10 @@ def get_merged_looms_data(start_date, end_date):
     stats_unit_per_rpm, stats_avg_eff, stats_meters, stats_actual_reading = get_combined_stats(shift_a, shift_b, shift_c)
 
     merged_rows.append({
-        'parent': '<b style="color:black;">Total / Average</b>',
+        'parent': '',
 
         'a_loom': '',
-        'a_sizing_name': '',
+        'a_sizing_name': '<b style="color:black;">Total / Average</b>',
         'a_rpm': '',
         'a_unit_per_rpm': '',
         'a_effeciency': f'<b style="color: green;">Avg: {a_avg_eff}</b>',
