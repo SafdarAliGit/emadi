@@ -175,7 +175,7 @@ def execute(filters=None):
         ORDER BY
             fp.posting_date DESC
     """, filters, as_dict=True)
-    total_warp = sum(row["lbs"] or 0 for row in warp_production_data)
+    total_warp = sum(row["bags"] or 0 for row in warp_production_data)
     if warp_production_data:
         warp_production_data.append({
             "posting_date": "<b>Total Warp</b>",
