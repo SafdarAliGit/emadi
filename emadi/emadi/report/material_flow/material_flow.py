@@ -238,7 +238,8 @@ def execute(filters=None):
         WHERE
             dn.docstatus = 1 {delivery_conditions}
         GROUP BY
-            dn.fabric_item
+            dn.fabric_item,
+            dn.fabric_qty
     """, filters, as_dict=True)
     total_warp = sum(row["bags"] or 0 for row in delivery_data)
     total_weft = sum(row["lbs"] or 0 for row in delivery_data)
@@ -246,7 +247,7 @@ def execute(filters=None):
     if delivery_data:
         delivery_data.append({
             "posting_date": "<b>Total Delivery</b>",
-            "yarn_item": str(round(total_fabric,2)) ,
+            "yarn_item": str(round(total_fabric,2)),
             "purpose":"",
             "brand": "",
             "bags":"<b>" + str(round(total_warp,2)) + "</b>",
