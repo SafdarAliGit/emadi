@@ -164,7 +164,7 @@ def execute(filters=None):
             fp.name as gate_pass,
             fp.quality as yarn_count,
             fpi.yarn_count as yarn_item,
-            ROUND(fpi.yarn_qty, 5) AS lbs
+            ROUND(fpi.yarn_qty, 5) AS bags
         FROM
             `tabFabric Production` fp
         LEFT JOIN
