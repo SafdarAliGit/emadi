@@ -236,7 +236,7 @@ def execute(filters=None):
         LEFT JOIN
             `tabBOM Items Dn` bid ON dn.name = bid.parent
         WHERE
-            dn.docstatus = 1 {delivery_conditions} and dn.fabric_qty > 0
+            dn.docstatus = 1 {delivery_conditions} and dn.fabric_qty > 0 and dn.is_return = 0
         GROUP BY
             dn.fabric_item,
             dn.fabric_qty
