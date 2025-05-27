@@ -17,6 +17,7 @@ def execute(filters=None):
     weft_production_conditions = ""
     sizing_program_conditions = ""
     warp_production_conditions = ""
+    delivery_conditions = ""
     p = filters.get("p")
 
     if filters.get("brand"):
@@ -35,6 +36,11 @@ def execute(filters=None):
 
     if filters.get("fabric_item"):
         sizing_program_conditions += " AND sp.fabric_construction = %(fabric_item)s"
+    
+    if filters.get("fabric_item"):
+        delivery_conditions += " AND dn.fabric_item = %(fabric_item)s"
+    if filters.get("brand"):
+        delivery_conditions += " AND bid.brand = %(brand)s"
     
     data = frappe.db.sql(f"""
         SELECT
@@ -194,7 +200,58 @@ def execute(filters=None):
     remaining_bags = total_production_length - waste_percentage_bags
     yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":"", "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
     data.extend(yarn_balance_data)
-    
+    # Delivery Detail
+    data.append({
+            "posting_date": "<b style='font-size: 14px;'>Delivery Detail (Fabric)</b>",
+            "gate_pass": "",
+            "yarn_item": "",
+            "brand": "",
+            "bags": "",
+            "lbs": "",
+            "purpose": "",
+            "yarn_count": ""
+        })
+    data.append({
+            "posting_date": "",
+            "gate_pass": "Fabric Item",
+            "yarn_item": "Fabric Qty",
+            "brand": "",
+            "bags": "Warp Qty",
+            "lbs": "Weft Qty",
+            "purpose": "",
+            "yarn_count": ""
+        })
+
+
+    delivery_data = frappe.db.sql(f"""
+        SELECT
+            "" as posting_date,
+            "" as gate_pass,
+            dn.fabric_item as gate_pass,
+            SUM(dn.fabric_qty) as yarn_item,
+            SUM(CASE WHEN bid.for = 'Warp' THEN bid.yarn_qty ELSE 0 END) as bags,
+            SUM(CASE WHEN bid.for = 'Weft' THEN bid.yarn_qty ELSE 0 END) as lbs
+        FROM
+            `tabDelivery Note` dn
+        LEFT JOIN
+            `tabBOM Items Dn` bid ON dn.name = bid.parent
+        WHERE
+            dn.docstatus = 1 {delivery_conditions}
+        GROUP BY
+            dn.fabric_item
+    """, filters, as_dict=True)
+    total_warp = sum(row["bags"] or 0 for row in delivery_data)
+    total_weft = sum(row["lbs"] or 0 for row in delivery_data)
+    if delivery_data:
+        delivery_data.append({
+            "posting_date": "<b>Total Delivery</b>",
+            "yarn_item": "",
+            "purpose": "",
+            "bags":str(round(total_warp,2)),
+            "lbs": str(round(total_weft,2)),
+            "gate_pass": ""
+        })
+    data.extend(delivery_data)
     return columns, data
 
 
