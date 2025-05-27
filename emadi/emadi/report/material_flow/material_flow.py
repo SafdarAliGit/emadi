@@ -228,7 +228,7 @@ def execute(filters=None):
             "" as posting_date,
             "" as gate_pass,
             dn.fabric_item as gate_pass,
-            dn.fabric_qty as yarn_item,
+            SUM(dn.fabric_qty) as yarn_item,
             SUM(CASE WHEN bid.for = 'Warp' THEN bid.yarn_qty ELSE 0 END) as bags,
             SUM(CASE WHEN bid.for = 'Weft' THEN bid.yarn_qty ELSE 0 END) as lbs
         FROM
@@ -236,10 +236,9 @@ def execute(filters=None):
         LEFT JOIN
             `tabBOM Items Dn` bid ON dn.name = bid.parent
         WHERE
-            dn.docstatus = 1 {delivery_conditions} and dn.fabric_qty > 0 and dn.is_return = 0
+            dn.docstatus = 1 {delivery_conditions} and dn.is_return = 0
         GROUP BY
-            dn.fabric_item,
-            dn.fabric_qty
+            dn.fabric_item
     """, filters, as_dict=True)
     total_warp = sum(row["bags"] or 0 for row in delivery_data)
     total_weft = sum(row["lbs"] or 0 for row in delivery_data)
