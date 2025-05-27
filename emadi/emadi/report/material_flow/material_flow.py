@@ -8,7 +8,7 @@ def execute(filters=None):
         {"label": "Brand", "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 100},
          {"label": "Purpose", "fieldname": "purpose", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
-        {"label": "Bags", "fieldname": "bags", "fieldtype": "Data", "width": 80},
+        {"label": "Bags/Length", "fieldname": "bags", "fieldtype": "Data", "width": 80},
         {"label": "Lbs", "fieldname": "lbs", "fieldtype": "Data", "width": 120}
        
     ]
@@ -58,13 +58,15 @@ def execute(filters=None):
     """, filters, as_dict=True)
     # Calculate total lbs
     total_received = sum(row["lbs"] or 0 for row in data)
+    total_received_warp = sum(row["lbs"] or 0 for row in data if row["purpose"] == "Warp")
+    total_received_weft = sum(row["lbs"] or 0 for row in data if row["purpose"] == "Weft")
 
     # Add total row
     if data:
         data.append({
             "posting_date": "<b>Total Received</b>",  # You can leave empty or write "Total"
-            "gate_pass": "",
-            "yarn_item": "",
+            "gate_pass": "Warp: " + str(round(total_received_warp,2)),
+            "yarn_item": "Weft: " + str(round(total_received_weft,2)),
             "brand": "",
             "bags": "",  # Optional: sum bags if needed
             "lbs": round(total_received,2),
