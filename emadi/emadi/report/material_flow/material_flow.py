@@ -228,7 +228,7 @@ def execute(filters=None):
             "" as posting_date,
             "" as gate_pass,
             dn.fabric_item as gate_pass,
-            SUM(dn.fabric_qty) as yarn_item,
+            dn.fabric_qty as yarn_item,
             SUM(CASE WHEN bid.for = 'Warp' THEN bid.yarn_qty ELSE 0 END) as bags,
             SUM(CASE WHEN bid.for = 'Weft' THEN bid.yarn_qty ELSE 0 END) as lbs
         FROM
