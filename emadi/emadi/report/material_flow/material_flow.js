@@ -18,6 +18,13 @@ frappe.query_reports["Material Flow"] = {
 			// "reqd": 1
 		},
 		{
+			"fieldname": "customer",
+			"label": "Customer",
+			"fieldtype": "Link",
+			"options": "Customer",
+			// "reqd": 1
+		},
+		{
 			"fieldname": "yarn_count",
 			"label": "Yarn Count",
 			"fieldtype": "Link",

@@ -17,6 +17,7 @@ def execute(filters=None):
     weft_production_conditions = ""
     sizing_program_conditions = ""
     warp_production_conditions = ""
+    delivery_conditions_master = ""
     delivery_conditions = ""
 
     p = filters.get("p")
@@ -42,6 +43,13 @@ def execute(filters=None):
         delivery_conditions += " AND dn.fabric_item = %(fabric_item)s"
     if filters.get("brand"):
         delivery_conditions += " AND bid.brand = %(brand)s"
+
+    if filters.get("customer"):
+        delivery_conditions_master += " AND dn.customer = %(customer)s"
+    if filters.get("fabric_item"):
+        delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
+
+    
     
     
     data = frappe.db.sql(f"""
@@ -208,12 +216,8 @@ def execute(filters=None):
             SUM(dn.fabric_qty) as yarn_item
         FROM
             `tabDelivery Note` dn
-        LEFT JOIN
-            `tabBOM Items Dn` bid ON dn.name = bid.parent
         WHERE
-            dn.docstatus = 1 {delivery_conditions} and dn.is_return = 0
-        GROUP BY
-            dn.fabric_item
+            dn.docstatus = 1 {delivery_conditions_master} and dn.is_return = 0
     """, filters, as_dict=True)
 
     delivery_fabric_qty_with_return = frappe.db.sql(f"""
@@ -221,12 +225,8 @@ def execute(filters=None):
             SUM(dn.fabric_qty) as yarn_item
         FROM
             `tabDelivery Note` dn
-        LEFT JOIN
-            `tabBOM Items Dn` bid ON dn.name = bid.parent
         WHERE
-            dn.docstatus = 1 {delivery_conditions}
-        GROUP BY
-            dn.fabric_item
+            dn.docstatus = 1 {delivery_conditions_master}
     """, filters, as_dict=True)
 
     data.append({
@@ -240,7 +240,7 @@ def execute(filters=None):
             "yarn_count": ""
         })
     data.append({
-            "posting_date": "<b>Fabric Qty (Without Return)</b>",
+            "posting_date": "<b>Fabric Qty (With Return)</b>",
             "gate_pass": "",
             "yarn_item":str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty else 0,2)),
             "brand": "",
@@ -250,9 +250,9 @@ def execute(filters=None):
             "yarn_count": ""
         })
     data.append({
-            "posting_date": "<b>Fabric Qty (With Return)</b>",
+            "posting_date": "<b>Fabric Qty (Without Return)</b>",
             "gate_pass": "",
-            "yarn_item": delivery_fabric_qty_with_return[0].yarn_item,
+            "yarn_item": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
             "brand": "",
             "bags": "",
             "lbs": "",
