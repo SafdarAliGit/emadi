@@ -18,6 +18,7 @@ def execute(filters=None):
     sizing_program_conditions = ""
     warp_production_conditions = ""
     delivery_conditions = ""
+
     p = filters.get("p")
 
     if filters.get("brand"):
@@ -41,6 +42,7 @@ def execute(filters=None):
         delivery_conditions += " AND dn.fabric_item = %(fabric_item)s"
     if filters.get("brand"):
         delivery_conditions += " AND bid.brand = %(brand)s"
+    
     
     data = frappe.db.sql(f"""
         SELECT
@@ -201,10 +203,56 @@ def execute(filters=None):
     yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":"", "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
     data.extend(yarn_balance_data)
     # Delivery Detail
+    delivery_fabric_qty = frappe.db.sql(f"""
+        SELECT
+            SUM(dn.fabric_qty) as yarn_item
+        FROM
+            `tabDelivery Note` dn
+        LEFT JOIN
+            `tabBOM Items Dn` bid ON dn.name = bid.parent
+        WHERE
+            dn.docstatus = 1 {delivery_conditions} and dn.is_return = 0
+        GROUP BY
+            dn.fabric_item
+    """, filters, as_dict=True)
+
+    delivery_fabric_qty_with_return = frappe.db.sql(f"""
+        SELECT
+            SUM(dn.fabric_qty) as yarn_item
+        FROM
+            `tabDelivery Note` dn
+        LEFT JOIN
+            `tabBOM Items Dn` bid ON dn.name = bid.parent
+        WHERE
+            dn.docstatus = 1 {delivery_conditions}
+        GROUP BY
+            dn.fabric_item
+    """, filters, as_dict=True)
+
     data.append({
             "posting_date": "<b style='font-size: 14px;'>Delivery Detail (Fabric)</b>",
             "gate_pass": "",
             "yarn_item": "",
+            "brand": "",
+            "bags": "",
+            "lbs": "",
+            "purpose": "",
+            "yarn_count": ""
+        })
+    data.append({
+            "posting_date": "<b>Fabric Qty (Without Return)</b>",
+            "gate_pass": "",
+            "yarn_item":str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty else 0,2)),
+            "brand": "",
+            "bags": "",
+            "lbs": "",
+            "purpose": "",
+            "yarn_count": ""
+        })
+    data.append({
+            "posting_date": "<b>Fabric Qty (With Return)</b>",
+            "gate_pass": "",
+            "yarn_item": delivery_fabric_qty_with_return[0].yarn_item,
             "brand": "",
             "bags": "",
             "lbs": "",
@@ -228,7 +276,7 @@ def execute(filters=None):
             "" as posting_date,
             "" as gate_pass,
             dn.fabric_item as gate_pass,
-            dn.fabric_qty as yarn_item,
+            "" as yarn_item,
             SUM(CASE WHEN bid.for = 'Warp' THEN bid.yarn_qty ELSE 0 END) as bags,
             SUM(CASE WHEN bid.for = 'Weft' THEN bid.yarn_qty ELSE 0 END) as lbs
         FROM
@@ -242,11 +290,11 @@ def execute(filters=None):
     """, filters, as_dict=True)
     total_warp = sum(row["bags"] or 0 for row in delivery_data)
     total_weft = sum(row["lbs"] or 0 for row in delivery_data)
-    total_fabric = sum(row["yarn_item"] or 0 for row in delivery_data)
+
     if delivery_data:
         delivery_data.append({
             "posting_date": "<b>Total Delivery</b>",
-            "yarn_item": str(round(total_fabric,2)),
+            "yarn_item": "",
             "purpose":"",
             "brand": "",
             "bags":"<b>" + str(round(total_warp,2)) + "</b>",
