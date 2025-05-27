@@ -181,8 +181,8 @@ def execute(filters=None):
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
             "purpose": "",
-            "bags": "LBS : " + str(round(total_warp *(ratio if ratio else 1),2)),
-            "lbs": round(total_warp,2),
+            "bags":round(total_warp,2),
+            "lbs":"LBS : " + str(round(total_warp *(ratio if ratio else 1),2)),
             "gate_pass": ""
         })
     data.extend(warp_production_data)
