@@ -71,11 +71,11 @@ def execute(filters=None):
     if data:
         data.append({
             "posting_date": "<b>Total Received</b>",  # You can leave empty or write "Total"
-            "gate_pass": "Warp: " + str(round(total_received_warp,2)),
+            "gate_pass": "Warp: " + "<b>" + str(round(total_received_warp,2)) + "</b>",
             "yarn_item": "Weft: " + str(round(total_received_weft,2)),
             "brand": "",
             "bags": "",  # Optional: sum bags if needed
-            "lbs": round(total_received,2),
+            "lbs": "<b>" + str(round(total_received,2)) + "</b>",
             "purpose": "",
             "yarn_count": ""
         })
@@ -112,7 +112,7 @@ def execute(filters=None):
             "posting_date": "<b>Total Weft</b>",
             "yarn_item": "",
             "purpose": "",
-            "lbs": round(total_weft,2),
+            "lbs": "<b>" + str(round(total_weft,2)) + "</b>",
             "gate_pass": ""
         })
     data.extend(weft_production_data)
@@ -147,8 +147,8 @@ def execute(filters=None):
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
             "purpose": "Ratio: " + str(ratio),
-            "bags": round(total_production_length,2),
-            "lbs": round(total_warp,2),
+            "bags": "<b>" + str(round(total_production_length,2)) + "</b>",
+            "lbs": "<b>" + str(round(total_warp,2)) + "</b>",
             "gate_pass": ""
         })
     data.extend(sizing_program_data)
@@ -188,7 +188,7 @@ def execute(filters=None):
             "yarn_item": "",
             "purpose": "",
             "bags":round(total_warp,2),
-            "lbs":"LBS : " + str(round(total_warp *(ratio if ratio else 1),2)),
+            "lbs":"LBS : " + "<b>" + str(round(total_warp *(ratio if ratio else 1),2)) + "</b>",
             "gate_pass": ""
         })
     data.extend(warp_production_data)
@@ -228,7 +228,7 @@ def execute(filters=None):
             "" as posting_date,
             "" as gate_pass,
             dn.fabric_item as gate_pass,
-            SUM(dn.fabric_qty) as yarn_item,
+            dn.fabric_qty as yarn_item,
             SUM(CASE WHEN bid.for = 'Warp' THEN bid.yarn_qty ELSE 0 END) as bags,
             SUM(CASE WHEN bid.for = 'Weft' THEN bid.yarn_qty ELSE 0 END) as lbs
         FROM
@@ -242,13 +242,24 @@ def execute(filters=None):
     """, filters, as_dict=True)
     total_warp = sum(row["bags"] or 0 for row in delivery_data)
     total_weft = sum(row["lbs"] or 0 for row in delivery_data)
+    total_fabric = sum(row["yarn_item"] or 0 for row in delivery_data)
     if delivery_data:
         delivery_data.append({
             "posting_date": "<b>Total Delivery</b>",
+            "yarn_item": str(round(total_fabric,2)) ,
+            "purpose":"",
+            "brand": "",
+            "bags":"<b>" + str(round(total_warp,2)) + "</b>",
+            "lbs": "<b>" + str(round(total_weft,2)) + "</b>",
+            "gate_pass": ""
+        })
+        delivery_data.append({
+            "posting_date": "<b>Warp + Weft</b>",
             "yarn_item": "",
-            "purpose": "",
-            "bags":str(round(total_warp,2)),
-            "lbs": str(round(total_weft,2)),
+            "purpose":"",
+            "brand": "",
+            "bags":"",
+            "lbs": "<b>" + str(round((total_warp)+(total_weft),2)) + "</b>",
             "gate_pass": ""
         })
     data.extend(delivery_data)
