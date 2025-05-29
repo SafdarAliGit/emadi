@@ -265,7 +265,7 @@ def execute(filters=None):
             "yarn_item": "",
             "brand": "",
             "bags": str(round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
-            "lbs": ""
+            "lbs":"" ,
             "purpose": "",
             "yarn_count": ""
         })
@@ -284,7 +284,6 @@ def execute(filters=None):
         2
     )
 ),
-
             "purpose": "",
             "yarn_count": ""
         })
