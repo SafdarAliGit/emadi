@@ -342,7 +342,7 @@ def execute(filters=None):
             "gate_pass": ""
         })
         delivery_data.append({
-            "posting_date": "<b>Warp + Weft</b>",
+            "posting_date": "<b>Warp + Weft(Customer Ratio)</b>",
             "yarn_item": "",
             "purpose":"",
             "brand": "",
