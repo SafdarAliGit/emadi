@@ -333,12 +333,12 @@ def execute(filters=None):
 
     if delivery_data:
         delivery_data.append({
-            "posting_date": "<b>Total Delivery</b>",
+            "posting_date": "<b>Yarn Balance(Customer)</b>",
             "yarn_item": "",
             "purpose":"",
             "brand": "",
-            "bags":"<b>" + str(round(total_warp,2)) + "</b>",
-            "lbs": "<b>" + str(round(total_weft,2)) + "</b>",
+            "bags":"<b>" + str(round(total_received_warp - total_warp,2)) + "</b>",
+            "lbs": "<b>" + str(round(total_received_warp - total_weft,2)) + "</b>",
             "gate_pass": ""
         })
         delivery_data.append({
