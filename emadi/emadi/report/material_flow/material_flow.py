@@ -276,10 +276,8 @@ def execute(filters=None):
             "brand": "",
             "bags": str(round(remaining_bags if remaining_bags else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
             "lbs": str(
-    round(
-        (
-            round(total_production_length or 0, 2) -
-            round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)
+    round((
+            round(remaining_bags if remaining_bags else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)
         ) * (ratio or 0),
         2
     )
