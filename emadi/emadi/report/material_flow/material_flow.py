@@ -338,7 +338,7 @@ def execute(filters=None):
             "purpose":"",
             "brand": "",
             "bags":"<b>" + str(round(total_received_warp - total_warp,2)) + "</b>",
-            "lbs": "<b>" + str(round(total_received_warp - total_weft,2)) + "</b>",
+            "lbs": "<b>" + str(round(total_received_weft - total_weft,2)) + "</b>",
             "gate_pass": ""
         })
         delivery_data.append({
