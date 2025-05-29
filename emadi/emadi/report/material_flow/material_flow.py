@@ -242,9 +242,9 @@ def execute(filters=None):
     data.append({
             "posting_date": "<b>Fabric Qty (With Return)</b>",
             "gate_pass": "",
-            "yarn_item":str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty else 0,2)),
+            "yarn_item":"",
             "brand": "",
-            "bags": "",
+            "bags": str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty else 0,2)),
             "lbs": "",
             "purpose": "",
             "yarn_count": ""
@@ -252,9 +252,9 @@ def execute(filters=None):
     data.append({
             "posting_date": "<b>Fabric Qty (Without Return)</b>",
             "gate_pass": "",
-            "yarn_item": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
+            "yarn_item": "",
             "brand": "",
-            "bags": "",
+            "bags": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
             "lbs": "",
             "purpose": "",
             "yarn_count": ""
@@ -262,19 +262,28 @@ def execute(filters=None):
     data.append({
             "posting_date": "<b>Fabric Balance</b>",
             "gate_pass": "",
-            "yarn_item": str(round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
+            "yarn_item": "",
             "brand": "",
-            "bags": "",
-            "lbs": "",
+            "bags": str(round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
+            "lbs": str(
+    round(
+        (
+            round(total_production_length or 0, 2) -
+            round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)
+        ) * (ratio or 0),
+        2
+    )
+),
+
             "purpose": "",
             "yarn_count": ""
         })
     data.append({
             "posting_date": "<b>Shortage/Gain</b>",
             "gate_pass": "",
-            "yarn_item": str(round(remaining_bags if remaining_bags else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
+            "yarn_item": "",
             "brand": "",
-            "bags": "",
+            "bags": str(round(remaining_bags if remaining_bags else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
             "lbs": "",
             "purpose": "",
             "yarn_count": ""
@@ -282,9 +291,9 @@ def execute(filters=None):
     data.append({
             "posting_date": "<b>Shortage/Gain % </b>",
             "gate_pass": "",
-            "yarn_item": str(round(((round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2))/(total_production_length if total_production_length else 1)*100),2)),
+            "yarn_item": "",
             "brand": "",
-            "bags": "",
+            "bags": str(round(((round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2))/(total_production_length if total_production_length else 1)*100),2)),
             "lbs": "",
             "purpose": "",
             "yarn_count": ""
