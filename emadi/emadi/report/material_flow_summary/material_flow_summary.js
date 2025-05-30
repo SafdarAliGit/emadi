@@ -2,7 +2,7 @@
 // For license information, please see license.txt
 /* eslint-disable */
 
-frappe.query_reports["Material Flow"] = {
+frappe.query_reports["Material Flow Summary"] = {
 	"filters": [
 		{
 			"fieldname": "p",
