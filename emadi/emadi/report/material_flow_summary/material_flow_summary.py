@@ -150,8 +150,8 @@ def execute(filters=None):
     """, filters, as_dict=True)
 
     # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
-    # total_production_length = sum(row["bags"] or 0 for row in sizing_program_data)
-    ratio = sizing_program_data[0]["lbs"] / sizing_program_data[0]["bags"]
+    total_production_length = sizing_program_data[0]["bags"]
+    ratio = sizing_program_data[0]["lbs"] / total_production_length
     # if sizing_program_data:
     #     sizing_program_data.append({
     #         "posting_date": "<b>Total Warp</b>",
@@ -202,10 +202,10 @@ def execute(filters=None):
 
     # yarn_balance = total_received - (total_weft + total_warp)
 
-    # waste_percentage_bags = float(total_production_length) * (float(p) / 100)
-    # remaining_bags = total_production_length - waste_percentage_bags
-    # yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":str(round(((remaining_bags if remaining_bags else 0)- (total_warp if total_warp else 0)) * (ratio if ratio else 1),2)), "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
-    # data.extend(yarn_balance_data)
+    waste_percentage_bags = float(sizing_program_data[0].bags) * (float(p) / 100)
+    remaining_bags = float(sizing_program_data[0].bags) - waste_percentage_bags
+    yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":str(round(((remaining_bags if remaining_bags else 0)- (total_warp if total_warp else 0)) * (ratio if ratio else 1),2)), "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
+    data.extend(yarn_balance_data)
     # Delivery Detail
     delivery_fabric_qty = frappe.db.sql(f"""
         SELECT
@@ -260,7 +260,7 @@ def execute(filters=None):
             "gate_pass": "",
             "yarn_item": "",
             "brand": "",
-             "bags":"", #str(round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
+             "bags":str(round((sizing_program_data[0].bags if sizing_program_data else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0),2)),
             "lbs":"" ,
             "purpose": "",
             "yarn_count": ""
@@ -270,7 +270,7 @@ def execute(filters=None):
             "gate_pass": "",
             "yarn_item": "",
             "brand": "",
-            "bags":"",#str(round(remaining_bags if remaining_bags else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
+            "bags":str(round(((remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)),2)),
             "lbs": "" #str(
 #     round((
 #             (remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)
@@ -287,7 +287,7 @@ def execute(filters=None):
             "gate_pass": "",
             "yarn_item": "",
             "brand": "",
-            "bags": "",#str(round(((round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2))/(total_production_length if total_production_length else 1)*100),2)),
+            "bags": str(round((((total_production_length if total_production_length else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0))/(total_production_length if total_production_length else 1)*100),2)),
             "lbs": "",#str(
 #     round(
 #             (remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)
