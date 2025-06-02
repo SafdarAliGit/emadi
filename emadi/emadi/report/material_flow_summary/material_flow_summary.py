@@ -26,6 +26,9 @@ def execute(filters=None):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
         conditions += " AND sed.item_code = %(yarn_count)s"
+    if filters.get("yarn_count_weft"):
+        conditions += " AND sed.item_code = %(yarn_count_weft)s"
+    
     
     
     if filters.get("yarn_count"):
@@ -51,7 +54,7 @@ def execute(filters=None):
 
     data = []
     data.append({
-        "posting_date": "<b style='font-size: 14px;'>Total Yarn(Received)</b>",
+        "posting_date": "<b style='font-size: 14px;'>Yarn Received Warp</b>",
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
