@@ -271,14 +271,13 @@ def execute(filters=None):
             "yarn_item": "",
             "brand": "",
             "bags":str(round(((remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)),2)),
-            "lbs": "" #str(
-#     round((
-#             (remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)
-#         ) * (ratio or 0),
-#         2
-#     )
-# )
-,
+            "lbs": (
+                round((
+                        (remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)
+                    ) * (ratio or 0),
+                    2
+                )
+                ),
             "purpose": "",
             "yarn_count": ""
         })
@@ -343,7 +342,7 @@ def execute(filters=None):
             "purpose":"",
             "brand": "",
             "bags":"",
-            "lbs":"", # "<b>" + str(round((total_warp)+(total_weft),2)) + "</b>",
+            "lbs":"<b>" + str(round((delivery_data[0].bags if delivery_data else 0)+(delivery_data[0].lbs if delivery_data else 0),2)) + "</b>",
             "gate_pass": ""
         })
     data.extend(delivery_data)
