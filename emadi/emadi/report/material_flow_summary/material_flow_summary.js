@@ -26,7 +26,7 @@ frappe.query_reports["Material Flow Summary"] = {
 		},
 		{
 			"fieldname": "yarn_count",
-			"label": "Yarn Count",
+			"label": "Yarn Count Warp",
 			"fieldtype": "Link",
 			"options": "Item",
 			// "reqd": 1,

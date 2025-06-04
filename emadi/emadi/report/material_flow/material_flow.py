@@ -14,6 +14,7 @@ def execute(filters=None):
     ]
 
     conditions = ""
+    conditions2 = ""
     weft_production_conditions = ""
     sizing_program_conditions = ""
     warp_production_conditions = ""
@@ -25,11 +26,13 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        conditions += " AND sed.item_code = %(yarn_count)s"
+        conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
+
+    if filters.get("brand"):
+        conditions2 += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        conditions += " AND sed.item_code = %(yarn_count_weft)s"
-    
-    
+        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
+        
     if filters.get("yarn_count"):
         weft_production_conditions += " AND fpi.yarn_count = %(yarn_count)s"
     if filters.get("fabric_item"):
@@ -52,9 +55,50 @@ def execute(filters=None):
         delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
 
     
+    data = []
+
+    # Warp Data
+    data_warp = frappe.db.sql(f"""
+    SELECT
+        se.posting_date,
+        se.manual_sr_no AS gate_pass,
+        sed.item_code AS yarn_item,
+        sed.brand,
+        sed.qty_pcs AS bags,
+        ROUND(sed.qty, 5) AS lbs,
+        sed.`for` AS purpose,
+        sed.item_code AS yarn_count
+    FROM
+        `tabStock Entry` se
+    LEFT JOIN
+        `tabStock Entry Detail` sed ON se.name = sed.parent
+    WHERE
+        se.docstatus = 1 
+        AND se.stock_entry_type = 'Material Receipt'
+        {conditions}
+    ORDER BY
+        se.posting_date DESC
+    """, filters, as_dict=True)
     
-    
-    data = frappe.db.sql(f"""
+    # Calculate total lbs for warp
+    total_received = sum(row["lbs"] or 0 for row in data_warp)
+    total_received_warp = sum(row["lbs"] or 0 for row in data_warp if row["purpose"] == "Warp")
+
+    # Add total row for warp
+    if data_warp:
+        data_warp.append({
+        "posting_date": "<b>Total Warp Received</b>",
+        "gate_pass": "Warp: " + "<b>" + str(round(total_received_warp, 2)) + "</b>",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "<b>" + str(round(total_received, 2)) + "</b>",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    # Weft Data
+    data_weft = frappe.db.sql(f"""
         SELECT
             se.posting_date,
             se.manual_sr_no AS gate_pass,
@@ -69,29 +113,30 @@ def execute(filters=None):
         LEFT JOIN
             `tabStock Entry Detail` sed ON se.name = sed.parent
         WHERE
-            se.docstatus = 1 {conditions}
-			AND se.stock_entry_type = 'Material Receipt'
+            se.docstatus = 1 
+            AND se.stock_entry_type = 'Material Receipt'
+            {conditions2}
         ORDER BY
             se.posting_date DESC
     """, filters, as_dict=True)
-    # Calculate total lbs
-    total_received = sum(row["lbs"] or 0 for row in data)
-    total_received_warp = sum(row["lbs"] or 0 for row in data if row["purpose"] == "Warp")
-    total_received_weft = sum(row["lbs"] or 0 for row in data if row["purpose"] == "Weft")
 
-    # Add total row
-    if data:
-        data.append({
-            "posting_date": "<b>Total Received</b>",  # You can leave empty or write "Total"
-            "gate_pass": "Warp: " + "<b>" + str(round(total_received_warp,2)) + "</b>",
-            "yarn_item": "Weft: " + str(round(total_received_weft,2)),
+    # Calculate total lbs for weft
+    total_received = sum(row["lbs"] or 0 for row in data_weft)
+    total_received_weft = sum(row["lbs"] or 0 for row in data_weft if row["purpose"] == "Weft")
+
+    # Add total row for weft
+    if data_weft:
+        data_weft.append({
+            "posting_date": "<b>Total Weft Received</b>",
+            "gate_pass": "",
+            "yarn_item": "Weft: " + str(round(total_received_weft, 2)),
             "brand": "",
-            "bags": "",  # Optional: sum bags if needed
-            "lbs": "<b>" + str(round(total_received,2)) + "</b>",
+            "bags": "",
+            "lbs": "<b>" + str(round(total_received, 2)) + "</b>",
             "purpose": "",
             "yarn_count": ""
         })
-        data.append({
+        data_weft.append({
             "posting_date": "<b style='font-size: 14px;'>WEFT Detail</b>",
             "gate_pass": "<b style='font-size: 12px;'>(Fabric Production)</b>",
             "yarn_item": "",
@@ -101,6 +146,10 @@ def execute(filters=None):
             "purpose": "",
             "yarn_count": ""
         })
+    data.extend(data_warp)
+    data.extend(data_weft)
+
+    # Weft Production Data
     weft_production_data = frappe.db.sql(f"""
         SELECT
             fp.posting_date,
@@ -114,30 +163,35 @@ def execute(filters=None):
             `tabFabric Production Item` fpi ON fp.name = fpi.parent
         WHERE
             fp.docstatus = 1 {weft_production_conditions}
-			AND fpi.for = 'Weft'
+            AND fpi.for = 'Weft'
         ORDER BY
             fp.posting_date DESC
     """, filters, as_dict=True)
+
     total_weft = sum(row["lbs"] or 0 for row in weft_production_data)
     if weft_production_data:
         weft_production_data.append({
             "posting_date": "<b>Total Weft</b>",
             "yarn_item": "",
             "purpose": "",
-            "lbs": "<b>" + str(round(total_weft,2)) + "</b>",
+            "lbs": "<b>" + str(round(total_weft, 2)) + "</b>",
             "gate_pass": ""
         })
+
     data.extend(weft_production_data)
+
+    # Warp Consumption (Sizing Program)
     data.append({
-            "posting_date": "<b style='font-size: 14px;'>Warp Consumption</b>",
-            "gate_pass": "<b style='font-size: 12px;'>(Sizing Program)</b>",
-            "yarn_item": "",
-            "brand": "",
-            "bags": "",
-            "lbs": "",
-            "purpose": "",
-            "yarn_count": ""
-        })
+        "posting_date": "<b style='font-size: 14px;'>Warp Consumption</b>",
+        "gate_pass": "<b style='font-size: 12px;'>(Sizing Program)</b>",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
     sizing_program_data = frappe.db.sql(f"""
         SELECT
             sp.name AS gate_pass,
@@ -151,30 +205,34 @@ def execute(filters=None):
             sp.docstatus = 1
             {sizing_program_conditions}
     """, filters, as_dict=True)
+
     total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
     total_production_length = sum(row["bags"] or 0 for row in sizing_program_data)
-    ratio = total_warp / total_production_length
+    ratio = total_warp / total_production_length if total_production_length else 0
+
     if sizing_program_data:
         sizing_program_data.append({
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
-            "purpose": "Ratio: " + str(ratio),
-            "bags": "<b>" + str(round(total_production_length,2)) + "</b>",
-            "lbs": "<b>" + str(round(total_warp,2)) + "</b>",
+            "purpose": "Ratio: " + str(round(ratio, 4)) if ratio else "Ratio: 0",
+            "bags": "<b>" + str(round(total_production_length, 2)) + "</b>",
+            "lbs": "<b>" + str(round(total_warp, 2)) + "</b>",
             "gate_pass": ""
         })
+
     data.extend(sizing_program_data)
 
+    # WARP Detail (Fabric Production)
     data.append({
-            "posting_date": "<b style='font-size: 14px;'>WARP Detail</b>",
-            "gate_pass": "<b style='font-size: 12px;'>(Fabric Production)</b>",
-            "yarn_item": "",
-            "brand": "",
-            "bags": "",
-            "lbs": "",
-            "purpose": "",
-            "yarn_count": ""
-        })
+        "posting_date": "<b style='font-size: 14px;'>WARP Detail</b>",
+        "gate_pass": "<b style='font-size: 12px;'>(Fabric Production)</b>",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
 
     warp_production_data = frappe.db.sql(f"""
         SELECT
@@ -189,29 +247,40 @@ def execute(filters=None):
             `tabFabric Production Item` fpi ON fp.name = fpi.parent
         WHERE
             fp.docstatus = 1 {warp_production_conditions}
-			AND fpi.for = 'Warp'
+            AND fpi.for = 'Warp'
         ORDER BY
             fp.posting_date DESC
     """, filters, as_dict=True)
+
     total_warp = sum(row["bags"] or 0 for row in warp_production_data)
     if warp_production_data:
         warp_production_data.append({
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
             "purpose": "",
-            "bags":round(total_warp,2),
-            "lbs":"LBS : " + "<b>" + str(round(total_warp *(ratio if ratio else 1),2)) + "</b>",
+            "bags": round(total_warp, 2),
+            "lbs": "LBS : " + "<b>" + str(round(total_warp * (ratio if ratio else 1), 2)) + "</b>",
             "gate_pass": ""
         })
+
     data.extend(warp_production_data)
 
-
-    # yarn_balance = total_received - (total_weft + total_warp)
-
-    waste_percentage_bags = float(total_production_length) * (float(p) / 100)
+    # Yarn Balance Calculation
+    waste_percentage_bags = float(total_production_length) * (float(p) / 100) if p else 0
     remaining_bags = total_production_length - waste_percentage_bags
-    yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":str(round(((remaining_bags if remaining_bags else 0)- (total_warp if total_warp else 0)) * (ratio if ratio else 1),2)), "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
+    yarn_balance_data = [{
+        "posting_date": "<b>Yarn Warp Balance(Length)</b>",
+        "gate_pass": "",
+        "yarn_item": "Waste %: " + str(p) + "%",
+        "brand": "Waste: " + str(round(waste_percentage_bags, 2)),
+        "bags": str(round(remaining_bags - total_warp if total_warp else 0, 2)),
+        "lbs": str(round(((remaining_bags if remaining_bags else 0) - (total_warp if total_warp else 0)) * (ratio if ratio else 1), 2)),
+        "purpose": "Remaining: " + str(round(remaining_bags, 2)),
+        "yarn_count": ""
+    }]
+
     data.extend(yarn_balance_data)
+
     # Delivery Detail
     delivery_fabric_qty = frappe.db.sql(f"""
         SELECT
@@ -232,83 +301,82 @@ def execute(filters=None):
     """, filters, as_dict=True)
 
     data.append({
-            "posting_date": "<b style='font-size: 14px;'>Delivery Detail (Fabric)</b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": "",
-            "lbs": "",
-            "purpose": "",
-            "yarn_count": ""
-        })
-    data.append({
-            "posting_date": "<b>Fabric Qty (With Return)</b>",
-            "gate_pass": "",
-            "yarn_item":"",
-            "brand": "",
-            "bags": str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty else 0,2)),
-            "lbs": "",
-            "purpose": "",
-            "yarn_count": ""
-        })
-    data.append({
-            "posting_date": "<b>Fabric Qty (Without Return)</b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
-            "lbs": "",
-            "purpose": "",
-            "yarn_count": ""
-        })
-    data.append({
-            "posting_date": "<b>Fabric Balance</b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": str(round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
-            "lbs":"" ,
-            "purpose": "",
-            "yarn_count": ""
-        })
-    data.append({
-            "posting_date": "<b>Shortage/Gain</b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": str(round(remaining_bags if remaining_bags else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
-            "lbs": str(
-    round((
-            (remaining_bags if remaining_bags else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0)
-        ) * (ratio or 0),
-        2
-    )
-),
-            "purpose": "",
-            "yarn_count": ""
-        })
-    data.append({
-            "posting_date": "<b>Shortage/Gain % </b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": str(round(((round(total_production_length if total_production_length else 0,2)-round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2))/(total_production_length if total_production_length else 1)*100),2)),
-            "lbs": "",
-            "purpose": "",
-            "yarn_count": ""
-        })
-        # ------------- warp weft detail
-    data.append({
-            "posting_date": "",
-            "gate_pass": "Fabric Item",
-            "yarn_item": "",
-            "brand": "",
-            "bags": "Warp Qty",
-            "lbs": "Weft Qty",
-            "purpose": "",
-            "yarn_count": ""
-        })
+        "posting_date": "<b style='font-size: 14px;'>Delivery Detail (Fabric)</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
 
+    data.append({
+        "posting_date": "<b>Fabric Qty (With Return)</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty and delivery_fabric_qty[0].yarn_item else 0, 2)),
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    data.append({
+        "posting_date": "<b>Fabric Qty (Without Return)</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)),
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    data.append({
+        "posting_date": "<b>Fabric Balance</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": str(round((total_production_length if total_production_length else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)),
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    data.append({
+        "posting_date": "<b>Shortage/Gain</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": str(round((remaining_bags if remaining_bags else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)),
+        "lbs": str(round(((remaining_bags if remaining_bags else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0)) * (ratio or 0), 2)),
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    data.append({
+        "posting_date": "<b>Shortage/Gain %</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": str(round(((round(total_production_length if total_production_length else 0, 2) - round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)) / (total_production_length if total_production_length else 1) * 100), 2)),
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    # Warp Weft Detail
+    data.append({
+        "posting_date": "",
+        "gate_pass": "Fabric Item",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "Warp Qty",
+        "lbs": "Weft Qty",
+        "purpose": "",
+        "yarn_count": ""
+    })
 
     delivery_data = frappe.db.sql(f"""
         SELECT
@@ -327,6 +395,7 @@ def execute(filters=None):
         GROUP BY
             dn.fabric_item
     """, filters, as_dict=True)
+
     total_warp = sum(row["bags"] or 0 for row in delivery_data)
     total_weft = sum(row["lbs"] or 0 for row in delivery_data)
 
@@ -334,23 +403,26 @@ def execute(filters=None):
         delivery_data.append({
             "posting_date": "<b>Yarn Balance(Customer)</b>",
             "yarn_item": "",
-            "purpose":"",
+            "purpose": "",
             "brand": "",
-            "bags":"<b>" + str(round(total_received_warp - total_warp,2)) + "</b>",
-            "lbs": "<b>" + str(round(total_received_weft - total_weft,2)) + "</b>",
+            "bags": "<b>" + str(round(total_received_warp - total_warp, 2)) + "</b>",
+            "lbs": "<b>" + str(round(total_received_weft - total_weft, 2)) + "</b>",
             "gate_pass": ""
         })
         delivery_data.append({
             "posting_date": "<b>Warp + Weft(Customer Ratio)</b>",
             "yarn_item": "",
-            "purpose":"",
+            "purpose": "",
             "brand": "",
-            "bags":"",
-            "lbs": "<b>" + str(round((total_warp)+(total_weft),2)) + "</b>",
+            "bags": "",
+            "lbs": "<b>" + str(round((total_warp) + (total_weft), 2)) + "</b>",
             "gate_pass": ""
         })
+
     data.extend(delivery_data)
     return columns, data
+
+
 
 
 
