@@ -14,6 +14,7 @@ def execute(filters=None):
     ]
 
     conditions = ""
+    conditions2 = ""
     weft_production_conditions = ""
     sizing_program_conditions = ""
     warp_production_conditions = ""
@@ -25,14 +26,15 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        conditions += " AND sed.item_code = %(yarn_count)s"
+        conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
+
+    if filters.get("brand"):
+        conditions2 += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        conditions += " AND sed.item_code = %(yarn_count_weft)s"
-    
-    
-    
-    if filters.get("yarn_count"):
-        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count)s"
+        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
+        
+    if filters.get("yarn_count_weft"):
+        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
     if filters.get("fabric_item"):
         weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
 
@@ -64,10 +66,9 @@ def execute(filters=None):
         "yarn_count": ""
     })
     
-    yarn_received = frappe.db.sql(f"""
+    yarn_received_warp = frappe.db.sql(f"""
         SELECT
-            SUM(CASE WHEN sed.`for` = 'Warp' THEN sed.qty ELSE 0 END) as bags,
-            SUM(CASE WHEN sed.`for` = 'Weft' THEN sed.qty ELSE 0 END) as lbs
+            SUM(sed.qty) as lbs
         FROM
             `tabStock Entry` se
         LEFT JOIN
@@ -78,24 +79,34 @@ def execute(filters=None):
         ORDER BY
             se.posting_date DESC
     """, filters, as_dict=True)
-    # Calculate total lbs
-    # total_received = sum(row["lbs"] or 0 for row in data)
-    # total_received_warp = sum(row["lbs"] or 0 for row in data if row["purpose"] == "Warp")
-    # total_received_weft = sum(row["lbs"] or 0 for row in data if row["purpose"] == "Weft")
+    data.extend(yarn_received_warp)
 
-    # # Add total row
-    # if data:
-    #     data.append({
-    #         "posting_date": "<b>Total Received</b>",  # You can leave empty or write "Total"
-    #         "gate_pass": "Warp: " + "<b>" + str(round(total_received_warp,2)) + "</b>",
-    #         "yarn_item": "Weft: " + str(round(total_received_weft,2)),
-    #         "brand": "",
-    #         "bags": "",  # Optional: sum bags if needed
-    #         "lbs": "<b>" + str(round(total_received,2)) + "</b>",
-    #         "purpose": "",
-    #         "yarn_count": ""
-    #     })
-    data.extend(yarn_received)
+    data.append({
+        "posting_date": "<b style='font-size: 14px;'>Yarn Received Weft</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+
+    yarn_received_weft = frappe.db.sql(f"""
+        SELECT
+            SUM(sed.qty) as lbs
+        FROM
+            `tabStock Entry` se
+        LEFT JOIN
+            `tabStock Entry Detail` sed ON se.name = sed.parent
+        WHERE
+            se.docstatus = 1 {conditions2}
+			AND se.stock_entry_type = 'Material Receipt'
+        ORDER BY
+            se.posting_date DESC
+    """, filters, as_dict=True)
+    data.extend(yarn_received_weft)
+
     data.append({
         "posting_date": "<b style='font-size: 14px;'>WEFT Detail</b>",
         "gate_pass": "<b style='font-size: 12px;'>(Fabric Production)</b>",
