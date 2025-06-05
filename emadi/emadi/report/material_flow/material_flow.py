@@ -9,7 +9,8 @@ def execute(filters=None):
          {"label": "Purpose", "fieldname": "purpose", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
         {"label": "Bags/Length", "fieldname": "bags", "fieldtype": "Data", "width": 80},
-        {"label": "Lbs", "fieldname": "lbs", "fieldtype": "Data", "width": 120}
+        {"label": "Lbs", "fieldname": "lbs", "fieldtype": "Data", "width": 120},
+        {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
        
     ]
 
@@ -65,16 +66,16 @@ def execute(filters=None):
         sed.item_code AS yarn_item,
         sed.brand,
         sed.qty_pcs AS bags,
-        ROUND(sed.qty, 5) AS lbs,
+        ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END, 5) AS lbs,
         sed.`for` AS purpose,
-        sed.item_code AS yarn_count
+        sed.item_code AS yarn_count,
+        ROUND(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END, 5) AS `return`
     FROM
         `tabStock Entry` se
     LEFT JOIN
         `tabStock Entry Detail` sed ON se.name = sed.parent
     WHERE
         se.docstatus = 1 
-        AND se.stock_entry_type = 'Material Receipt'
         {conditions}
     ORDER BY
         se.posting_date DESC
@@ -82,6 +83,7 @@ def execute(filters=None):
     
     # Calculate total lbs for warp
     total_received = sum(row["lbs"] or 0 for row in data_warp)
+    total_return = sum(row["return"] or 0 for row in data_warp)
     total_received_warp = sum(row["lbs"] or 0 for row in data_warp if row["purpose"] == "Warp")
 
     # Add total row for warp
@@ -94,7 +96,8 @@ def execute(filters=None):
         "bags": "",
         "lbs": "<b>" + str(round(total_received, 2)) + "</b>",
         "purpose": "",
-        "yarn_count": ""
+        "yarn_count": "",
+        "return": "<b>" + str(round(total_return, 2)) + "</b>"
     })
 
     # Weft Data
@@ -105,16 +108,16 @@ def execute(filters=None):
             sed.item_code AS yarn_item,
             sed.brand,
             sed.qty_pcs AS bags,
-            ROUND(sed.qty, 5) AS lbs,
+            ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END, 5) AS lbs,
             sed.`for` AS purpose,
-            sed.item_code AS yarn_count
+            sed.item_code AS yarn_count,
+            ROUND(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END, 5) AS `return`
         FROM
             `tabStock Entry` se
         LEFT JOIN
             `tabStock Entry Detail` sed ON se.name = sed.parent
         WHERE
             se.docstatus = 1 
-            AND se.stock_entry_type = 'Material Receipt'
             {conditions2}
         ORDER BY
             se.posting_date DESC
@@ -122,6 +125,7 @@ def execute(filters=None):
 
     # Calculate total lbs for weft
     total_received = sum(row["lbs"] or 0 for row in data_weft)
+    total_return = sum(row["return"] or 0 for row in data_weft)
     total_received_weft = sum(row["lbs"] or 0 for row in data_weft if row["purpose"] == "Weft")
 
     # Add total row for weft
@@ -134,7 +138,8 @@ def execute(filters=None):
             "bags": "",
             "lbs": "<b>" + str(round(total_received, 2)) + "</b>",
             "purpose": "",
-            "yarn_count": ""
+            "yarn_count": "",
+            "return": "<b>" + str(round(total_return, 2)) + "</b>"
         })
         data_weft.append({
             "posting_date": "<b style='font-size: 14px;'>WEFT Detail</b>",

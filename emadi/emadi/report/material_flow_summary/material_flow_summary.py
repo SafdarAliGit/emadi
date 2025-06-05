@@ -9,7 +9,8 @@ def execute(filters=None):
          {"label": "Purpose", "fieldname": "purpose", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
         {"label": "Warp(LBS)", "fieldname": "bags", "fieldtype": "Data", "width": 80},
-        {"label": "Weft(LBS)", "fieldname": "lbs", "fieldtype": "Data", "width": 120}
+        {"label": "Weft(LBS)", "fieldname": "lbs", "fieldtype": "Data", "width": 120},
+        {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
        
     ]
 
@@ -68,14 +69,15 @@ def execute(filters=None):
     
     yarn_received_warp = frappe.db.sql(f"""
         SELECT
-            SUM(sed.qty) as lbs
+            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END) as lbs,
+            SUM(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END) as `return`,
+            se.manual_sr_no AS gate_pass
         FROM
             `tabStock Entry` se
         LEFT JOIN
             `tabStock Entry Detail` sed ON se.name = sed.parent
         WHERE
             se.docstatus = 1 {conditions}
-			AND se.stock_entry_type = 'Material Receipt'
         ORDER BY
             se.posting_date DESC
     """, filters, as_dict=True)
@@ -94,14 +96,14 @@ def execute(filters=None):
 
     yarn_received_weft = frappe.db.sql(f"""
         SELECT
-            SUM(sed.qty) as lbs
+            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END) as lbs,
+            SUM(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END) as `return`
         FROM
             `tabStock Entry` se
         LEFT JOIN
             `tabStock Entry Detail` sed ON se.name = sed.parent
         WHERE
             se.docstatus = 1 {conditions2}
-			AND se.stock_entry_type = 'Material Receipt'
         ORDER BY
             se.posting_date DESC
     """, filters, as_dict=True)
