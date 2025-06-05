@@ -83,7 +83,7 @@ def get_merged_looms_data(start_date, end_date):
 
     def get_summary(shift_data):
         total_meters = sum(float(row['meters'] or 0) for row in shift_data)
-        avg_eff = round(sum(float(row['effeciency'] or 0) for row in shift_data) / len(shift_data), 2) if shift_data else 0
+        avg_eff = round(sum(float(row['effeciency'] or 2) for row in shift_data) / len(shift_data), 2) if shift_data else 0
         return total_meters, avg_eff
 
     def get_combined_stats(*shifts):
@@ -91,7 +91,7 @@ def get_merged_looms_data(start_date, end_date):
         for shift in shifts:
             combined.extend(shift)
         sum_unit_per_rpm = sum(float(row['unit_per_rpm'] or 0) for row in combined)
-        avg_eff = round(sum(float(row['effeciency'] or 0) for row in combined) / len(combined), 0) if combined else 0
+        avg_eff = round(sum(float(row['effeciency'] or 2) for row in combined) / len(combined), 0) if combined else 0
         sum_meters = sum(float(row['meters'] or 0) for row in combined)
         sum_actual_reading = sum(float(row['actual_reading'] or 0) for row in combined)
         return sum_unit_per_rpm, avg_eff, sum_meters,sum_actual_reading
@@ -182,7 +182,7 @@ def get_merged_looms_data(start_date, end_date):
             'c_actual_reading': c_looms.get(loom, {}).get('actual_reading'),
 
             'stats_unit_per_rpm': float(a_looms.get(loom, {}).get('unit_per_rpm', 0)) + float(b_looms.get(loom, {}).get('unit_per_rpm', 0)) + float(c_looms.get(loom, {}).get('unit_per_rpm', 0)),
-            'stats_effeciency': round((float(a_looms.get(loom, {}).get('effeciency', 0)) + float(b_looms.get(loom, {}).get('effeciency', 0)) + float(c_looms.get(loom, {}).get('effeciency', 0))) / 3, 0),
+            'stats_effeciency': round((float(a_looms.get(loom, {}).get('effeciency', 2)) + float(b_looms.get(loom, {}).get('effeciency', 2)) + float(c_looms.get(loom, {}).get('effeciency', 2))) / 3, 0),
             'stats_meters': round(float(a_looms.get(loom, {}).get('meters', 0)) + float(b_looms.get(loom, {}).get('meters', 0)) + float(c_looms.get(loom, {}).get('meters', 0)), 2),
             'stats_actual_reading': safe_float(a_looms.get(loom, {}).get('actual_reading')) +
                        safe_float(b_looms.get(loom, {}).get('actual_reading')) +
