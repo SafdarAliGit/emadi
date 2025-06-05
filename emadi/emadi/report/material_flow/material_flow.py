@@ -33,7 +33,7 @@ def execute(filters=None):
     if filters.get("yarn_count_weft"):
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
         
-    if filters.get("yarn_count_weft"):
+    if filters.get("yarn_count"):
         weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
     if filters.get("fabric_item"):
         weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
@@ -405,8 +405,8 @@ def execute(filters=None):
             "yarn_item": "",
             "purpose": "",
             "brand": "",
-            "bags": "<b>" + str(round(total_warp, 2)) + "</b>",
-            "lbs": "<b>" + str(round(total_weft, 2)) + "</b>",
+            "bags": "<b>" + str(round(total_received_warp - total_warp, 2)) + "</b>",
+            "lbs": "<b>" + str(round(total_received_weft - total_weft, 2)) + "</b>",
             "gate_pass": ""
         })
         delivery_data.append({
