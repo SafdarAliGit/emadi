@@ -33,8 +33,8 @@ def execute(filters=None):
     if filters.get("yarn_count_weft"):
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
         
-    if filters.get("yarn_count"):
-        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count)s"
+    if filters.get("yarn_count_weft"):
+        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
     if filters.get("fabric_item"):
         weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
 
