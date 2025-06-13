@@ -4,7 +4,64 @@
 frappe.ui.form.on('Weaving Contract', {
 	refresh: function(frm) {
 
-		if (frm.doc.docstatus == 1) {
+		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Close") {
+			frm.add_custom_button(__('OPEN'), function() {
+				frappe.confirm(
+					'Are you sure you want to OPEN this weaving contract?',
+					function() {
+						// OK pressed
+						frappe.call({
+							method: "emadi.emadi.events.open_weaving_contract.open_weaving_contract",
+							args: {
+								weaving_contract: frm.doc.name
+							},
+							callback: function(r) {
+								if (!r.exc) {
+									frappe.model.sync(r.message);
+									frappe.set_route("Form", r.message.doctype, r.message.name);
+								}
+							}
+						});
+					},
+					function() {
+						// Cancel pressed - do nothing
+					}
+				);
+			}).css('background-color', 'green')
+			  .css('color', '#ffffff')
+			  .css('font-weight', 'bold');
+		}
+
+		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Open") {
+			frm.add_custom_button(__('CLOSE'), function() {
+				frappe.confirm(
+					'Are you sure you want to CLOSE this weaving contract?',
+					function() {
+						// OK pressed
+						frappe.call({
+							method: "emadi.emadi.events.close_weaving_contract.close_weaving_contract",
+							args: {
+								weaving_contract: frm.doc.name
+							},
+							callback: function(r) {
+								if (!r.exc) {
+									frappe.model.sync(r.message);
+									frappe.set_route("Form", r.message.doctype, r.message.name);
+								}
+							}
+						});
+					},
+					function() {
+						// Cancel pressed - do nothing
+					}
+				);
+			}).css('background-color', 'red')
+			  .css('color', '#ffffff')
+			  .css('font-weight', 'bold');
+		}
+		
+
+		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Open") {
             frm.add_custom_button(__('Create DO'), function() {
                 frappe.call({
                     method: "emadi.emadi.events.create_dn.create_dn",
@@ -21,7 +78,7 @@ frappe.ui.form.on('Weaving Contract', {
             }).css('background-color', '#06599c').css('color', '#ffffff','font-weight','bold');
 		}
 		
-		if (frm.doc.docstatus == 1) {
+		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Open") {
             frm.add_custom_button(__('Stock Entry'), function() {
                 frappe.call({
                     method: "emadi.emadi.events.create_stock_entry_from_weaving_contract.create_stock_entry_from_weaving_contract",
@@ -38,7 +95,7 @@ frappe.ui.form.on('Weaving Contract', {
             }).css('background-color', '#ff9800').css('color', '#ffffff','font-weight','bold');
 		}
 
-		if (frm.doc.docstatus == 1) {
+		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Open") {
             frm.add_custom_button(__('Sizing Program'), function() {
                 frappe.call({
                     method: "emadi.emadi.events.create_sizing_program_from_weaving_contract.create_sizing_program_from_weaving_contract",
@@ -55,7 +112,7 @@ frappe.ui.form.on('Weaving Contract', {
             }).css('background-color', '#2490EF').css('color', '#ffffff','font-weight','bold');
 		}
 		
-		if (frm.doc.docstatus == 1) {
+		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Open") {
             frm.add_custom_button(__('Material Request'), function() {
                 frappe.call({
                     method: "emadi.emadi.events.create_material_request_from_weaving_contract.create_material_request_from_weaving_contract",
