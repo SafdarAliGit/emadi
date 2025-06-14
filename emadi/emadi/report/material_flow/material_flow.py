@@ -252,7 +252,7 @@ def execute(filters=None):
             fp.name as gate_pass,
             fp.quality as yarn_count,
             fpi.yarn_count as yarn_item,
-            ROUND(fpi.yarn_qty, 5) AS bags
+            ROUND(fpi.yarn_qty, 5) AS meter
         FROM
             `tabFabric Production` fp
         LEFT JOIN
@@ -264,14 +264,15 @@ def execute(filters=None):
             fp.posting_date DESC
     """, filters, as_dict=True)
 
-    total_warp = sum(row["bags"] or 0 for row in warp_production_data)
+    total_warp = sum(row["meter"] or 0 for row in warp_production_data)
     if warp_production_data:
         warp_production_data.append({
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
             "purpose": "",
-            "bags": round(total_warp, 2),
+            "bags": "",
             "lbs": "LBS : " + "<b>" + str(round(total_warp * (ratio if ratio else 1), 2)) + "</b>",
+            "meter":"<b>" + str(round(total_warp, 2)) + "</b>",
             "gate_pass": ""
         })
 
@@ -285,8 +286,9 @@ def execute(filters=None):
         "gate_pass": "",
         "yarn_item": "Waste %: " + str(p) + "%",
         "brand": "Waste: " + str(round(waste_percentage_bags, 2)),
-        "bags": str(round(remaining_bags - total_warp if total_warp else 0, 2)),
+        "bags": "",
         "lbs": str(round(((remaining_bags if remaining_bags else 0) - (total_warp if total_warp else 0)) * (ratio if ratio else 1), 2)),
+        "meter":str(round(remaining_bags - total_warp if total_warp else 0, 2)),
         "purpose": "Remaining: " + str(round(remaining_bags, 2)),
         "yarn_count": ""
     }]
