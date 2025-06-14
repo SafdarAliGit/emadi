@@ -85,6 +85,7 @@ def execute(filters=None):
     
     # Calculate total lbs for warp
     total_received = sum(row["lbs"] or 0 for row in data_warp)
+    total_received_meter = sum(row["meter"] or 0 for row in data_warp)
     total_return = sum(row["return"] or 0 for row in data_warp)
     total_received_warp = sum(row["lbs"] or 0 for row in data_warp if row["purpose"] == "Warp")
 
@@ -97,6 +98,7 @@ def execute(filters=None):
         "brand": "",
         "bags": "",
         "lbs": "<b>" + str(round(total_received, 2)) + "</b>",
+        "meter": "<b>" + str(round(total_received_meter, 2)) + "</b>",
         "purpose": "",
         "yarn_count": "",
         "return": "<b>" + str(round(total_return, 2)) + "</b>"
@@ -128,6 +130,7 @@ def execute(filters=None):
 
     # Calculate total lbs for weft
     total_received = sum(row["lbs"] or 0 for row in data_weft)
+    total_received_meter = sum(row["meter"] or 0 for row in data_weft)
     total_return = sum(row["return"] or 0 for row in data_weft)
     total_received_weft = sum(row["lbs"] or 0 for row in data_weft if row["purpose"] == "Weft")
 
@@ -140,6 +143,7 @@ def execute(filters=None):
             "brand": "",
             "bags": "",
             "lbs": "<b>" + str(round(total_received, 2)) + "</b>",
+            "meter": "<b>" + str(round(total_received_meter, 2)) + "</b>",
             "purpose": "",
             "yarn_count": "",
             "return": "<b>" + str(round(total_return, 2)) + "</b>"
