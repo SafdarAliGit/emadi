@@ -167,7 +167,7 @@ def execute(filters=None):
 
     # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
     total_production_length = sizing_program_data[0]["bags"]
-    ratio = sizing_program_data[0]["lbs"] / total_production_length
+    ratio = (sizing_program_data[0]["lbs"] or 0) / (total_production_length or 1)
     # if sizing_program_data:
     #     sizing_program_data.append({
     #         "posting_date": "<b>Total Warp</b>",
