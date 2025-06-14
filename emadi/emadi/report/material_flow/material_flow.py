@@ -10,6 +10,7 @@ def execute(filters=None):
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
         {"label": "Bags/Length", "fieldname": "bags", "fieldtype": "Data", "width": 80},
         {"label": "Lbs", "fieldname": "lbs", "fieldtype": "Data", "width": 120},
+        {"label": "Meter", "fieldname": "meter", "fieldtype": "Data", "width": 120},
         {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
        
     ]
@@ -66,7 +67,8 @@ def execute(filters=None):
         sed.item_code AS yarn_item,
         sed.brand,
         sed.qty_pcs AS bags,
-        ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END, 5) AS lbs,
+        ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Lbs' THEN sed.qty ELSE 0 END, 5) AS lbs,
+        ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Meter' THEN sed.qty ELSE 0 END, 5) AS meter,
         sed.`for` AS purpose,
         sed.item_code AS yarn_count,
         ROUND(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END, 5) AS `return`
@@ -108,7 +110,8 @@ def execute(filters=None):
             sed.item_code AS yarn_item,
             sed.brand,
             sed.qty_pcs AS bags,
-            ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END, 5) AS lbs,
+            ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Lbs' THEN sed.qty ELSE 0 END, 5) AS lbs,
+            ROUND(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Meter' THEN sed.qty ELSE 0 END, 5) AS meter,
             sed.`for` AS purpose,
             sed.item_code AS yarn_count,
             ROUND(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END, 5) AS `return`
