@@ -1,6 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
+
 @frappe.whitelist()
 def create_material_request_from_weaving_contract(weaving_contract):
     # Fetch the Weaving Contract document
