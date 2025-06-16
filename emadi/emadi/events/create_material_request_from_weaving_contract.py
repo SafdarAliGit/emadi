@@ -9,8 +9,8 @@ def create_material_request_from_weaving_contract(weaving_contract):
     mr_doc = None
     if mr:
         mr_doc = frappe.get_doc("Material Request", mr) if mr else None  
-    if mr_doc and mr_doc.docstatus != 2:
-        frappe.throw(f"Material Request already created for {weaving_contract} Weaving Contract")
+    # if mr_doc and mr_doc.docstatus != 2:
+    #     frappe.throw(f"Material Request already created for {weaving_contract} Weaving Contract")
     # Create a new Stock Entry
     material_request = frappe.new_doc("Material Request")
     material_request.material_request_type = "Customer Provided"  # Change as needed
