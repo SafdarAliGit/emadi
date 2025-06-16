@@ -200,6 +200,7 @@ def execute(filters=None):
         "brand": "",
         "bags": "",
         "lbs": "",
+        "meter": "",
         "purpose": "",
         "yarn_count": ""
     })
@@ -207,8 +208,9 @@ def execute(filters=None):
     sizing_program_data = frappe.db.sql(f"""
         SELECT
             sp.name AS gate_pass,
-            spi.length as bags,
-            ROUND(spi.lbs, 5) AS lbs
+            '' as bags,
+            ROUND(spi.lbs, 5) AS lbs,
+            ROUND(spi.length, 5) AS meter
         FROM
             `tabSizing Program` AS sp
         LEFT JOIN
@@ -219,7 +221,7 @@ def execute(filters=None):
     """, filters, as_dict=True)
 
     total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
-    total_production_length = sum(row["bags"] or 0 for row in sizing_program_data)
+    total_production_length = sum(row["meter"] or 0 for row in sizing_program_data)
     ratio = total_warp / total_production_length if total_production_length else 0
 
     if sizing_program_data:
