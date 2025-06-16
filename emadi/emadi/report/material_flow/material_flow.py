@@ -330,8 +330,9 @@ def execute(filters=None):
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
-        "bags": str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty and delivery_fabric_qty[0].yarn_item else 0, 2)),
+        "bags": "",
         "lbs": "",
+        "meter":str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty and delivery_fabric_qty[0].yarn_item else 0, 2)),
         "purpose": "",
         "yarn_count": ""
     })
@@ -341,8 +342,9 @@ def execute(filters=None):
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
-        "bags": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)),
+        "bags": "",
         "lbs": "",
+        "meter":str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)),
         "purpose": "",
         "yarn_count": ""
     })
@@ -352,8 +354,9 @@ def execute(filters=None):
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
-        "bags": str(round((total_production_length if total_production_length else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)),
+        "bags": "",
         "lbs": "",
+        "meter":str(round((total_production_length if total_production_length else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)),
         "purpose": "",
         "yarn_count": ""
     })
@@ -364,7 +367,8 @@ def execute(filters=None):
         "yarn_item": "",
         "brand": "",
         "bags": str(round((remaining_bags if remaining_bags else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)),
-        "lbs": str(round(((remaining_bags if remaining_bags else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0)) * (ratio or 0), 2)),
+        "lbs": "",
+        "meter":str(round(((remaining_bags if remaining_bags else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0)) * (ratio or 0), 2)),
         "purpose": "",
         "yarn_count": ""
     })
