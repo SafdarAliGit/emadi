@@ -229,8 +229,9 @@ def execute(filters=None):
             "posting_date": "<b>Total Warp</b>",
             "yarn_item": "",
             "purpose": "Ratio: " + str(round(ratio, 4)) if ratio else "Ratio: 0",
-            "bags": "<b>" + str(round(total_production_length, 2)) + "</b>",
+            "bags": "",
             "lbs": "<b>" + str(round(total_warp, 2)) + "</b>",
+            "meter":"<b>" + str(round(total_production_length, 2)) + "</b>",
             "gate_pass": ""
         })
 
