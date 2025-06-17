@@ -133,6 +133,7 @@ def execute(filters=None):
     total_received_meter = sum(row["meter"] or 0 for row in data_weft)
     total_return = sum(row["return"] or 0 for row in data_weft)
     total_received_weft = sum(row["lbs"] or 0 for row in data_weft if row["purpose"] == "Weft")
+    total_received_weft_meter = sum(row["meter"] or 0 for row in data_weft if row["purpose"] == "Weft")
 
     # Add total row for weft
     if data_weft:
@@ -168,7 +169,8 @@ def execute(filters=None):
             fp.name as gate_pass,
             fp.quality as yarn_count,
             fpi.yarn_count as yarn_item,
-            ROUND(fpi.yarn_qty, 5) AS lbs
+            ROUND(fpi.yarn_qty, 5) AS lbs,
+            ROUND(fpi.beam_length, 5) AS meter
         FROM
             `tabFabric Production` fp
         LEFT JOIN
@@ -181,6 +183,7 @@ def execute(filters=None):
     """, filters, as_dict=True)
 
     total_weft = sum(row["lbs"] or 0 for row in weft_production_data)
+    total_weft_meter = sum(row["meter"] or 0 for row in weft_production_data)
     if weft_production_data:
         weft_production_data.append({
             "posting_date": "<b>Total Weft</b>",
@@ -437,6 +440,7 @@ def execute(filters=None):
             "brand": "",
             "bags": "<b>" + str(round(total_received_warp - total_warp, 2)) + "</b>",
             "lbs": "<b>" + str(round(total_received_weft - total_weft, 2)) + "</b>",
+            "meter": "<b>" + str(round(total_received_weft_meter - total_weft_meter, 2)) + "</b>",
             "gate_pass": ""
         })
         
