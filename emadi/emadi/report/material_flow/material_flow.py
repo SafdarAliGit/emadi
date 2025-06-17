@@ -440,7 +440,7 @@ def execute(filters=None):
             "brand": "",
             "bags": "<b>" + str(round(total_received_warp - total_warp, 2)) + "</b>",
             "lbs": "<b>" + str(round(total_received_weft - total_weft, 2)) + "</b>",
-            "meter": "<b>" + str(round(total_received_weft_meter - total_weft_meter, 2)) + "</b>",
+            "meter": "<b>" + str(round(total_received_meter - total_weft_meter, 2)) + "</b>",
             "gate_pass": ""
         })
         
