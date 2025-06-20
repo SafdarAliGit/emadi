@@ -372,7 +372,7 @@ def execute(filters=None):
             "yarn_item": "",
             "purpose": "",
             "brand": "",
-            "bags": "<b>" + str(round(total_received_warp - total_warp, 2) if total_received_warp > 0 else 0) + "</b>",
+            "bags": "",
             "lbs": "<b>" + str(round(yarn_received_weft[0].get("bags", 0) - delivery_data[0].get("bags", 0), 2)) + "</b>",
             "meter": "<b>" + str(
         round((
