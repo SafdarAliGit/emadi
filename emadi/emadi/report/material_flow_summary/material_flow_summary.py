@@ -176,6 +176,7 @@ def execute(filters=None):
         having ROUND(SUM(spi.lbs), 2) > 0
     """, filters, as_dict=True)
     ratio = 0
+    total_production_length = 0
     if sizing_program_data:
         # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
         total_production_length = sizing_program_data[0].get("bags", 0)
