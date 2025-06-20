@@ -173,6 +173,7 @@ def execute(filters=None):
         WHERE
             sp.docstatus = 1
             {sizing_program_conditions}
+        having ROUND(SUM(spi.lbs), 2) > 0
     """, filters, as_dict=True)
 
     # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
