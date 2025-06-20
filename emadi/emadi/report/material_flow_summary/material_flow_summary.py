@@ -2,14 +2,15 @@ import frappe
 
 def execute(filters=None):
     columns = [
+        
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Data", "width": 140},
         {"label": "Gate Pass", "fieldname": "gate_pass", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Item", "fieldname": "yarn_item", "fieldtype": "Link", "options": "Item", "width": 150},
         {"label": "Brand", "fieldname": "brand", "fieldtype": "Link", "options": "Brand", "width": 100},
          {"label": "Purpose", "fieldname": "purpose", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
-        {"label": "Warp(LBS)", "fieldname": "bags", "fieldtype": "Data", "width": 80},
-        {"label": "Weft(LBS)", "fieldname": "lbs", "fieldtype": "Data", "width": 120},
+        {"label": "Bags/Length", "fieldname": "bags", "fieldtype": "Data", "width": 80},
+        {"label": "Lbs", "fieldname": "lbs", "fieldtype": "Data", "width": 120},
         {"label": "Meter", "fieldname": "meter", "fieldtype": "Data", "width": 120},
         {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
        
