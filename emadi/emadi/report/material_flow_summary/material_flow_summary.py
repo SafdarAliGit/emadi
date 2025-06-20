@@ -373,7 +373,7 @@ def execute(filters=None):
             "purpose": "",
             "brand": "",
             "bags": "",
-            "lbs": "<b>" + str(round(yarn_received_weft[0].get("bags", 0) - delivery_data[0].get("bags", 0), 2)) + "</b>",
+            "lbs": "<b>" + str(round(yarn_received_weft[0].get("lbs", 0) - delivery_data[0].get("lbs", 0), 2)) + "</b>",
             "meter": "<b>" + str(
     round(
         (
