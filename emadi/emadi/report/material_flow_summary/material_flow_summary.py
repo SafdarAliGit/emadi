@@ -177,7 +177,7 @@ def execute(filters=None):
     """, filters, as_dict=True)
 
     # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
-    total_production_length = sizing_program_data[0]["bags"]
+    total_production_length = sizing_program_data[0]["bags"] if sizing_program_data[0]["bags"] else 0
     ratio = (sizing_program_data[0]["lbs"] or 0) / (total_production_length or 1)
     # if sizing_program_data:
     #     sizing_program_data.append({
