@@ -233,6 +233,7 @@ def execute(filters=None):
 
 
     # yarn_balance = total_received - (total_weft + total_warp)
+    remaining_bags = 0
     if sizing_program_data:
         waste_percentage_bags = float(sizing_program_data[0].get("bags", 1)) * (float(p) / 100)
         remaining_bags = float(sizing_program_data[0].get("bags", 0)) - waste_percentage_bags if waste_percentage_bags else 0
