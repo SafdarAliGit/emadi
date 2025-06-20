@@ -375,10 +375,18 @@ def execute(filters=None):
             "bags": "",
             "lbs": "<b>" + str(round(yarn_received_weft[0].get("bags", 0) - delivery_data[0].get("bags", 0), 2)) + "</b>",
             "meter": "<b>" + str(
-        round(((
-            yarn_received_warp[0].get("meter", 0) - delivery_data[0].get("meter", 0)
-            ),2) if yarn_received_warp[0].get("meter", 0) > 0 else 0
-    ))-(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)) + "</b>",
+    round(
+        (
+            (yarn_received_warp[0].get("meter", 0) - delivery_data[0].get("meter", 0))
+            if yarn_received_warp and delivery_data and yarn_received_warp[0].get("meter", 0) > 0
+            else 0
+        )
+        - (round(delivery_fabric_qty_with_return[0].yarn_item, 2)
+           if delivery_fabric_qty_with_return else 0),
+        2
+    )
+) + "</b>"
+,
     "gate_pass": ""
         })
         # delivery_data.append({
