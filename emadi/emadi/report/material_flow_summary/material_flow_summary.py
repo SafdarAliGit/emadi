@@ -231,8 +231,8 @@ def execute(filters=None):
 
     # yarn_balance = total_received - (total_weft + total_warp)
 
-    waste_percentage_bags = float(sizing_program_data[0].bags) * (float(p) / 100)
-    remaining_bags = float(sizing_program_data[0].bags) - waste_percentage_bags
+    waste_percentage_bags = float(sizing_program_data[0].bags if sizing_program_data[0].bags else 1) * (float(p) / 100)
+    remaining_bags = float(sizing_program_data[0].bags if sizing_program_data[0].bags else 0) - waste_percentage_bags
     yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":str(round(((remaining_bags if remaining_bags else 0)- (total_warp if total_warp else 0)) * (ratio if ratio else 1),2)), "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
     data.extend(yarn_balance_data)
     # Delivery Detail
