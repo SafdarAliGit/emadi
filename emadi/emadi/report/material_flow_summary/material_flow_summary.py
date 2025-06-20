@@ -233,11 +233,11 @@ def execute(filters=None):
 
 
     # yarn_balance = total_received - (total_weft + total_warp)
-
-    waste_percentage_bags = float(sizing_program_data[0].get("bags", 1)) * (float(p) / 100)
-    remaining_bags = float(sizing_program_data[0].get("bags", 0)) - waste_percentage_bags if waste_percentage_bags else 0
-    yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":str(round(((remaining_bags if remaining_bags else 0)- (total_warp if total_warp else 0)) * (ratio if ratio else 1),2)), "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
-    data.extend(yarn_balance_data)
+    if sizing_program_data:
+        waste_percentage_bags = float(sizing_program_data[0].get("bags", 1)) * (float(p) / 100)
+        remaining_bags = float(sizing_program_data[0].get("bags", 0)) - waste_percentage_bags if waste_percentage_bags else 0
+        yarn_balance_data = [{"posting_date": "<b>Yarn Warp Balance(Length)</b>", "gate_pass": "", "yarn_item": "Waste %: " + str(p) + "%", "brand": "Waste: " + str(round(waste_percentage_bags,2)), "bags":str(round(remaining_bags,2)-total_warp if total_warp else 0) , "lbs":str(round(((remaining_bags if remaining_bags else 0)- (total_warp if total_warp else 0)) * (ratio if ratio else 1),2)), "purpose": "Remaining: " + str(round(remaining_bags,2)), "yarn_count": ""}]
+        data.extend(yarn_balance_data)
     # Delivery Detail
     delivery_fabric_qty = frappe.db.sql(f"""
         SELECT
