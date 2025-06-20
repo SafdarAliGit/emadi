@@ -175,10 +175,10 @@ def execute(filters=None):
             {sizing_program_conditions}
         having ROUND(SUM(spi.lbs), 2) > 0
     """, filters, as_dict=True)
-
-    # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
-    total_production_length = sizing_program_data[0]["bags"] if sizing_program_data[0]["bags"] else 0
-    ratio = (sizing_program_data[0]["lbs"] or 0) / (total_production_length or 1)
+    if sizing_program_data:
+        # total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
+        total_production_length = sizing_program_data[0]["bags"] if sizing_program_data[0]["bags"] else 0
+        ratio = (sizing_program_data[0]["lbs"] or 0) / (total_production_length or 1)
     # if sizing_program_data:
     #     sizing_program_data.append({
     #         "posting_date": "<b>Total Warp</b>",
