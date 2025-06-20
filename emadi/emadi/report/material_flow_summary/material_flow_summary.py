@@ -366,7 +366,21 @@ def execute(filters=None):
     # total_warp = sum(row["bags"] or 0 for row in delivery_data)
     # total_weft = sum(row["lbs"] or 0 for row in delivery_data)
 
-    # if delivery_data:
+    if delivery_data:
+        delivery_data.append({
+            "posting_date": "<b>Yarn Balance(Customer)</b>",
+            "yarn_item": "",
+            "purpose": "",
+            "brand": "",
+            "bags": "<b>" + str(round(total_received_warp - total_warp, 2) if total_received_warp > 0 else 0) + "</b>",
+            "lbs": "<b>" + str(round(yarn_received_weft[0].get("bags", 0) - delivery_data[0].get("bags", 0), 2)) + "</b>",
+            "meter": "<b>" + str(
+        round((
+            yarn_received_warp[0].get("meter", 0) - delivery_data[0].get("meter", 0)
+            ),2) if yarn_received_warp[0].get("meter", 0) > 0 else 0
+    ) + "</b>",
+    "gate_pass": ""
+        })
         # delivery_data.append({
         #     "posting_date": "<b>Yarn Balance(Customer)</b>",
         #     "yarn_item": "",
