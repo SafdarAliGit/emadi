@@ -366,7 +366,7 @@ def execute(filters=None):
     # total_warp = sum(row["bags"] or 0 for row in delivery_data)
     # total_weft = sum(row["lbs"] or 0 for row in delivery_data)
 
-    if delivery_data:
+    # if delivery_data:
         # delivery_data.append({
         #     "posting_date": "<b>Yarn Balance(Customer)</b>",
         #     "yarn_item": "",
@@ -376,16 +376,16 @@ def execute(filters=None):
         #     "lbs": "<b>" + str(round(total_received_weft - total_weft,2)) + "</b>",
         #     "gate_pass": ""
         # })
-        delivery_data.append({
-            "posting_date": "<b>Warp + Weft(Customer Ratio)</b>",
-            "yarn_item": "",
-            "purpose":"",
-            "brand": "",
-            "bags":"",
-            "lbs":"<b>" + str(round((delivery_data[0].bags if delivery_data else 0)+(delivery_data[0].lbs if delivery_data else 0),2)) + "</b>",
-            "meter":"",
-            "gate_pass": ""
-        })
+        # delivery_data.append({
+        #     "posting_date": "<b>Warp + Weft(Customer Ratio)</b>",
+        #     "yarn_item": "",
+        #     "purpose":"",
+        #     "brand": "",
+        #     "bags":"",
+        #     "lbs":"<b>" + str(round((delivery_data[0].bags if delivery_data else 0)+(delivery_data[0].lbs if delivery_data else 0),2)) + "</b>",
+        #     "meter":"",
+        #     "gate_pass": ""
+        # })
     data.extend(delivery_data)
     return columns, data
 
