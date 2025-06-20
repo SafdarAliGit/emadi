@@ -10,6 +10,7 @@ def execute(filters=None):
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 100},
         {"label": "Warp(LBS)", "fieldname": "bags", "fieldtype": "Data", "width": 80},
         {"label": "Weft(LBS)", "fieldname": "lbs", "fieldtype": "Data", "width": 120},
+        {"label": "Meter", "fieldname": "meter", "fieldtype": "Data", "width": 120},
         {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
        
     ]
@@ -63,13 +64,15 @@ def execute(filters=None):
         "brand": "",
         "bags": "",
         "lbs": "",
+        "meter": "",
         "purpose": "",
         "yarn_count": ""
     })
     
     yarn_received_warp = frappe.db.sql(f"""
         SELECT
-            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END) as lbs,
+            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Lbs' THEN sed.qty ELSE 0 END) as lbs,
+            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Meter' THEN sed.qty ELSE 0 END) as meter,
             SUM(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END) as `return`,
             se.manual_sr_no AS gate_pass
         FROM
@@ -90,13 +93,15 @@ def execute(filters=None):
         "brand": "",
         "bags": "",
         "lbs": "",
+        "meter": "",
         "purpose": "",
         "yarn_count": ""
     })
 
     yarn_received_weft = frappe.db.sql(f"""
         SELECT
-            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' THEN sed.qty ELSE 0 END) as lbs,
+            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Lbs' THEN sed.qty ELSE 0 END) as lbs,
+            SUM(CASE WHEN se.stock_entry_type = 'Material Receipt' AND sed.uom = 'Meter' THEN sed.qty ELSE 0 END) as meter,
             SUM(CASE WHEN se.stock_entry_type = 'Material Issue' THEN sed.qty ELSE 0 END) as `return`
         FROM
             `tabStock Entry` se
@@ -116,12 +121,14 @@ def execute(filters=None):
         "brand": "",
         "bags": "",
         "lbs": "",
+        "meter": "",
         "purpose": "",
         "yarn_count": ""
     })
     weft_production_data = frappe.db.sql(f"""
         SELECT
-            ROUND(SUM(fpi.yarn_qty), 5) AS lbs
+            ROUND(SUM(fpi.yarn_qty), 5) AS lbs,
+            ROUND(SUM(fpi.beam_length), 5) AS meter
         FROM
             `tabFabric Production` fp
         LEFT JOIN
@@ -149,13 +156,15 @@ def execute(filters=None):
             "brand": "",
             "bags": "",
             "lbs": "",
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
     sizing_program_data = frappe.db.sql(f"""
         SELECT
             ROUND(SUM(spi.length), 2) AS bags,
-            ROUND(SUM(spi.lbs), 2) AS lbs
+            ROUND(SUM(spi.lbs), 2) AS lbs,
+            ROUND(SUM(spi.length), 2) AS meter
         FROM
             `tabSizing Program` AS sp
         LEFT JOIN
@@ -186,13 +195,15 @@ def execute(filters=None):
             "brand": "",
             "bags": "",
             "lbs": "",
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
 
     warp_production_data = frappe.db.sql(f"""
         SELECT
-            ROUND(SUM(fpi.yarn_qty), 5) AS bags
+            ROUND(SUM(fpi.yarn_qty), 5) AS bags,
+            ROUND(SUM(fpi.beam_length), 5) AS meter
         FROM
             `tabFabric Production` fp
         LEFT JOIN
@@ -204,6 +215,7 @@ def execute(filters=None):
             fp.posting_date DESC
     """, filters, as_dict=True)
     total_warp = sum(row["bags"] or 0 for row in warp_production_data)
+    total_warp_meter = sum(row["meter"] or 0 for row in warp_production_data)
     if warp_production_data:
         warp_production_data.append({
             "posting_date": "<b>Total Warp</b>",
@@ -211,6 +223,7 @@ def execute(filters=None):
             "purpose": "",
             "bags":round(total_warp,2),
             "lbs":"LBS : " + "<b>" + str(round(total_warp *(ratio if ratio else 1),2)) + "</b>",
+            "meter":"<b>" + str(round(total_warp_meter,2)) + "</b>",
             "gate_pass": ""
         })
     data.extend(warp_production_data)
@@ -248,6 +261,7 @@ def execute(filters=None):
             "brand": "",
             "bags": "",
             "lbs": "",
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
@@ -258,6 +272,7 @@ def execute(filters=None):
             "brand": "",
             "bags": str(round(delivery_fabric_qty[0].yarn_item if delivery_fabric_qty else 0,2)),
             "lbs": "",
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
@@ -268,6 +283,7 @@ def execute(filters=None):
             "brand": "",
             "bags": str(round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2)),
             "lbs": "",
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
@@ -278,6 +294,7 @@ def execute(filters=None):
             "brand": "",
              "bags":str(round((sizing_program_data[0].bags if sizing_program_data else 0)-(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0),2)),
             "lbs":"" ,
+            "meter":"",
             "purpose": "",
             "yarn_count": ""
         })
@@ -294,6 +311,7 @@ def execute(filters=None):
                     2
                 )
                 ),
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
@@ -310,7 +328,7 @@ def execute(filters=None):
 #         2
 #     )
 # )
-
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
@@ -322,6 +340,7 @@ def execute(filters=None):
             "brand": "",
             "bags": "Warp Qty",
             "lbs": "Weft Qty",
+            "meter": "",
             "purpose": "",
             "yarn_count": ""
         })
@@ -359,6 +378,7 @@ def execute(filters=None):
             "brand": "",
             "bags":"",
             "lbs":"<b>" + str(round((delivery_data[0].bags if delivery_data else 0)+(delivery_data[0].lbs if delivery_data else 0),2)) + "</b>",
+            "meter":"",
             "gate_pass": ""
         })
     data.extend(delivery_data)

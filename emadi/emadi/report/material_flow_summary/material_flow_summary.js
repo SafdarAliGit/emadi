@@ -71,3 +71,4 @@ frappe.query_reports["Material Flow Summary"] = {
 		}
 	]
 };
+
