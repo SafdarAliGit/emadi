@@ -21,7 +21,8 @@
   "posting_time",
   "section_break_i2efb",
   "fabric_production_item",
-  "amended_from"
+  "amended_from",
+  "daily_fabric_production"
  ],
  "fields": [
   {
@@ -103,6 +104,13 @@
   {
    "fieldname": "column_break_q4dtd",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "daily_fabric_production",
+   "fieldtype": "Link",
+   "hidden": 1,
+   "label": "Daily Fabric Production",
+   "options": "Daily Fabric Production"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -113,7 +121,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-03-05 15:51:28.337667",
+ "modified": "2025-06-23 09:19:09.898467",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",

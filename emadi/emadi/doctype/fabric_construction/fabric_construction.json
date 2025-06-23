@@ -66,13 +66,14 @@
    "in_list_view": 1,
    "label": "Fabric Item",
    "options": "Item",
-   "reqd": 1
+   "reqd": 1,
+   "unique": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-03-04 16:26:53.764242",
+ "modified": "2025-06-23 09:52:59.707312",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Construction",
