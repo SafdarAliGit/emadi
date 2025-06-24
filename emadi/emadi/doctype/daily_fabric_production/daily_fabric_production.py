@@ -1,6 +1,7 @@
 import frappe
 from frappe.model.document import Document
 
+
 class DailyFabricProduction(Document):
 	def on_submit(self):
 		if self.daily_fabric_production_item:
@@ -26,8 +27,11 @@ class DailyFabricProduction(Document):
 
 				try:
 					doc.save()
+					frappe.db.set_value("Daily Fabric Production Item", item.name, "fabric_production", doc.name)
+
 				except Exception as e:
 					frappe.throw(f"Error saving Fabric Production: {str(e)}")
+			self.reload()
 
 
 def get_fabric_construction(fabric_item, qty):
