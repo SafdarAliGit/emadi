@@ -295,7 +295,7 @@ def execute(filters=None):
         "bags": "",
         "lbs": str(round(((remaining_bags if remaining_bags else 0) - (total_warp if total_warp else 0)) * (ratio if ratio else 1), 2)),
         "meter":str(round(remaining_bags - total_warp if total_warp else 0, 2)),
-        "purpose": "Remaining: " + str(round(remaining_bags, 2)),
+        "purpose": "Remaining: " + str(round(remaining_bags if remaining_bags else total_received_meter_warp if total_received_meter_warp else 0, 2)),
         "yarn_count": ""
     }]
 
