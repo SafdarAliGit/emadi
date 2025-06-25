@@ -7,6 +7,7 @@
  "editable_grid": 1,
  "engine": "InnoDB",
  "field_order": [
+  "fabric_production_section",
   "emadi_settings_item"
  ],
  "fields": [
@@ -15,12 +16,17 @@
    "fieldtype": "Table",
    "label": "Emadi Settings Item",
    "options": "Emadi Settings Item"
+  },
+  {
+   "fieldname": "fabric_production_section",
+   "fieldtype": "Section Break",
+   "label": "Fabric Production"
   }
  ],
  "index_web_pages_for_search": 1,
  "issingle": 1,
  "links": [],
- "modified": "2025-06-25 15:36:18.813961",
+ "modified": "2025-06-25 16:53:44.940537",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Emadi Settings",

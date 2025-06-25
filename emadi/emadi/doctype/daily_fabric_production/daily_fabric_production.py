@@ -5,12 +5,15 @@ from frappe.model.document import Document
 class DailyFabricProduction(Document):
 	def on_submit(self):
 		if self.daily_fabric_production_item:
+			target_warehouse = get_target_warehouse_by_status(self.status)
+			if not target_warehouse:
+				frappe.throw("Target Warehouse not found for status: {0}".format(self.status))
 			for item in self.daily_fabric_production_item:
 				doc = frappe.new_doc("Fabric Production")
 				doc.posting_date = self.date
 				doc.posting_time = self.time
 				doc.daily_fabric_production = self.name
-				doc.target_warehouse = self.target_warehouse
+				doc.target_warehouse = target_warehouse
 				doc.qty = item.qty
 				doc.fabric_item = item.fabric_item
 				doc.quality = fetch_quality(item.fabric_item)

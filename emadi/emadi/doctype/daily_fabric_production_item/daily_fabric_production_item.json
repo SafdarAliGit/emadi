@@ -24,7 +24,7 @@
    "fieldtype": "Select",
    "in_list_view": 1,
    "label": "Status",
-   "options": "Fresh\nRejected"
+   "options": "Fresh\nRejected\nCut Piece"
   },
   {
    "allow_on_submit": 1,
@@ -46,7 +46,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-06-23 09:59:05.295288",
+ "modified": "2025-06-25 17:00:23.121693",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Daily Fabric Production Item",
