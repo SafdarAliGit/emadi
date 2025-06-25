@@ -384,7 +384,7 @@ def execute(filters=None):
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
-        "bags": str(round(((round(total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 0, 2) - round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)) / (total_production_length if total_production_length else 1) * 100), 2)),
+        "bags": str(round(((round(total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 0, 2) - round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)) / (total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 1) * 100), 2)),
         "lbs": "",
         "purpose": "",
         "yarn_count": ""
