@@ -291,7 +291,7 @@ def execute(filters=None):
         "posting_date": "<b>Yarn Warp Balance(Length)</b>",
         "gate_pass": "",
         "yarn_item": "Waste %: " + str(p) + "%",
-        "brand": "Waste: " + str(round(waste_percentage_bags, 2)),
+        "brand": "Waste: " + str(round(waste_percentage_bags if waste_percentage_bags else total_received_meter_warp if total_received_meter_warp else 0, 2)),
         "bags": "",
         "lbs": str(round(((remaining_bags if remaining_bags else 0) - (total_warp if total_warp else 0)) * (ratio if ratio else 1), 2)),
         "meter":str(round(remaining_bags - total_warp if total_warp else 0, 2)),

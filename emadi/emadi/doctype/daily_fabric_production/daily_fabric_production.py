@@ -67,3 +67,20 @@ def fetch_quality(fabric_item):
 		limit=1
 	)
 	return fc[0]["quality"] if fc else None
+
+
+def get_target_warehouse_by_status(status_type=None):
+    if not status_type:
+        return None
+
+    records = frappe.get_all(
+        "Emadi Settings Item",
+        filters={"status_type": status_type},
+        fields=["warehouse"],
+        limit=1
+    )
+
+    if records:
+        return records[0].warehouse
+
+    return None
