@@ -285,13 +285,13 @@ def execute(filters=None):
     data.extend(warp_production_data)
 
     # Yarn Balance Calculation
-    waste_percentage_bags = float(total_production_length) * (float(p) / 100) if p else 0
+    waste_percentage_bags = float(total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 0) * (float(p) / 100) if p else 0
     remaining_bags = total_production_length - waste_percentage_bags
     yarn_balance_data = [{
         "posting_date": "<b>Yarn Warp Balance(Length)</b>",
         "gate_pass": "",
         "yarn_item": "Waste %: " + str(p) + "%",
-        "brand": "Waste: " + str(round(waste_percentage_bags if waste_percentage_bags else total_received_meter_warp if total_received_meter_warp else 0, 2)),
+        "brand": "Waste: " + str(round(waste_percentage_bags, 2)),
         "bags": "",
         "lbs": str(round(((remaining_bags if remaining_bags else 0) - (total_warp if total_warp else 0)) * (ratio if ratio else 1), 2)),
         "meter":str(round(remaining_bags - total_warp if total_warp else 0, 2)),
