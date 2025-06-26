@@ -11,8 +11,6 @@
   "date",
   "column_break_yo4mw",
   "time",
-  "column_break_z8xrh",
-  "target_warehouse",
   "section_break_52pgi",
   "daily_fabric_production_item",
   "section_break_jcyst",
@@ -31,14 +29,6 @@
    "fieldname": "time",
    "fieldtype": "Time",
    "label": "Time"
-  },
-  {
-   "fieldname": "target_warehouse",
-   "fieldtype": "Link",
-   "in_list_view": 1,
-   "label": "Target Warehouse",
-   "options": "Warehouse",
-   "reqd": 1
   },
   {
    "fieldname": "section_break_52pgi",
@@ -75,10 +65,6 @@
   {
    "fieldname": "column_break_yo4mw",
    "fieldtype": "Column Break"
-  },
-  {
-   "fieldname": "column_break_z8xrh",
-   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -89,7 +75,7 @@
    "link_fieldname": "daily_fabric_production"
   }
  ],
- "modified": "2025-06-23 09:19:51.156934",
+ "modified": "2025-06-26 15:59:50.398784",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Daily Fabric Production",
