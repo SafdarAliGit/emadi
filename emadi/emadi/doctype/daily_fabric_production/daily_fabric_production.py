@@ -78,7 +78,7 @@ def get_target_warehouse_by_status(status_type=None):
 
     records = frappe.get_all(
         "Emadi Settings Item",
-        filters={"status_type": status_type},
+        filters={"status": status_type},
         fields=["warehouse"],
         limit=1
     )
