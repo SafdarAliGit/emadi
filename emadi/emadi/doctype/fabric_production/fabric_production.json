@@ -20,6 +20,8 @@
   "column_break_dag5g",
   "posting_time",
   "section_break_i2efb",
+  "valuation_type",
+  "section_break_fv4bb",
   "fabric_production_item",
   "amended_from",
   "daily_fabric_production"
@@ -43,7 +45,8 @@
   },
   {
    "fieldname": "section_break_i2efb",
-   "fieldtype": "Section Break"
+   "fieldtype": "Section Break",
+   "label": "Conversion Type"
   },
   {
    "fieldname": "fabric_production_item",
@@ -111,6 +114,17 @@
    "hidden": 1,
    "label": "Daily Fabric Production",
    "options": "Daily Fabric Production"
+  },
+  {
+   "default": "1",
+   "description": "<span style=\"font-weight: bold; color: orange; font-size: 13px;\">\nNOTE: If checked it allows 0 valuation,\nif Un checked it does not allow 0 valuation.\n</span>",
+   "fieldname": "valuation_type",
+   "fieldtype": "Check",
+   "label": " <span style=\"font-weight: bold; color: Green; font-size: 16px;\">Conversion </span>"
+  },
+  {
+   "fieldname": "section_break_fv4bb",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -121,7 +135,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-06-23 09:19:09.898467",
+ "modified": "2025-07-12 19:02:21.571549",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",

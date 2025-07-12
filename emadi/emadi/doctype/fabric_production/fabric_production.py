@@ -24,7 +24,10 @@ class FabricProduction(Document):
 			it.item_code = self.fabric_item
 			it.qty = self.qty
 			it.is_finished_item = 1
-			it.allow_zero_valuation_rate = 1
+			if self.valuation_type == 1:
+				it.allow_zero_valuation_rate = 1
+			else:
+				it.allow_zero_valuation_rate = 0
 				
 			# Append target items using a loop
 			for item in self.fabric_production_item:
@@ -37,7 +40,10 @@ class FabricProduction(Document):
 					it.qty = item.beam_length
 				else:
 					it.qty = item.yarn_qty
-				it.allow_zero_valuation_rate = 1
+				if self.valuation_type == 1:
+					it.allow_zero_valuation_rate = 1
+				else:
+					it.allow_zero_valuation_rate = 0
 					
 
 			try:
