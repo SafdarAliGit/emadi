@@ -45,8 +45,7 @@
   },
   {
    "fieldname": "section_break_i2efb",
-   "fieldtype": "Section Break",
-   "label": "Conversion Type"
+   "fieldtype": "Section Break"
   },
   {
    "fieldname": "fabric_production_item",
@@ -117,10 +116,10 @@
   },
   {
    "default": "1",
-   "description": "<span style=\"font-weight: bold; color: orange; font-size: 13px;\">\nNOTE: If checked it allows 0 valuation,\nif Un checked it does not allow 0 valuation.\n</span>",
+   "description": "<span style=\"font-weight: bold; color: orange;\">\nNOTE: If checked it allows 0 valuation,\nif Un checked it does not allow 0 valuation.\n</span>",
    "fieldname": "valuation_type",
    "fieldtype": "Check",
-   "label": " <span style=\"font-weight: bold; color: Green; font-size: 16px;\">Conversion </span>"
+   "label": " <span style=\"font-weight: bold; color: Green;\">Conversion </span>"
   },
   {
    "fieldname": "section_break_fv4bb",
@@ -135,7 +134,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-07-12 19:02:21.571549",
+ "modified": "2025-07-12 19:33:15.624443",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",
