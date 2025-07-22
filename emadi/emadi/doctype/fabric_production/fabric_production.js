@@ -3,6 +3,14 @@
 
 frappe.ui.form.on('Fabric Production', {
 	refresh: function(frm) {
+        frm.set_query('target_warehouse', function() {
+            return {
+                filters: {
+                    warehouse: ['!=', 'is_group']
+                }
+            };
+        });
+        
 		frm.set_query('yarn_count','fabric_production_item', function() {
 			return {
 				"filters": [
