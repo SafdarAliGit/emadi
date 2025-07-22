@@ -5,9 +5,9 @@ frappe.ui.form.on('Fabric Production', {
 	refresh: function(frm) {
         frm.set_query('target_warehouse', function() {
             return {
-                filters: {
-                    warehouse: ['!=', 'is_group']
-                }
+                "filters": [
+					["is_group", "=", 0 ]
+				]
             };
         });
         
