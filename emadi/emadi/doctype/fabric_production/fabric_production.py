@@ -7,6 +7,8 @@ from frappe.model.naming import make_autoname
 from emadi.emadi.doctype.utils_functions import get_doctype_by_field
 
 class FabricProduction(Document):
+	
+
 	def on_submit(self):
 		if self.fabric_production_item:
 			doc = frappe.new_doc("Stock Entry")
@@ -28,6 +30,8 @@ class FabricProduction(Document):
 				it.allow_zero_valuation_rate = 1
 			else:
 				it.allow_zero_valuation_rate = 0
+				it.set_basic_rate_manually = 1
+			
 				
 			# Append target items using a loop
 			for item in self.fabric_production_item:
@@ -48,7 +52,26 @@ class FabricProduction(Document):
 
 			try:
 				doc.save()
-				doc.submit()
+				# updat stock entry
+				if self.valuation_type == 0:
+					stock_entry = frappe.get_doc("Stock Entry", doc.name)
+					total_amount = stock_entry.total_outgoing_value
+					single_target_row = None
+
+					for item in stock_entry.items:
+						if item.t_warehouse:
+							single_target_row = item
+							break
+			
+				if single_target_row and single_target_row.qty:
+					new_rate = total_amount / float(single_target_row.qty)
+					single_target_row.basic_rate = new_rate
+					single_target_row.basic_amount = single_target_row.basic_rate * single_target_row.qty
+				
+				stock_entry.save()
+				stock_entry.submit()
+				# end update stock entry
+				# doc.submit()
 			except Exception as e:
 				frappe.throw("Error submitting Stock Entry: {0}".format(str(e)))	
 
