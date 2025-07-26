@@ -74,8 +74,8 @@ class FabricProduction(Document):
 							frappe.throw(f"Invalid quantity {single_target_row.qty} for computing rate")
 					# save and submit
 					stock_entry.save()
-					stock_entry.submit()
-
+			
+				doc.submit()
 			except Exception as e:
 				frappe.throw("Error submitting Stock Entry: {0}".format(str(e)))	
 
