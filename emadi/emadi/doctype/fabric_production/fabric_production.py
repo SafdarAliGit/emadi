@@ -55,23 +55,27 @@ class FabricProduction(Document):
 				# updat stock entry
 				if self.valuation_type == 0:
 					stock_entry = frappe.get_doc("Stock Entry", doc.name)
-					total_amount = stock_entry.total_outgoing_value
+					total_amount = stock_entry.total_outgoing_value or 0.0
 					single_target_row = None
 
+					# pick the first item with a target warehouse set
 					for item in stock_entry.items:
-						if item.t_warehouse:
+						if getattr(item, 't_warehouse', None):
 							single_target_row = item
 							break
-			
-				if single_target_row and single_target_row.qty:
-					new_rate = total_amount / float(single_target_row.qty)
-					single_target_row.basic_rate = new_rate
-					single_target_row.basic_amount = single_target_row.basic_rate * single_target_row.qty
-				
-				stock_entry.save()
-				stock_entry.submit()
-				# end update stock entry
-				# doc.submit()
+
+					if single_target_row and single_target_row.qty:
+						qty = float(single_target_row.qty) or 0.0
+						if qty > 0:
+							new_rate = total_amount / qty
+							single_target_row.basic_rate = new_rate
+							single_target_row.basic_amount = new_rate * qty
+						else:
+							frappe.throw(f"Invalid quantity {single_target_row.qty} for computing rate")
+					# save and submit
+					stock_entry.save()
+					stock_entry.submit()
+
 			except Exception as e:
 				frappe.throw("Error submitting Stock Entry: {0}".format(str(e)))	
 
