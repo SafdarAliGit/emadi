@@ -52,9 +52,13 @@ class FabricProduction(Document):
 
 			try:
 				doc.save()
-				# updat stock entry
+				
+				# update stock entry with calculated rates if needed
 				if self.valuation_type == 0:
+					# Reload the document to avoid concurrency issues
+					frappe.db.commit()  # Ensure previous save is committed
 					stock_entry = frappe.get_doc("Stock Entry", doc.name)
+					
 					total_amount = stock_entry.total_outgoing_value or 0.0
 					single_target_row = None
 
@@ -72,10 +76,16 @@ class FabricProduction(Document):
 							single_target_row.basic_amount = new_rate * qty
 						else:
 							frappe.throw(f"Invalid quantity {single_target_row.qty} for computing rate")
-					# save and submit
+					
+					# Save with reload to prevent concurrency issues
+					stock_entry.reload()  # Reload before saving
 					stock_entry.save()
-			
+					frappe.db.commit()  # Commit the rate calculation changes
+				
+				# Submit the document
+				doc.reload()  # Reload before submitting
 				doc.submit()
+				
 			except Exception as e:
 				frappe.throw("Error submitting Stock Entry: {0}".format(str(e)))	
 
