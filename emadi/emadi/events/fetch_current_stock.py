@@ -18,7 +18,8 @@ def fetch_current_stock(item_code, warehouse, set_no=None):
             # Fetch latest qty from Stock Ledger Entry
             result = frappe.db.sql(
                 """
-                SELECT qty_after_transaction AS current_stock
+                SELECT qty_after_transaction AS current_stock,
+                valuation_rate as rate
                 FROM `tabStock Ledger Entry`
                 WHERE item_code = %s AND warehouse = %s AND is_cancelled = 0
                 ORDER BY posting_date DESC, posting_time DESC
@@ -27,7 +28,16 @@ def fetch_current_stock(item_code, warehouse, set_no=None):
                 (item_code, warehouse),
                 as_dict=True
             )
-            return result[0].current_stock if result else 0
+            if result:
+                return {
+                    "current_stock": result[0].current_stock,
+                    "rate": result[0].rate
+                }
+            else:
+                return {
+                    "current_stock": 0,
+                    "rate": 0
+                }
 
     except Exception:
         frappe.log_error(frappe.get_traceback(), "Error in fetch_current_stock")

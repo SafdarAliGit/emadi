@@ -59,26 +59,63 @@ frappe.ui.form.on('Fabric Production', {
 
 frappe.ui.form.on('Fabric Production Item', {
     
-    warehouse: function(frm,cdt,cdn) {
-        var row = locals[cdt][cdn];
-        if (row.yarn_count && row.warehouse) {
-            frappe.call({
-                method: "emadi.emadi.events.fetch_current_stock.fetch_current_stock",
-                args: {
-                    item_code: row.yarn_count,
-                    warehouse: row.warehouse,
-                    set_no: row.set_no
-                },
-                callback: function(r) {
-                    if (r.message) {
-                        frappe.model.set_value(cdt, cdn, "available_qty", r.message || 0);
-                    }
-                }
-            });
-        }
+    warehouse(frm, cdt, cdn) {
+        const row = locals[cdt][cdn];
+        // Only proceed if essential fields are present
+       
+        frm.call({
+            method: 'emadi.emadi.events.fetch_current_stock.fetch_current_stock',
+            args: {
+                item_code: row.yarn_count,
+                warehouse: row.warehouse,
+                set_no: row.set_no
+            },
+            callback: ({ message }) => {
+                const available = message?.current_stock || 0;
+                const rate = message?.rate || 0;
+                const yarnQty = row.yarn_qty || 0;
+                const amount = yarnQty * rate;
+
+                frappe.model.set_value(cdt, cdn, 'available_qty', available);
+                frappe.model.set_value(cdt, cdn, 'valuation_rate', rate);
+                frappe.model.set_value(cdt, cdn, 'amount', amount);
+
+                recalculate_rate(frm);
+            },
+            error: err => {
+                frappe.msgprint({
+                    title: __('Stock Fetch Error'),
+                    message: __('Could not load stock data for row {0}', [row.idx]),
+                    indicator: 'red'
+                });
+            }
+        });
     },
     yarn_count: function(frm) {
         // Recalculate when qty changes
         row.trigger("warehouse");
     }
 })
+
+
+// Shared logic to total up amounts and calculate rate
+function recalculate_rate(frm) {
+    const items = frm.doc.fabric_production_item || [];
+    let total_amount = 0;
+   items.forEach(element => {
+        total_amount += element.amount;
+   });
+    frm.set_value('total_amount', total_amount);
+    const qty = flt(frm.doc.qty);
+    let avg_rate = 0;
+    if (qty > 0) {
+      avg_rate = flt(total_amount) / qty;
+      frm.set_value('finish_rate', avg_rate);
+    }
+    
+    if (frm.doc.valuation_type === 0 && avg_rate <= 0) {
+      frappe.throw(__('Rate must be greater than zero'));
+    }
+  }
+  
+  
