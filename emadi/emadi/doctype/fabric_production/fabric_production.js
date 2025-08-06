@@ -18,6 +18,13 @@ frappe.ui.form.on('Fabric Production', {
 				]
 			}
 		});
+        frm.set_query('set_no','fabric_production_item', function() {
+            return {
+                "filters": [
+                    ["item", "=", frm.doc.yarn_count]
+                ]
+            }
+        })
         frm.set_query('set_no', 'fabric_production_item', function(doc, cdt, cdn) {
 			let child = locals[cdt][cdn];
 			return {
