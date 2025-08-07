@@ -24,9 +24,11 @@
   "section_break_fv4bb",
   "fabric_production_item",
   "section_break_k6lrp",
-  "finish_rate",
+  "warp_rate",
+  "column_break_ixvvy",
+  "weft_rate",
   "column_break_kdwye",
-  "total_amount",
+  "finish_rate",
   "amended_from",
   "daily_fabric_production"
  ],
@@ -139,16 +141,28 @@
   },
   {
    "default": "0",
-   "fieldname": "total_amount",
+   "fieldname": "finish_rate",
    "fieldtype": "Currency",
-   "label": "Total Amount",
+   "label": "Finish Rate",
    "read_only": 1
   },
   {
    "default": "0",
-   "fieldname": "finish_rate",
+   "fieldname": "warp_rate",
    "fieldtype": "Currency",
-   "label": "Finish Rate",
+   "label": "Warp Rate",
+   "precision": "2",
+   "read_only": 1
+  },
+  {
+   "fieldname": "column_break_ixvvy",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "weft_rate",
+   "fieldtype": "Currency",
+   "label": "Weft Rate",
    "read_only": 1
   }
  ],
@@ -160,7 +174,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-08-04 16:32:52.438622",
+ "modified": "2025-08-07 20:19:22.366253",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",

@@ -74,18 +74,17 @@ frappe.ui.form.on('Fabric Production Item', {
             method: 'emadi.emadi.events.fetch_current_stock.fetch_current_stock',
             args: {
                 item_code: row.yarn_count,
-                warehouse: row.warehouse,
-                set_no: row.set_no
+                warehouse: row.warehouse
             },
             callback: ({ message }) => {
                 const available = message?.current_stock || 0;
                 const rate = message?.rate || 0;
                 const yarnQty = row.yarn_qty || 0;
-                const amount = yarnQty * rate;
+            
 
                 frappe.model.set_value(cdt, cdn, 'available_qty', available);
                 frappe.model.set_value(cdt, cdn, 'valuation_rate', rate);
-                frappe.model.set_value(cdt, cdn, 'amount', amount);
+                frappe.model.set_value(cdt, cdn, 'rate_per_meter', row.consumption * rate);
 
                 recalculate_rate(frm);
             },
@@ -108,17 +107,24 @@ frappe.ui.form.on('Fabric Production Item', {
 // Shared logic to total up amounts and calculate rate
 function recalculate_rate(frm) {
     const items = frm.doc.fabric_production_item || [];
-    let total_amount = 0;
+    let warp_rate = 0;
+    let weft_rate = 0;
    items.forEach(element => {
-        total_amount += element.amount;
-   });
-    frm.set_value('total_amount', total_amount);
-    const qty = flt(frm.doc.qty);
-    let avg_rate = 0;
-    if (qty > 0) {
-      avg_rate = flt(total_amount) / qty;
-      frm.set_value('finish_rate', avg_rate);
+    if (element['for'] === "Warp") {
+        warp_rate += element.beem_rate;
+    } else if (element['for'] === "Weft") {
+        weft_rate += element.rate_per_meter;
     }
+    
+   });
+
+    let avg_rate = 0;
+ 
+      avg_rate = warp_rate + weft_rate;
+      frm.set_value('warp_rate', warp_rate);
+      frm.set_value('weft_rate', weft_rate);
+      frm.set_value('finish_rate', avg_rate);
+    
     
     if (frm.doc.valuation_type === 0 && avg_rate <= 0) {
       frappe.throw(__('Rate must be greater than zero'));
