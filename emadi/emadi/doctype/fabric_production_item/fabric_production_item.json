@@ -107,7 +107,7 @@
   },
   {
    "default": "0",
-   "fetch_from": "set_no.custom_warp_weight",
+   "fetch_from": "yarn_count.custom_warp_weight",
    "fieldname": "warp_weight",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -117,7 +117,7 @@
   },
   {
    "default": "0",
-   "fetch_from": "set_no.custom_beem_rate",
+   "fetch_from": "yarn_count.custom_beem_rate",
    "fieldname": "beem_rate",
    "fieldtype": "Currency",
    "in_list_view": 1,
@@ -135,7 +135,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-07 20:16:37.100127",
+ "modified": "2025-08-18 22:03:44.519788",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production Item",

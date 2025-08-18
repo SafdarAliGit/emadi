@@ -40,8 +40,8 @@ class FabricProduction(Document):
 				it = doc.append("items", {})
 				it.s_warehouse = item.warehouse
 				it.item_code = item.yarn_count
-				if item.set_no:
-					it.batch_no = item.set_no
+				# if item.set_no:
+				# 	it.batch_no = item.set_no
 				if item.beam_length:
 					it.qty = item.beam_length
 				else:
