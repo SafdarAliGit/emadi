@@ -113,7 +113,7 @@ function recalculate_rate(frm) {
     if (element['for'] === "Warp") {
         warp_rate += flt(element.valuation_rate);
     } else if (element['for'] === "Weft") {
-        weft_rate += flt(element.valuation_rate);
+        weft_rate += flt(element.rate_per_meter);
     }
     
    });
