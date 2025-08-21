@@ -111,9 +111,9 @@ function recalculate_rate(frm) {
     let weft_rate = 0;
    items.forEach(element => {
     if (element['for'] === "Warp") {
-        warp_rate += element.beem_rate;
+        warp_rate += flt(element.valuation_rate);
     } else if (element['for'] === "Weft") {
-        weft_rate += element.rate_per_meter;
+        weft_rate += flt(element.valuation_rate);
     }
     
    });
