@@ -104,5 +104,6 @@ class FabricProduction(Document):
 			else:
 				new_name = f"{current_je.name}-{1}"
 			make_autoname(new_name, 'Stock Entry')
+		
         
         
