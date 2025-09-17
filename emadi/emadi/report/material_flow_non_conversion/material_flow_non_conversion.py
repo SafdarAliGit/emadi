@@ -53,7 +53,7 @@ def execute(filters=None):
     # if filters.get("customer"):
     #     delivery_conditions_master += " AND dn.customer = %(customer)s"
     if filters.get("fabric_item"):
-        delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_conditions_master += " AND sii.item_code = %(fabric_item)s"
 
     
     data = []
@@ -303,20 +303,26 @@ def execute(filters=None):
     # Delivery Detail
     delivery_fabric_qty = frappe.db.sql(f"""
         SELECT
-            SUM(dn.fabric_qty) as yarn_item
+            SUM(sii.qty) AS fabric_qty
         FROM
-            `tabDelivery Note` dn
+            `tabSales Invoice Item` sii
+        JOIN `tabSales Invoice` si ON sii.parent = si.name
         WHERE
-            dn.docstatus = 1 {delivery_conditions_master} and dn.is_return = 0
+            si.docstatus = 1
+            {delivery_conditions_master}
+            AND sii.is_return = 0
     """, filters, as_dict=True)
+
 
     delivery_fabric_qty_with_return = frappe.db.sql(f"""
         SELECT
-            SUM(dn.fabric_qty) as yarn_item
+            SUM(sii.qty) AS fabric_qty
         FROM
-            `tabDelivery Note` dn
+            `tabSales Invoice Item` sii
+        JOIN `tabSales Invoice` si ON sii.parent = si.name
         WHERE
-            dn.docstatus = 1 {delivery_conditions_master}
+            si.docstatus = 1
+            {delivery_conditions_master}
     """, filters, as_dict=True)
 
     data.append({
