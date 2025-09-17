@@ -303,7 +303,7 @@ def execute(filters=None):
     # Delivery Detail
     delivery_fabric_qty = frappe.db.sql(f"""
         SELECT
-            SUM(sii.qty) AS fabric_qty
+            SUM(sii.qty) AS yarn_item
         FROM
             `tabSales Invoice Item` sii
         JOIN `tabSales Invoice` si ON sii.parent = si.name
@@ -316,7 +316,7 @@ def execute(filters=None):
 
     delivery_fabric_qty_with_return = frappe.db.sql(f"""
         SELECT
-            SUM(sii.qty) AS fabric_qty
+            SUM(sii.qty) AS yarn_item
         FROM
             `tabSales Invoice Item` sii
         JOIN `tabSales Invoice` si ON sii.parent = si.name
