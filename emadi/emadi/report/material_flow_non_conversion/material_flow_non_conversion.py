@@ -50,8 +50,8 @@ def execute(filters=None):
     if filters.get("brand"):
         delivery_conditions += " AND bid.brand = %(brand)s"
 
-    if filters.get("customer"):
-        delivery_conditions_master += " AND dn.customer = %(customer)s"
+    # if filters.get("customer"):
+    #     delivery_conditions_master += " AND dn.customer = %(customer)s"
     if filters.get("fabric_item"):
         delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
 
