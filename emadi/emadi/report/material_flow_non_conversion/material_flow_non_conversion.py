@@ -310,7 +310,7 @@ def execute(filters=None):
         WHERE
             si.docstatus = 1
             {delivery_conditions_master}
-            AND sii.is_return = 0
+            AND si.is_return = 0
     """, filters, as_dict=True)
 
 
