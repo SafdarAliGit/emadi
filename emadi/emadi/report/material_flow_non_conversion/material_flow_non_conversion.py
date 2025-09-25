@@ -73,7 +73,7 @@ def execute(filters=None):
         AND sri.item_group = 'Yarn'
         {opening_qty_filter_yarn}
     GROUP BY
-        sri.item_code as yarn_count
+        sri.item_code
     """, filters, as_dict=True)
     
     opening_qty_beam = frappe.db.sql(f"""
