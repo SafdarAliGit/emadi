@@ -27,13 +27,13 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        opening_qty += " AND sed.`item` = %(yarn_count)s"
+        opening_qty += " AND sr.`item` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
 
     if filters.get("brand"):
-        conditions2 += " AND sed.brand = %(brand)s"
+        conditions2 += " AND sri.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        opening_qty += " AND sed.`item` = %(yarn_count_weft)s"
+        opening_qty += " AND sri.`item` = %(yarn_count_weft)s"
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
         
     if filters.get("yarn_count_weft"):
@@ -71,7 +71,7 @@ def execute(filters=None):
     WHERE
         sr.docstatus = 1
         {opening_qty}
-    GROUP BY sri.item_code;
+    GROUP BY sri.item_code
     """, filters, as_dict=True)
 
     if opening_qty:

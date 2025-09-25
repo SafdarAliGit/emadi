@@ -60,7 +60,7 @@ frappe.query_reports["Material Flow Non Conversion"] = {
 			"label": "Fabric Item",
 			"fieldtype": "Link",
 			"options": "Item",
-			"reqd": 1,
+			// "reqd": 1,
 			"get_query": function() {
 				return {
 					"filters": {
