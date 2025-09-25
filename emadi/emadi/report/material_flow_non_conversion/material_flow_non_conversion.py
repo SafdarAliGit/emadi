@@ -64,7 +64,6 @@ def execute(filters=None):
     # opening qty
     opening_qty_yarn = frappe.db.sql(f"""
     SELECT 
-        sri.item_code as yarn_item,
         SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs,
     FROM `tabStock Reconciliation Item` sri
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
@@ -75,7 +74,6 @@ def execute(filters=None):
     
     opening_qty_beam = frappe.db.sql(f"""
     SELECT 
-        sri.item_code as yarn_item,
         SUM(CASE WHEN sri.item_group = 'Beam' THEN sri.qty ELSE 0 END) as meter
     FROM `tabStock Reconciliation Item` sri
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
