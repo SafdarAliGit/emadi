@@ -90,7 +90,7 @@ def execute(filters=None):
 
  
     data.append({
-        "posting_date": "<b>Opening Qty Yarn</b>",
+        "posting_date": "<b>Opening Qty</b>",
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
@@ -102,18 +102,6 @@ def execute(filters=None):
         "return": ""
     })
     data.extend(opening_qty_yarn)
-    data.append({
-        "posting_date": "<b>Opening Qty Beam</b>",
-        "gate_pass": "",
-        "yarn_item": "",
-        "brand": "",
-        "bags": "",
-        "lbs": "",
-        "meter": "",
-        "purpose": "",
-        "yarn_count": "",
-        "return": ""
-    })
     data.extend(opening_qty_beam)
     # Warp Data
     data_warp = frappe.db.sql(f"""
