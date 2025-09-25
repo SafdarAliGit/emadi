@@ -70,7 +70,6 @@ def execute(filters=None):
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
-        {opening_qty_filter}
     GROUP BY sri.item_code
     """, filters, as_dict=True)
 
