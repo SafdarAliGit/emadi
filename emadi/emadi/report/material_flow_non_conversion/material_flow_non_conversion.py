@@ -13,7 +13,7 @@ def execute(filters=None):
         {"label": "Meter", "fieldname": "meter", "fieldtype": "Data", "width": 120},
         {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
     ]
-    opening_qty = ""
+    opening_qty_filter = ""
     conditions = ""
     conditions2 = ""
     weft_production_conditions = ""
@@ -27,13 +27,13 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        opening_qty += " AND sr.`item_code` = %(yarn_count)s"
+        opening_qty_filter += " AND sr.`item_code` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
 
     if filters.get("brand"):
         conditions2 += " AND sri.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        opening_qty += " AND sri.`item_code` = %(yarn_count_weft)s"
+        opening_qty_filter += " AND sri.`item_code` = %(yarn_count_weft)s"
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
         
     if filters.get("yarn_count_weft"):
@@ -61,7 +61,7 @@ def execute(filters=None):
     data = []
 
     # opening qty
-    opening_qty = frappe.db.sql("""
+    opening_qty = frappe.db.sql(f"""
     SELECT 
         sri.item_code as yarn_item,
         SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs,
@@ -70,7 +70,7 @@ def execute(filters=None):
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
-        {opening_qty}
+        {opening_qty_filter}
     GROUP BY sri.item_code
     """, filters, as_dict=True)
 
