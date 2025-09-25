@@ -64,7 +64,7 @@ def execute(filters=None):
     # opening qty
     opening_qty_yarn = frappe.db.sql(f"""
     SELECT 
-        SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs,
+        SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs
     FROM `tabStock Reconciliation Item` sri
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
