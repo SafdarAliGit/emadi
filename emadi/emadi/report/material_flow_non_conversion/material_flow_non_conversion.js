@@ -35,7 +35,7 @@ frappe.query_reports["Material Flow Non Conversion"] = {
 				return {
 					"filters": {
 						"is_stock_item": 1,
-						"item_group": ["Yarn", "Beam"]
+						"item_group": ["in", ["Yarn", "Beam"]] // Use the "in" operator
 					}
 				};
 			}
