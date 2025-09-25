@@ -21,9 +21,9 @@ frappe.ui.form.on('Fabric Construction', {
 
 		frm.set_query('yarn_count','fabric_construction_item', function() {
 			return {
-				"filters": {
-					"item_group": "Yarn"
-				}
+				"filters": [
+					["item_group", "IN", ["Yarn", "Beam"]]
+				]
 			}
 		})
 
