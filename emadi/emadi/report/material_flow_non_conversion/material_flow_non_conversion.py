@@ -13,7 +13,8 @@ def execute(filters=None):
         {"label": "Meter", "fieldname": "meter", "fieldtype": "Data", "width": 120},
         {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
     ]
-    opening_qty_filter = ""
+    opening_qty_filter_yarn = ""
+    opening_qty_filter_beam = ""
     conditions = ""
     conditions2 = ""
     weft_production_conditions = ""
@@ -27,13 +28,13 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        opening_qty_filter += " AND sri.`item_code` = %(yarn_count)s"
+        opening_qty_filter_yarn += " AND sri.`item_code` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
 
     if filters.get("brand"):
         conditions2 += " AND sri.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        opening_qty_filter += " AND sri.`item_code` = %(yarn_count_weft)s"
+        opening_qty_filter_beam += " AND sri.`item_code` = %(yarn_count_weft)s"
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
         
     if filters.get("yarn_count_weft"):
@@ -61,32 +62,55 @@ def execute(filters=None):
     data = []
 
     # opening qty
-    opening_qty = frappe.db.sql(f"""
+    opening_qty_yarn = frappe.db.sql(f"""
     SELECT 
         sri.item_code as yarn_item,
         SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs,
+    FROM `tabStock Reconciliation Item` sri
+    LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
+    WHERE
+        sr.docstatus = 1
+        {opening_qty_filter_yarn}
+    """, filters, as_dict=True)
+    
+    opening_qty_beam = frappe.db.sql(f"""
+    SELECT 
+        sri.item_code as yarn_item,
         SUM(CASE WHEN sri.item_group = 'Beam' THEN sri.qty ELSE 0 END) as meter
     FROM `tabStock Reconciliation Item` sri
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
-    GROUP BY sri.item_code
+        {opening_qty_filter_beam}
     """, filters, as_dict=True)
 
-    if opening_qty:
-        data.append({
-            "posting_date": "<b>Opening Qty</b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": "",
-            "lbs": "",
-            "meter": "",
-            "purpose": "",
-            "yarn_count": "",
-            "return": ""
-        })
-        data.extend(opening_qty)
+ 
+    data.append({
+        "posting_date": "<b>Opening Qty Yarn</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",  
+        "meter": "",
+        "purpose": "",
+        "yarn_count": "",
+        "return": ""
+    })
+    data.extend(opening_qty_yarn)
+    data.append({
+        "posting_date": "<b>Opening Qty Beam</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",
+        "meter": "",
+        "purpose": "",
+        "yarn_count": "",
+        "return": ""
+    })
+    data.extend(opening_qty_beam)
     # Warp Data
     data_warp = frappe.db.sql(f"""
     SELECT
