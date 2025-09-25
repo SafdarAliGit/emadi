@@ -70,7 +70,6 @@ def execute(filters=None):
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
-        AND sri.item_group = 'Yarn'
         {opening_qty_filter_yarn}
     GROUP BY
         sri.item_code
@@ -84,7 +83,6 @@ def execute(filters=None):
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
-        AND sri.item_group = 'Beam'
         {opening_qty_filter_beam}
     GROUP BY
         sri.item_code
