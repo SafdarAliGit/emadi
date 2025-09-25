@@ -64,21 +64,27 @@ def execute(filters=None):
     # opening qty
     opening_qty_yarn = frappe.db.sql(f"""
     SELECT 
-        SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs
+        SUM(sri.qty) as lbs
     FROM `tabStock Reconciliation Item` sri
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
+        AND sri.item_group = 'Yarn'
+    GROUP BY
+        sri.item_code
         {opening_qty_filter_yarn}
     """, filters, as_dict=True)
     
     opening_qty_beam = frappe.db.sql(f"""
     SELECT 
-        SUM(CASE WHEN sri.item_group = 'Beam' THEN sri.qty ELSE 0 END) as meter
+        SUM(sri.qty) as meter
     FROM `tabStock Reconciliation Item` sri
     LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
     WHERE
         sr.docstatus = 1
+        AND sri.item_group = 'Beam'
+    GROUP BY
+        sri.item_code
         {opening_qty_filter_beam}
     """, filters, as_dict=True)
 
