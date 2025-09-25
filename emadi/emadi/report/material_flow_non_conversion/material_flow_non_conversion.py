@@ -27,7 +27,7 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        opening_qty_filter += " AND sr.`item_code` = %(yarn_count)s"
+        opening_qty_filter += " AND sri.`item_code` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
 
     if filters.get("brand"):
