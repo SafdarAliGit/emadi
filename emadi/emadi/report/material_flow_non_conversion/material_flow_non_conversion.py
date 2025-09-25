@@ -58,6 +58,33 @@ def execute(filters=None):
     
     data = []
 
+    # opening qty
+    opening_qty = frappe.db.sql("""
+    SELECT 
+        sri.item_code as yarn_item,
+        SUM(CASE WHEN sri.item_group = 'Yarn' THEN sri.qty ELSE 0 END) as lbs,
+        SUM(CASE WHEN sri.item_group = 'Fabric' THEN sri.qty ELSE 0 END) as meter
+    FROM `tabStock Reconciliation Item` sri
+    LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
+    WHERE
+        sr.docstatus = 1
+    GROUP BY sri.item_code;
+    """, as_dict=True)
+
+    if opening_qty:
+        data.append({
+            "posting_date": "<b>Opening Qty</b>",
+            "gate_pass": "",
+            "yarn_item": "",
+            "brand": "",
+            "bags": "",
+            "lbs": "<b>Yarn</b>",
+            "meter": "<b>Fabric</b>",
+            "purpose": "",
+            "yarn_count": "",
+            "return": "<b>"
+        })
+        data.extend(opening_qty)
     # Warp Data
     data_warp = frappe.db.sql(f"""
     SELECT
