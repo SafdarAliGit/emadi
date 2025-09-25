@@ -30,7 +30,7 @@ frappe.query_reports["Material Flow Non Conversion"] = {
 			"label": "Yarn Count Warp",
 			"fieldtype": "Link",
 			"options": "Item",
-			"reqd": 1,
+			// "reqd": 1,
 			"get_query": function() {
 				return {
 					"filters": {
@@ -45,7 +45,7 @@ frappe.query_reports["Material Flow Non Conversion"] = {
 			"label": "Yarn Count Weft",
 			"fieldtype": "Link",
 			"options": "Item",
-			"reqd": 1,
+			// "reqd": 1,
 			"get_query": function() {
 				return {
 					"filters": {
