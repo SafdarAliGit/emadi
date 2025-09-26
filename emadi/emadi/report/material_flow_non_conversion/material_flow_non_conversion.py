@@ -118,21 +118,21 @@ def execute(filters=None):
     GROUP BY
         pri.item_code
     """, filters, as_dict=True)
-    if purchase_receit_qty_yarn:
-        data.append({
-            "posting_date": "<b>Purchase Receipt Qty</b>",
-            "gate_pass": "",
-            "yarn_item": "",
-            "brand": "",
-            "bags": "",
-            "lbs": "",  
-            "meter": "",
-            "purpose": "",
-            "yarn_count": "",
-            "return": ""
-        })
+
+    data.append({
+        "posting_date": "<b>Purchase Receipt Qty</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",  
+        "meter": "",
+        "purpose": "",
+        "yarn_count": "",
+        "return": ""
+    })
     
-        data.extend(purchase_receit_qty_yarn)
+    data.extend(purchase_receit_qty_yarn)
     # Warp Data
     data_warp = frappe.db.sql(f"""
     SELECT
