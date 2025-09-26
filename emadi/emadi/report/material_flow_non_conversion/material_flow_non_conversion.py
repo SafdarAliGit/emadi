@@ -103,6 +103,32 @@ def execute(filters=None):
     })
     data.extend(opening_qty_yarn)
     data.extend(opening_qty_beam)
+    # Purchase receit qty
+    data.append({
+        "posting_date": "<b>Purchase Receipt Qty</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",  
+        "meter": "",
+        "purpose": "",
+        "yarn_count": "",
+        "return": ""
+    })
+    purchase_receit_qty_yarn = frappe.db.sql(f"""
+    SELECT 
+        pri.item_code as yarn_item,
+        SUM(pri.qty) as meter
+    FROM `tabPurchase Receipt Item` pri
+    LEFT JOIN `tabPurchase Receipt` pr ON pri.parent = pr.name
+    WHERE
+        pr.docstatus = 1
+        {opening_qty_filter_yarn}
+    GROUP BY
+        pri.item_code
+    """, filters, as_dict=True)
+    data.extend(purchase_receit_qty_yarn)
     # Warp Data
     data_warp = frappe.db.sql(f"""
     SELECT
