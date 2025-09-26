@@ -14,6 +14,7 @@ def execute(filters=None):
         {"label": "Return", "fieldname": "return", "fieldtype": "Data", "width": 120}
     ]
     opening_qty_filter_yarn = ""
+    opening_qty_filter_purchase_receipt = ""
     opening_qty_filter_beam = ""
     conditions = ""
     conditions2 = ""
@@ -29,6 +30,7 @@ def execute(filters=None):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
         opening_qty_filter_yarn += " AND sri.`item_code` = %(yarn_count)s"
+        opening_qty_filter_purchase_receipt += " AND pri.`item_code` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
 
     if filters.get("brand"):
