@@ -126,7 +126,7 @@ def execute(filters=None):
     LEFT JOIN `tabPurchase Receipt` pr ON pri.parent = pr.name
     WHERE
         pr.docstatus = 1
-        {opening_qty_filter_yarn}
+        {opening_qty_filter_purchase_receipt}
     GROUP BY
         pri.item_code
     """, filters, as_dict=True)
