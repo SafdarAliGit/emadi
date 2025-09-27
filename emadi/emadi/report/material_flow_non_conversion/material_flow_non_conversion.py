@@ -30,7 +30,6 @@ def execute(filters=None):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
         opening_qty_filter_yarn += " AND sri.`item_code` = %(yarn_count)s"
-        opening_qty_filter_purchase_receipt += " AND pri.`item_code` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
 
     if filters.get("brand"):
@@ -38,6 +37,7 @@ def execute(filters=None):
     if filters.get("yarn_count_weft"):
         opening_qty_filter_beam += " AND sri.`item_code` = %(yarn_count_weft)s"
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
+        opening_qty_filter_purchase_receipt += " AND pri.`item_code` = %(yarn_count_weft)s"
         
     if filters.get("yarn_count_weft"):
         weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
