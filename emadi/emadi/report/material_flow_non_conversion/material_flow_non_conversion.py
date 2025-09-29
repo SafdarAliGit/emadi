@@ -31,14 +31,14 @@ def execute(filters=None):
     if filters.get("yarn_count"):
         opening_qty_filter_yarn += " AND sri.`item_code` = %(yarn_count)s"
         conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
-        opening_qty_filter_purchase_receipt += " AND pri.`item_code` = %(yarn_count)s"
-
+        
     if filters.get("brand"):
         conditions2 += " AND sri.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
         opening_qty_filter_beam += " AND sri.`item_code` = %(yarn_count_weft)s"
         conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
-        
+        opening_qty_filter_purchase_receipt += " AND pri.`item_code` = %(yarn_count_weft)s"
+
         
     if filters.get("yarn_count_weft"):
         weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
@@ -77,7 +77,9 @@ def execute(filters=None):
     GROUP BY
         sri.item_code
     """, filters, as_dict=True)
-    
+
+    opening_qty_yarn_total = sum(row["meter"] or 0 for row in opening_qty_yarn)
+
     opening_qty_beam = frappe.db.sql(f"""
     SELECT 
         sri.item_code as yarn_item,
@@ -91,6 +93,7 @@ def execute(filters=None):
         sri.item_code
     """, filters, as_dict=True)
 
+    opening_qty_beam_total = sum(row["lbs"] or 0 for row in opening_qty_beam)
  
     data.append({
         "posting_date": "<b>Opening Qty</b>",
@@ -110,7 +113,7 @@ def execute(filters=None):
     purchase_receit_qty_yarn = frappe.db.sql(f"""
     SELECT 
         pri.item_code as yarn_item,
-        SUM(pri.qty) as meter
+        SUM(pri.qty) as lbs
     FROM `tabPurchase Receipt Item` pri
     LEFT JOIN `tabPurchase Receipt` pr ON pri.parent = pr.name
     WHERE
@@ -134,6 +137,32 @@ def execute(filters=None):
     })
     
     data.extend(purchase_receit_qty_yarn)
+    purchase_receit_qty_yarn_total = sum(row["lbs"] or 0 for row in purchase_receit_qty_yarn)
+    data.append({
+        "posting_date": "<b>Total</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": (opening_qty_beam_total or 0) + (purchase_receit_qty_yarn_total or 0) ,  
+        "meter": "",
+        "purpose": "",
+        "yarn_count": "",
+        "return": ""
+    })
+    # Fabric Production
+    data.append({
+        "posting_date": "<b>Fabric Prodcution</b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",  
+        "meter": "",
+        "purpose": "",
+        "yarn_count": "",
+        "return": ""
+    })
     # Warp Data
     data_warp = frappe.db.sql(f"""
     SELECT
@@ -301,6 +330,7 @@ def execute(filters=None):
     total_warp = sum(row["lbs"] or 0 for row in sizing_program_data)
     total_production_length = sum(row["meter"] or 0 for row in sizing_program_data)
     ratio = total_warp / total_production_length if total_production_length else 0
+    production_length_and_opening_qty_meter = total_production_length + opening_qty_yarn_total
 
     if sizing_program_data:
         sizing_program_data.append({
@@ -309,7 +339,7 @@ def execute(filters=None):
             "purpose": "Ratio: " + str(round(ratio, 4)) if ratio else "Ratio: 0",
             "bags": "",
             "lbs": "<b>" + str(round(total_warp, 2)) + "</b>",
-            "meter":"<b>" + str(round(total_production_length, 2)) + " Mtr</b>",
+            "meter":"<b>" + str(round(production_length_and_opening_qty_meter, 2)) + " Mtr</b>",
             "gate_pass": ""
         })
 
@@ -360,8 +390,8 @@ def execute(filters=None):
     data.extend(warp_production_data)
 
     # Yarn Balance Calculation
-    waste_percentage_bags = float(total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 0) * (float(p) / 100) if p else 0
-    remaining_bags = (total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 0) - waste_percentage_bags
+    waste_percentage_bags = float(production_length_and_opening_qty_meter if production_length_and_opening_qty_meter else total_received_meter_warp if total_received_meter_warp else 0) * (float(p) / 100) if p else 0
+    remaining_bags = (production_length_and_opening_qty_meter if production_length_and_opening_qty_meter else total_received_meter_warp if total_received_meter_warp else 0) - waste_percentage_bags
     yarn_balance_data = [{
         "posting_date": "<b>Yarn Warp Balance(Length)</b>",
         "gate_pass": "",
@@ -443,7 +473,7 @@ def execute(filters=None):
         "brand": "",
         "bags": "",
         "lbs": "",
-        "meter":str(round((total_production_length if total_production_length else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)) + " Mtr",
+        "meter":str(round((production_length_and_opening_qty_meter if production_length_and_opening_qty_meter else 0) - (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0), 2)) + " Mtr",
         "purpose": "",
         "yarn_count": ""
     })
@@ -465,7 +495,7 @@ def execute(filters=None):
         "gate_pass": "",
         "yarn_item": "",
         "brand": "",
-        "bags": str(round(((round(total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 0, 2) - round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)) / (total_production_length if total_production_length else total_received_meter_warp if total_received_meter_warp else 1) * 100), 2)),
+        "bags": str(round(((round(production_length_and_opening_qty_meter if production_length_and_opening_qty_meter else total_received_meter_warp if total_received_meter_warp else 0, 2) - round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item else 0, 2)) / (production_length_and_opening_qty_meter if production_length_and_opening_qty_meter else total_received_meter_warp if total_received_meter_warp else 1) * 100), 2)),
         "lbs": "",
         "purpose": "",
         "yarn_count": ""
