@@ -6,13 +6,16 @@ def execute(filters=None):
         {"label": "Quality", "fieldname": "quality", "fieldtype": "Data", "width": 120},
         {"label": "Warehouse", "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 150},
         {"label": "Meter", "fieldname": "yarn_qty", "fieldtype": "Float", "width": 120},
-        {"label": "Consumption", "fieldname": "consumption", "fieldtype": "Float", "width": 120},
+        {"label": "Lbs", "fieldname": "yarn", "fieldtype": "Float", "width": 120},
         {"label": "Pick", "fieldname": "pick", "fieldtype": "Data", "width": 100},
     ]
+     # Return empty data if no filters are applied
+    if not filters or not filters.get("fabric_item"):
+        return columns, []
 
     quality_filters = ""
-    if filters.get("quality"):
-        qualities = ", ".join([f"'{q}'" for q in filters.get("quality")])
+    if filters.get("fabric_item"):
+        qualities = ", ".join([f"'{q}'" for q in filters.get("fabric_item")])
         quality_filters += f" AND fp.fabric_item IN ({qualities})"
 
     # ── Fetch Data CLOTH ─────────────────────────────
@@ -20,7 +23,6 @@ def execute(filters=None):
         SELECT
             fpi.warehouse,
             fpi.yarn_qty,
-            fpi.consumption,
             fp.fabric_item AS quality,
             fp.posting_date,
             i.custom_pick AS pick
@@ -39,10 +41,9 @@ def execute(filters=None):
         ORDER BY
             fp.posting_date DESC, fpi.name ASC
     	""", filters, as_dict=True)
- 	# Totals
-        # Totals
-    total_meter_cloth = sum((row.get("yarn_qty") or 0) for row in cloth_data)
-    total_consumption_cloth = sum((row.get("consumption") or 0) for row in cloth_data)
+ 	
+    # Totals
+    total_yarn_qty_cloth = sum((row.get("yarn_qty") or 0) for row in cloth_data)
 
     # ── Prepare Data ─────────────────────────────
     data = []
@@ -53,30 +54,26 @@ def execute(filters=None):
         "quality": "",
         "warehouse": "CLOTH",
         "yarn_qty": "",
-        "consumption": "",
         "pick": ""
     })
 
     # Main data
     data.extend(cloth_data)
 
-   
     data.append({
         "posting_date": "",
         "quality": "",
         "warehouse": "Total",
-        "yarn_qty": round(total_meter_cloth, 2),
-        "consumption": round(total_consumption_cloth, 2),
+        "yarn_qty": round(total_yarn_qty_cloth, 2),
         "pick": ""
     })
 
 
-	# ── Fetch Data YARN ─────────────────────────────
+    # ── Fetch Data YARN ─────────────────────────────
     yarn_data = frappe.db.sql(f"""
         SELECT
             fpi.warehouse,
-            fpi.yarn_qty,
-            fpi.consumption,
+            fpi.yarn_qty as yarn,
             fp.fabric_item AS quality,
             fp.posting_date,
             i.custom_pick AS pick
@@ -95,33 +92,29 @@ def execute(filters=None):
         ORDER BY
             fp.posting_date DESC, fpi.name ASC
     	""", filters, as_dict=True)
- 	# Totals
-        # Totals
-    total_meter_yarn = sum((row.get("yarn_qty") or 0) for row in yarn_data)
-    total_consumption_yarn = sum((row.get("consumption") or 0) for row in yarn_data)
+ 	
+    # # Totals
+    total_meter_yarn = sum((row.get("yarn") or 0) for row in yarn_data)
 
     # ── Prepare Data ─────────────────────────────
 
-    # Header row
+    #Header row
     data.append({
         "posting_date": "",
         "quality": "",
         "warehouse": "YARN",
-        "yarn_qty": "",
-        "consumption": "",
+        "lbs":"" ,
         "pick": ""
     })
 
     # Main data
     data.extend(yarn_data)
 
-   
     data.append({
         "posting_date": "",
         "quality": "",
         "warehouse": "Total",
-        "yarn_qty": round(total_meter_yarn, 2),
-        "consumption": round(total_consumption_yarn, 2),
+        "lbs": round(total_meter_yarn, 2),
         "pick": ""
     })
 
