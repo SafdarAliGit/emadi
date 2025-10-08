@@ -8,6 +8,13 @@ class DailyFabricProduction(Document):
 			if not self.daily_fabric_production_item[i].qty or self.daily_fabric_production_item[i].qty <= 0:
 				self.daily_fabric_production_item.remove(self.daily_fabric_production_item[i])
 
+	def on_update(self):
+		total = 0
+		for item in self.daily_fabric_production_item:
+			total += flt(item.qty or 0)
+		self.total_qty = total
+
+		
 				
 	def on_submit(self):
 		if self.daily_fabric_production_item:
