@@ -3,6 +3,12 @@ from frappe.model.document import Document
 
 
 class DailyFabricProduction(Document):
+	def validate(self):
+		for i in reversed(range(len(self.daily_fabric_production_item))):
+			if not self.daily_fabric_production_item[i].qty or self.daily_fabric_production_item[i].qty <= 0:
+				self.daily_fabric_production_item.remove(self.daily_fabric_production_item[i])
+
+				
 	def on_submit(self):
 		if self.daily_fabric_production_item:
 			for item in self.daily_fabric_production_item:

@@ -16,8 +16,7 @@
    "fieldname": "qty",
    "fieldtype": "Float",
    "in_list_view": 1,
-   "label": "Qty",
-   "reqd": 1
+   "label": "Qty"
   },
   {
    "fieldname": "status",
@@ -46,7 +45,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-06-25 17:00:23.121693",
+ "modified": "2025-10-08 15:15:55.159873",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Daily Fabric Production Item",

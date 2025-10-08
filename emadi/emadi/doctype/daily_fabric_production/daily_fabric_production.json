@@ -12,6 +12,8 @@
   "column_break_yo4mw",
   "time",
   "section_break_52pgi",
+  "fetch_all_fabric_items",
+  "section_break_cl10w",
   "daily_fabric_production_item",
   "section_break_jcyst",
   "total_qty",
@@ -65,6 +67,15 @@
   {
    "fieldname": "column_break_yo4mw",
    "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "fetch_all_fabric_items",
+   "fieldtype": "Button",
+   "label": "Fetch All Fabric Items"
+  },
+  {
+   "fieldname": "section_break_cl10w",
+   "fieldtype": "Section Break"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -75,7 +86,7 @@
    "link_fieldname": "daily_fabric_production"
   }
  ],
- "modified": "2025-06-26 15:59:50.398784",
+ "modified": "2025-10-08 15:03:25.289186",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Daily Fabric Production",
