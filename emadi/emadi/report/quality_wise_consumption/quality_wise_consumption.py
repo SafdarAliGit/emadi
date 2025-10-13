@@ -4,8 +4,8 @@ def execute(filters=None):
     columns = [
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 140},
         {"label": "Quality", "fieldname": "quality", "fieldtype": "Data", "width": 120},
-        {"label": "Warehouse", "fieldname": "warehouse", "fieldtype": "Link", "options": "Warehouse", "width": 150},
-        {"label": "Meter", "fieldname": "yarn_qty", "fieldtype": "Float", "width": 120},
+        {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 120},
+         {"label": "Meter", "fieldname": "yarn_qty", "fieldtype": "Float", "width": 120},
         {"label": "Lbs", "fieldname": "yarn", "fieldtype": "Float", "width": 120},
         {"label": "Pick", "fieldname": "pick", "fieldtype": "Data", "width": 100},
     ]
@@ -21,9 +21,9 @@ def execute(filters=None):
     # ── Fetch Data CLOTH ─────────────────────────────
     cloth_data = frappe.db.sql(f"""
         SELECT
-            fpi.warehouse,
-            fpi.yarn_qty,
+            SUM(fpi.yarn_qty) as yarn_qty,
             fp.fabric_item AS quality,
+            fpi.yarn_count,
             fp.posting_date,
             i.custom_pick AS pick
         FROM
@@ -38,6 +38,8 @@ def execute(filters=None):
             fp.docstatus = 1
             AND fpi.`for` = 'Warp'
             {quality_filters}
+        GROUP BY
+            fp.fabric_item
         ORDER BY
             fp.posting_date DESC, fpi.name ASC
     	""", filters, as_dict=True)
@@ -51,8 +53,8 @@ def execute(filters=None):
     # Header row
     data.append({
         "posting_date": "",
-        "quality": "",
-        "warehouse": "CLOTH",
+        "quality": "CLOTH",
+        "yarn_count": "",
         "yarn_qty": "",
         "pick": ""
     })
@@ -62,8 +64,8 @@ def execute(filters=None):
 
     data.append({
         "posting_date": "",
-        "quality": "",
-        "warehouse": "Total",
+        "quality": "Total",
+        "yarn_count": "",
         "yarn_qty": round(total_yarn_qty_cloth, 2),
         "pick": ""
     })
@@ -72,9 +74,9 @@ def execute(filters=None):
     # ── Fetch Data YARN ─────────────────────────────
     yarn_data = frappe.db.sql(f"""
         SELECT
-            fpi.warehouse,
-            fpi.yarn_qty as yarn,
+            SUM(fpi.yarn_qty) as yarn,
             fp.fabric_item AS quality,
+            fpi.yarn_count,
             fp.posting_date,
             i.custom_pick AS pick
         FROM
@@ -89,8 +91,11 @@ def execute(filters=None):
             fp.docstatus = 1
             AND fpi.`for` = 'Weft'
             {quality_filters}
+        GROUP BY
+            fpi.yarn_count
         ORDER BY
             fp.posting_date DESC, fpi.name ASC
+          
     	""", filters, as_dict=True)
  	
     # # Totals
@@ -101,9 +106,9 @@ def execute(filters=None):
     #Header row
     data.append({
         "posting_date": "",
-        "quality": "",
-        "warehouse": "YARN",
-        "lbs":"" ,
+        "quality": "YARN",
+        "yarn_count": "",
+        "yarn_qty": "",
         "pick": ""
     })
 
@@ -112,9 +117,9 @@ def execute(filters=None):
 
     data.append({
         "posting_date": "",
-        "quality": "",
-        "warehouse": "Total",
-        "lbs": round(total_meter_yarn, 2),
+        "quality": "Total",
+        "yarn_count": "",
+        "yarn_qty": round(total_meter_yarn, 2),
         "pick": ""
     })
 
