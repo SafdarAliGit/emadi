@@ -11,7 +11,7 @@ class DailyFabricProduction(Document):
 	def on_update(self):
 		total = 0
 		for item in self.daily_fabric_production_item:
-			total += flt(item.qty or 0)
+			total += float(item.qty or 0)
 		self.total_qty = total
 
 		
