@@ -1,6 +1,7 @@
 import frappe
 
 def execute(filters=None):
+    data = []
     columns = [
         {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 140},
         {"label": "Quality", "fieldname": "quality", "fieldtype": "Data", "width": 120},
@@ -17,6 +18,54 @@ def execute(filters=None):
     if filters.get("fabric_item"):
         qualities = ", ".join([f"'{q}'" for q in filters.get("fabric_item")])
         quality_filters += f" AND fp.fabric_item IN ({qualities})"
+    sizing_program_conditions = ""
+    if filters.get("fabric_item"):
+        sizing_program_conditions += f" AND spi.fabric_construction IN ({qualities})"
+
+    #__Sizing Program__
+    data.append({
+        "posting_date": "",
+        "quality": "Sizing Program",
+        "yarn_count": "",
+        "yarn": "",
+        "yarn_qty": "",
+        "pick": ""
+    })
+
+    sizing_program_data = frappe.db.sql(f"""
+        SELECT
+            "" AS posting_date,
+            spi.fabric_construction AS quality,
+            spi.item AS yarn_count,
+            ROUND(SUM(spi.lbs), 5) AS yarn,
+            ROUND(SUM(spi.length), 5) AS yarn_qty,
+            "" AS pick
+        FROM
+            `tabSizing Program` AS sp
+        LEFT JOIN
+            `tabSizing Program Item` AS spi ON sp.name = spi.parent
+        WHERE
+            sp.docstatus = 1
+            {sizing_program_conditions}
+        GROUP BY
+            spi.item
+    """, filters, as_dict=True)
+
+    total_warp = sum(row["yarn"] or 0 for row in sizing_program_data)
+    total_production_length = sum(row["yarn_qty"] or 0 for row in sizing_program_data)
+    ratio = total_warp / total_production_length if total_production_length else 0
+
+    if sizing_program_data:
+        sizing_program_data.append({
+            "posting_date": "",
+            "quality": "<b>Total Warp</b>",
+            "yarn_count": f"Ratio: {ratio}",
+            "yarn": "<b>" + str(round(total_warp, 2)) + "</b>",
+            "yarn_qty":"<b>" + str(round(total_production_length, 2)) + " Mtr</b>",
+            "pick": ""
+        })
+
+    data.extend(sizing_program_data)
 
     # ── Fetch Data CLOTH ─────────────────────────────
     cloth_data = frappe.db.sql(f"""
@@ -25,7 +74,9 @@ def execute(filters=None):
             fp.fabric_item AS quality,
             fpi.yarn_count,
             fp.posting_date,
-            i.custom_pick AS pick
+            i.custom_pick AS pick,
+            SUM(fpi.yarn_qty) * {ratio} as yarn
+
         FROM
             `tabFabric Production Item` fpi
         INNER JOIN
@@ -48,7 +99,7 @@ def execute(filters=None):
     total_yarn_qty_cloth = sum((row.get("yarn_qty") or 0) for row in cloth_data)
 
     # ── Prepare Data ─────────────────────────────
-    data = []
+  
 
     # Header row
     data.append({
