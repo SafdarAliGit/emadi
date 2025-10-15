@@ -31,8 +31,7 @@
    "fieldtype": "Link",
    "in_list_view": 1,
    "label": "Fabric Production",
-   "options": "Fabric Production",
-   "read_only": 1
+   "options": "Fabric Production"
   },
   {
    "fieldname": "fabric_item",
@@ -45,7 +44,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-10-08 15:15:55.159873",
+ "modified": "2025-10-15 22:31:10.998251",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Daily Fabric Production Item",
