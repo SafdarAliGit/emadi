@@ -2,6 +2,9 @@ import frappe
 from frappe.model.document import Document
 
 def onsubmit(doc, method):
+    if doc.custom_non_conversion:
+        return
+        
     if doc.is_return == 1:
         stock_entry = frappe.new_doc("Stock Entry")
         stock_entry.set_posting_time = 1

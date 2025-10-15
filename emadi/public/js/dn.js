@@ -1,6 +1,7 @@
 frappe.ui.form.on('Delivery Note', {
     fabric_qty: function(frm) {
-        if (frm.doc.fabric_qty) {
+        if (frm.doc.custom_non_conversion==0) {
+            if (frm.doc.fabric_qty) {
             $.each(frm.doc.items || [], function(index, row) {
                 frappe.model.set_value(row.doctype, row.name, "qty", frm.doc.fabric_qty);
             });
@@ -11,5 +12,7 @@ frappe.ui.form.on('Delivery Note', {
             });
             frm.refresh_field("bom_items_dn");
         }
+        }
+        
     }
 });
