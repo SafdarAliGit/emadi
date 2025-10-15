@@ -115,7 +115,7 @@
   },
   {
    "fieldname": "daily_fabric_production",
-   "fieldtype": "Link",
+   "fieldtype": "Data",
    "hidden": 1,
    "label": "Daily Fabric Production",
    "options": "Daily Fabric Production"
@@ -174,7 +174,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-08-07 20:19:22.366253",
+ "modified": "2025-10-15 22:39:46.797767",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",
