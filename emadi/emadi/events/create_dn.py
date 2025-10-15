@@ -12,10 +12,10 @@ def onsubmit(doc, method):
         stock_entry.return_entry = 1
 
         stock_entry.append("items", {
-            "item_code": doc.fabric_item,
+            "item_code": doc.custom_fabric_item,
             "qty": abs(doc.fabric_qty),
             "t_warehouse": doc.set_warehouse,
-            "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
+            "uom": frappe.db.get_value("Item", doc.custom_fabric_item, "stock_uom"),
             "allow_zero_valuation_rate": 1
         })
 
@@ -32,10 +32,10 @@ def onsubmit(doc, method):
 
         # Add item row
         stock_entry.append("items", {
-            "item_code": doc.fabric_item,
+            "item_code": doc.custom_fabric_item,
             "qty": doc.fabric_qty,
             "s_warehouse": doc.set_warehouse,
-            "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
+            "uom": frappe.db.get_value("Item", doc.custom_fabric_item, "stock_uom"),
             "allow_zero_valuation_rate": 1
         })
 
