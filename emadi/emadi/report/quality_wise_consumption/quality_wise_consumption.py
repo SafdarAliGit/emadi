@@ -3,12 +3,10 @@ import frappe
 def execute(filters=None):
     data = []
     columns = [
-        {"label": "Posting Date", "fieldname": "posting_date", "fieldtype": "Date", "width": 140},
         {"label": "Quality", "fieldname": "quality", "fieldtype": "Data", "width": 120},
         {"label": "Yarn Count", "fieldname": "yarn_count", "fieldtype": "Data", "width": 120},
          {"label": "Meter", "fieldname": "yarn_qty", "fieldtype": "Float", "width": 120},
-        {"label": "Lbs", "fieldname": "yarn", "fieldtype": "Float", "width": 120},
-        {"label": "Pick", "fieldname": "pick", "fieldtype": "Data", "width": 100},
+        {"label": "Lbs", "fieldname": "yarn", "fieldtype": "Float", "width": 120}
     ]
      # Return empty data if no filters are applied
     if not filters or not filters.get("fabric_item"):
@@ -24,22 +22,18 @@ def execute(filters=None):
 
     #__Sizing Program__
     data.append({
-        "posting_date": "",
         "quality": "Sizing Program",
         "yarn_count": "",
         "yarn": "",
-        "yarn_qty": "",
-        "pick": ""
+        "yarn_qty": ""
     })
 
     sizing_program_data = frappe.db.sql(f"""
         SELECT
-            "" AS posting_date,
             spi.fabric_construction AS quality,
             spi.item AS yarn_count,
             ROUND(SUM(spi.lbs), 5) AS yarn,
-            ROUND(SUM(spi.length), 5) AS yarn_qty,
-            "" AS pick
+            ROUND(SUM(spi.length), 5) AS yarn_qty
         FROM
             `tabSizing Program` AS sp
         LEFT JOIN
@@ -48,7 +42,8 @@ def execute(filters=None):
             sp.docstatus = 1
             {sizing_program_conditions}
         GROUP BY
-            spi.item
+            spi.item,
+            spi.fabric_construction
     """, filters, as_dict=True)
 
     total_warp = sum(row["yarn"] or 0 for row in sizing_program_data)
@@ -57,12 +52,10 @@ def execute(filters=None):
 
     if sizing_program_data:
         sizing_program_data.append({
-            "posting_date": "",
             "quality": "<b>Total Warp</b>",
             "yarn_count": f"Ratio: {ratio}",
             "yarn": "<b>" + str(round(total_warp, 2)) + "</b>",
-            "yarn_qty":"<b>" + str(round(total_production_length, 2)) + " Mtr</b>",
-            "pick": ""
+            "yarn_qty":"<b>" + str(round(total_production_length, 2)) + " Mtr</b>"
         })
 
     data.extend(sizing_program_data)
@@ -73,8 +66,6 @@ def execute(filters=None):
             SUM(fpi.yarn_qty) as yarn_qty,
             fp.fabric_item AS quality,
             fpi.yarn_count,
-            fp.posting_date,
-            i.custom_pick AS pick,
             SUM(fpi.yarn_qty) * {ratio} as yarn
 
         FROM
@@ -103,22 +94,18 @@ def execute(filters=None):
 
     # Header row
     data.append({
-        "posting_date": "",
         "quality": "CLOTH",
         "yarn_count": "",
-        "yarn_qty": "",
-        "pick": ""
+        "yarn_qty": ""
     })
 
     # Main data
     data.extend(cloth_data)
 
     data.append({
-        "posting_date": "",
         "quality": "Total",
         "yarn_count": "",
-        "yarn_qty": round(total_yarn_qty_cloth, 2),
-        "pick": ""
+        "yarn_qty": round(total_yarn_qty_cloth, 2)
     })
 
 
@@ -127,9 +114,7 @@ def execute(filters=None):
         SELECT
             SUM(fpi.yarn_qty) as yarn,
             fp.fabric_item AS quality,
-            fpi.yarn_count,
-            fp.posting_date,
-            i.custom_pick AS pick
+            fpi.yarn_count
         FROM
             `tabFabric Production Item` fpi
         INNER JOIN
@@ -143,7 +128,8 @@ def execute(filters=None):
             AND fpi.`for` = 'Weft'
             {quality_filters}
         GROUP BY
-            fpi.yarn_count
+            fpi.yarn_count,
+            fp.fabric_item
         ORDER BY
             fp.posting_date DESC, fpi.name ASC
           
@@ -156,22 +142,18 @@ def execute(filters=None):
 
     #Header row
     data.append({
-        "posting_date": "",
         "quality": "YARN",
         "yarn_count": "",
-        "yarn_qty": "",
-        "pick": ""
+        "yarn_qty": ""
     })
 
     # Main data
     data.extend(yarn_data)
 
     data.append({
-        "posting_date": "",
         "quality": "Total",
         "yarn_count": "",
-        "yarn_qty": round(total_meter_yarn, 2),
-        "pick": ""
+        "yarn_qty": round(total_meter_yarn, 2)
     })
 
     return columns, data
