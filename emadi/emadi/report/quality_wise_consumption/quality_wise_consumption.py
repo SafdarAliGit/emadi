@@ -19,6 +19,35 @@ def execute(filters=None):
     sizing_program_conditions = ""
     if filters.get("fabric_item"):
         sizing_program_conditions += f" AND spi.fabric_construction IN ({qualities})"
+    opening_qty_filter = ""
+    if filters.get("fabric_item"):
+        opening_qty_filter += f" AND sri.item_code IN ({qualities})"
+
+ # opening qty
+    data.append({
+        "quality": "Opening Qty",
+        "yarn_count": "",
+        "yarn": "",
+        "yarn_qty": ""
+    })
+    opening_qty_yarn = frappe.db.sql(f"""
+    SELECT 
+        sri.item_code as quality,
+        SUM(sri.qty) as yarn_qty
+    FROM `tabStock Reconciliation Item` sri
+    LEFT JOIN `tabStock Reconciliation` sr ON sri.parent = sr.name
+    WHERE
+        sr.docstatus = 1
+        {opening_qty_filter}
+    GROUP BY
+        sri.item_code
+    """, filters, as_dict=True)
+    opening_qty_yarn_total = sum(row["yarn_qty"] or 0 for row in opening_qty_yarn)
+    data.append({
+        "quality": "Total",
+        "yarn_count": "",
+        "yarn_qty": round(opening_qty_yarn_total, 2)
+    })
 
     #__Sizing Program__
     data.append({
