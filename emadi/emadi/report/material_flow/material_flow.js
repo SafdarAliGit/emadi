@@ -34,7 +34,7 @@ frappe.query_reports["Material Flow"] = {
 				return {
 					"filters": {
 						"is_stock_item": 1,
-						"item_group": "Yarn"
+						"item_group": ["in", ["Yarn", "Beam"]]
 					}
 				};
 			}
