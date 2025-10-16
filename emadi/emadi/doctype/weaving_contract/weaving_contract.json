@@ -204,6 +204,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "weaving_rate_per_pick",
    "fieldtype": "Data",
    "label": "Weaving Rate Per Pick"
@@ -213,6 +214,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "fieldname": "weaving_rate_per_meter",
    "fieldtype": "Data",
    "label": "Weaving rate per Meter"
@@ -345,7 +347,7 @@
    "link_fieldname": "weaving_contract"
   }
  ],
- "modified": "2025-06-13 18:24:53.389260",
+ "modified": "2025-10-16 18:58:57.400816",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Weaving Contract",
