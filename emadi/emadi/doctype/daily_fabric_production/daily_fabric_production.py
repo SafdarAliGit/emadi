@@ -26,6 +26,13 @@ class DailyFabricProduction(Document):
 				target_warehouse = get_target_warehouse_by_status(item.status)
 				if not target_warehouse:
 					frappe.throw("Target Warehouse not found for status: {0}".format(item.status))
+
+				item_doc = frappe.get_doc("Item", item.fabric_item)
+				if item_doc.custom_conversion == 1:
+					doc.valuation_type = 1
+				else:
+					doc.valuation_type = 0
+				
 				doc.target_warehouse = target_warehouse
 				doc.qty = item.qty
 				doc.fabric_item = item.fabric_item
