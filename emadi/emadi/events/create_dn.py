@@ -68,6 +68,7 @@ def create_dn(weaving_contract):
     delivery_note.customer = contract.weaver  # Ensure 'weaver' is set in Weaving Contract
     delivery_note.fabric_item = contract.construction
     delivery_note.weaving_contract = weaving_contract
+    delivery_note.custom_non_conversion = 0
 
     # Add BOM items if available
     
