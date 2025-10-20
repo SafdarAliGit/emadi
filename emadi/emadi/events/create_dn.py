@@ -2,51 +2,51 @@ import frappe
 from frappe.model.document import Document
 
 def onsubmit(doc, method):
-    if doc.custom_non_conversion:
-        return
+    if not doc.custom_non_conversion:
         
-    if doc.is_return == 1:
-        stock_entry = frappe.new_doc("Stock Entry")
-        stock_entry.set_posting_time = 1
-        stock_entry.stock_entry_type = "Fabric Return"
-        stock_entry.posting_date = doc.posting_date
-        stock_entry.posting_time = doc.posting_time
-        stock_entry.company = doc.company
-        stock_entry.return_entry = 1
+        if doc.is_return == 1:
+            stock_entry = frappe.new_doc("Stock Entry")
+            stock_entry.set_posting_time = 1
+            stock_entry.stock_entry_type = "Fabric Return"
+            stock_entry.posting_date = doc.posting_date
+            stock_entry.posting_time = doc.posting_time
+            stock_entry.company = doc.company
+            stock_entry.return_entry = 1
 
-        stock_entry.append("items", {
-            "item_code": doc.fabric_item,
-            "qty": abs(doc.fabric_qty),
-            "t_warehouse": doc.set_warehouse,
-            "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
-            "allow_zero_valuation_rate": 1
-        })
+            stock_entry.append("items", {
+                "item_code": doc.fabric_item,
+                "qty": abs(doc.fabric_qty),
+                "t_warehouse": doc.set_warehouse,
+                "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
+                "allow_zero_valuation_rate": 1
+            })
 
-        stock_entry.custom_delivery_note_no = doc.name
-        stock_entry.insert()
-        stock_entry.submit()
-    else:
-        stock_entry = frappe.new_doc("Stock Entry")
-        stock_entry.set_posting_time = 1
-        stock_entry.stock_entry_type = "Fabric Delivered"
-        stock_entry.posting_date = doc.posting_date
-        stock_entry.posting_time = doc.posting_time
-        stock_entry.company = doc.company
+            stock_entry.custom_delivery_note_no = doc.name
+            stock_entry.insert()
+            stock_entry.submit()
+        else:
+            stock_entry = frappe.new_doc("Stock Entry")
+            stock_entry.set_posting_time = 1
+            stock_entry.stock_entry_type = "Fabric Delivered"
+            stock_entry.posting_date = doc.posting_date
+            stock_entry.posting_time = doc.posting_time
+            stock_entry.company = doc.company
 
-        # Add item row
-        stock_entry.append("items", {
-            "item_code": doc.fabric_item,
-            "qty": doc.fabric_qty,
-            "s_warehouse": doc.set_warehouse,
-            "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
-            "allow_zero_valuation_rate": 1
-        })
+            # Add item row
+            stock_entry.append("items", {
+                "item_code": doc.fabric_item,
+                "qty": doc.fabric_qty,
+                "s_warehouse": doc.set_warehouse,
+                "uom": frappe.db.get_value("Item", doc.fabric_item, "stock_uom"),
+                "allow_zero_valuation_rate": 1
+            })
 
-        # Link to Delivery Note
-        stock_entry.custom_delivery_note_no = doc.name
+            # Link to Delivery Note
+            stock_entry.custom_delivery_note_no = doc.name
 
-        stock_entry.insert()
-        stock_entry.submit()
+            stock_entry.insert()
+            stock_entry.submit()
+
 
 @frappe.whitelist()
 def create_dn(weaving_contract):
