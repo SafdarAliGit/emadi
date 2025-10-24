@@ -57,13 +57,11 @@ def execute(filters=None):
         delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        delivery_note_conditions += " AND dni.fabric_item = %(fabric_item)s"
-    if filters.get("brand"):
-        delivery_note_conditions += " AND dni.brand = %(brand)s"
-    # if filters.get("from_date"):
-    #     delivery_note_conditions += " AND dn.posting_date >= %(from_date)s"
-    # if filters.get("to_date"):
-    #     delivery_note_conditions += " AND dn.posting_date <= %(to_date)s"
+        delivery_note_conditions += " AND dn.fabric_item = %(fabric_item)s"
+    if filters.get("from_date"):
+        delivery_note_conditions += " AND dn.posting_date >= %(from_date)s"
+    if filters.get("to_date"):
+        delivery_note_conditions += " AND dn.posting_date <= %(to_date)s"
 
     
     data = []
