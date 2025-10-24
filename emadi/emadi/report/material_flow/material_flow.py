@@ -21,6 +21,7 @@ def execute(filters=None):
     warp_production_conditions = ""
     delivery_conditions_master = ""
     delivery_conditions = ""
+    delivery_note_conditions = ""
 
     p = filters.get("p")
 
@@ -54,6 +55,15 @@ def execute(filters=None):
         delivery_conditions_master += " AND dn.customer = %(customer)s"
     if filters.get("fabric_item"):
         delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
+
+    if filters.get("fabric_item"):
+        delivery_note_conditions += " AND dni.fabric_item = %(fabric_item)s"
+    if filters.get("brand"):
+        delivery_note_conditions += " AND dni.brand = %(brand)s"
+    if filters.get("from_date"):
+        delivery_note_conditions += " AND dn.posting_date >= %(from_date)s"
+    if filters.get("to_date"):
+        delivery_note_conditions += " AND dn.posting_date <= %(to_date)s"
 
     
     data = []
@@ -453,6 +463,46 @@ def execute(filters=None):
         
 
     data.extend(delivery_data)
+    data.append({
+        "posting_date": "<b>Delivery Note </b>",
+        "gate_pass": "",
+        "yarn_item": "",
+        "brand": "",
+        "bags": "",
+        "lbs": "",
+        "purpose": "",
+        "yarn_count": ""
+    })
+    delivery_note_data = frappe.db.sql(f"""
+        SELECT
+            dn.posting_date,
+            dn.name as gate_pass,
+            dni.item_code AS yarn_item,
+            dni.qty AS meter
+        FROM
+            `tabDelivery Note` dn
+        LEFT JOIN
+            `tabDelivery Note Item` dni
+        ON dn.name = dni.parent
+        WHERE
+            dn.docstatus = 1
+            {delivery_note_conditions}
+        ORDER BY
+            dn.name, dni.idx
+        """, filters, as_dict=True)
+    
+    if delivery_note_data:
+        delivery_note_data.append({
+            "posting_date": "<b>Total</b>",
+            "gate_pass": "",
+            "yarn_item": "",
+            "brand": "",
+            "bags": "",
+            "lbs": "",
+           "meter": "<b>" + str(sum(row["meter"] or 0 for row in delivery_note_data)) + "</b>"
+        })
+
+    data.extend(delivery_note_data)
     return columns, data
 
 
