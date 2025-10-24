@@ -475,7 +475,7 @@ def execute(filters=None):
         SELECT
             dn.posting_date,
             dn.name as gate_pass,
-            dni.fabric_item AS yarn_item,
+            dn.fabric_item AS yarn_item,
             dni.qty AS meter
         FROM
             `tabDelivery Note` dn
