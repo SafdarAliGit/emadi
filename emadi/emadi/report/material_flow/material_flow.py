@@ -62,6 +62,8 @@ def execute(filters=None):
         delivery_note_conditions += " AND dn.posting_date >= %(from_date)s"
     if filters.get("to_date"):
         delivery_note_conditions += " AND dn.posting_date <= %(to_date)s"
+    if filters.get("customer"):
+        delivery_note_conditions += " AND dn.customer = %(customer)s"
 
     
     data = []
