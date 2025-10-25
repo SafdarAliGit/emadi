@@ -41,12 +41,19 @@ class DailyFabricProduction(Document):
 				# Append source items
 				items = get_fabric_construction(item.fabric_item, item.qty)
 				if items:
+					wh = ""
 					for i in items:
+						if i.get("for") == "Warp":
+							wh = "Beem Store - ET"
+						elif i.get("for") == "Weft":
+							wh = "Stores - ET"
+							
 						it = doc.append("fabric_production_item", {})
 						setattr(it, "for", i.get("for"))
 						setattr(it, "yarn_count", i.get("yarn_count"))
 						setattr(it, "consumption", i.get("consumption"))
 						setattr(it, "yarn_qty", i.get("yarn_qty"))
+						setattr(it, "warehouse", wh)
 
 				try:
 					doc.save()

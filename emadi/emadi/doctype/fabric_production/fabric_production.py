@@ -8,12 +8,12 @@ from emadi.emadi.doctype.utils_functions import get_doctype_by_field
 
 class FabricProduction(Document):
 	
-	def on_update(self):
-		for item in self.fabric_production_item:
-			if item.get("for") == "Weft":
-				item.warehouse = "Stores - ET"
-			elif item.get("for") == "Warp":
-				item.warehouse = "Beem Store - ET"
+	# def on_update(self):
+	# 	for item in self.fabric_production_item:
+	# 		if item.get("for") == "Weft":
+	# 			item.warehouse = "Stores - ET"
+	# 		elif item.get("for") == "Warp":
+	# 			item.warehouse = "Beem Store - ET"
 		
 
 	def on_submit(self):
