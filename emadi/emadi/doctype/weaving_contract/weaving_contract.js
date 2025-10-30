@@ -139,7 +139,7 @@ frappe.ui.form.on('Weaving Contract', {
 		frm.set_query('yarn_count','bom_items', function() {
 			return {
 				"filters": {
-					"item_group": "Yarn"
+					"item_group": ["in", ["Yarn", "Fabric"]]
 				}
 			}
 		})
