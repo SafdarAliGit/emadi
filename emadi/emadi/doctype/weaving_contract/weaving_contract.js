@@ -31,6 +31,24 @@ frappe.ui.form.on('Weaving Contract', {
 			  .css('color', '#ffffff')
 			  .css('font-weight', 'bold');
 		}
+		if (frm.doc.docstatus == 1) {
+		frm.add_custom_button(__("Fabric Return Conversion"), function() {
+			frappe.confirm(
+				'Are you sure you want to create Fabric Return Conversion for this weaving contract?',
+				function() {
+					// On confirm — open new Fabric Return Conversion document
+					frappe.new_doc('Fabric Return Conversion');
+				},
+				function() {
+					// Cancel pressed - do nothing
+				}
+			);
+		})
+		.css('background-color', 'gray')
+		.css('color', '#ffffff')
+		.css('font-weight', 'bold');
+	}
+
 
 		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Open") {
 			frm.add_custom_button(__('CLOSE'), function() {

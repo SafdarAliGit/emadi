@@ -19,7 +19,7 @@
   "posting_date",
   "column_break_dag5g",
   "posting_time",
-  "section_break_i2efb",
+  "section_break_mausg",
   "valuation_type",
   "section_break_fv4bb",
   "fabric_production_item",
@@ -48,10 +48,6 @@
    "fieldtype": "Link",
    "label": "Quality",
    "options": "Fabric Construction"
-  },
-  {
-   "fieldname": "section_break_i2efb",
-   "fieldtype": "Section Break"
   },
   {
    "fieldname": "fabric_production_item",
@@ -117,15 +113,7 @@
    "fieldname": "daily_fabric_production",
    "fieldtype": "Data",
    "hidden": 1,
-   "label": "Daily Fabric Production",
-   "options": "Daily Fabric Production"
-  },
-  {
-   "default": "1",
-   "description": "<span style=\"font-weight: bold; color: orange;\">\nNOTE: If checked it allows 0 valuation,\nif Un checked it does not allow 0 valuation.\n</span>",
-   "fieldname": "valuation_type",
-   "fieldtype": "Check",
-   "label": " <span style=\"font-weight: bold; color: Green;\">Conversion </span>"
+   "label": "Daily Fabric Production"
   },
   {
    "fieldname": "section_break_fv4bb",
@@ -164,6 +152,17 @@
    "fieldtype": "Currency",
    "label": "Weft Rate",
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_mausg",
+   "fieldtype": "Section Break"
+  },
+  {
+   "default": "1",
+   "description": "<span style=\"font-weight: bold; color: orange;\">\nNOTE: If checked it allows 0 valuation,\nif Un checked it does not allow 0 valuation.\n</span>",
+   "fieldname": "valuation_type",
+   "fieldtype": "Check",
+   "label": " <span style=\"font-weight: bold; color: Green;\">Conversion </span>"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -174,7 +173,7 @@
    "link_fieldname": "fabric_production"
   }
  ],
- "modified": "2025-10-15 22:39:46.797767",
+ "modified": "2025-11-01 21:48:55.434683",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production",
