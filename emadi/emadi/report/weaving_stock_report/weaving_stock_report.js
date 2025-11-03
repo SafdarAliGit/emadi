@@ -18,6 +18,12 @@ frappe.query_reports["Weaving Stock Report"] = {
 			"default": frappe.defaults.get_user_default("year_end_date"),
 			"reqd": 1
 		},
+		 {
+            fieldname: "customer",
+            label: __("Customer"),
+            fieldtype: "Link",
+            options: "Customer"
+        },
 		{
 			"fieldname": "brand",
 			"label": "Brand",
