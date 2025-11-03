@@ -51,6 +51,27 @@ def get_conditions_dn(filters, doctype):
         conditions.append(f"`dni`.yarn_count = %(item_code)s")
     return " AND ".join(conditions) if conditions else "1=1"
 
+def get_conditions_return(filters):
+    conditions = []
+    values = {}
+
+    if filters.get("from_date") and filters.get("to_date"):
+        conditions.append("frc.posting_date BETWEEN %(from_date)s AND %(to_date)s")
+        values.update({
+            "from_date": filters["from_date"],
+            "to_date": filters["to_date"]
+        })
+    if filters.get("customer"):
+        conditions.append("frc.customer = %(customer)s")
+        values["customer"] = filters["customer"]
+    if filters.get("yarn_count"):
+        conditions.append("frci.yarn_count = %(yarn_count)s")
+        values["yarn_count"] = filters["yarn_count"]
+
+    where_clause = " AND " + " AND ".join(conditions) if conditions else ""
+    return where_clause, values
+
+
 def get_opening_qty(filters):
     from_date = filters.get("from_date")
     brand = filters.get("brand")
@@ -184,12 +205,41 @@ def get_data(filters):
     dn_stock_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty_dn, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": '', "consumption": ""}]
     dn_stock_result.extend(dn_stock_total)
 
+    fabric_return = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 14px;font-weight: bold;'>Fabric Return</span>", "item_code": "", "qty": "", "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
+    dn_stock_result.extend(fabric_return)
+
     stock_balance_row = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 12px;font-weight: bold;'>Stock Balance</span>", "item_code": "", "qty":  (total_qty_se + opening_qty) - total_qty_dn , "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
 
+    fabric_return_query = """
+        SELECT
+            frc.name AS conversion_no,
+            frc.posting_date,
+            frc.customer,
+            frci.yarn_count as fabric_item,
+            frci.yarn_qty as fabric_qty
+        FROM
+            `tabFabric Return Conversion` AS frc
+        INNER JOIN
+            `tabFabric Return Conversion Item` AS frci
+            ON frci.parent = frc.name
+        WHERE
+            frc.docstatus = 1
+            {conditions}
+        ORDER BY
+            frc.posting_date DESC
+    """
 
-
+    fabric_return_result = frappe.db.sql(fabric_return_query.format(conditions = get_conditions_return(filters)[0]), get_conditions_return(filters)[1], as_dict=1)
+    total_qty_fabric_return = 0
+    for i in fabric_return_result:
+        total_qty_fabric_return += i.get('fabric_qty',0)
+    fabric_return_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": "", "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": total_qty_fabric_return, "consumption": ""}]
+    fabric_return_result.extend(fabric_return_total)
+    
+    stock_balance_row[0]['qty'] += total_qty_fabric_return
     data.extend(weaving_stock_result)
     data.extend(dn_stock_result)
+    data.extend(fabric_return_result)
     data.extend(stock_balance_row)  
     return data
 

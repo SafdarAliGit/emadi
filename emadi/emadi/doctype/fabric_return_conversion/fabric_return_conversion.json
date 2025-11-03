@@ -1,5 +1,6 @@
 {
  "actions": [],
+ "allow_import": 1,
  "allow_rename": 1,
  "autoname": "format:FRC-{fabric_item}-{######}",
  "creation": "2025-11-01 21:27:07.128852",
@@ -19,6 +20,8 @@
   "posting_date",
   "column_break_dag5g",
   "posting_time",
+  "section_break_bdrms",
+  "customer",
   "section_break_fv4bb",
   "fabric_return_conversion_item",
   "section_break_k6lrp",
@@ -126,17 +129,26 @@
    "fieldtype": "Table",
    "label": "Fabric Return Conversion Item",
    "options": "Fabric Return Conversion Item"
+  },
+  {
+   "fieldname": "section_break_bdrms",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "customer",
+   "fieldtype": "Link",
+   "label": "Customer",
+   "options": "Customer"
   }
  ],
  "index_web_pages_for_search": 1,
- "is_submittable": 1,
  "links": [
   {
    "link_doctype": "Stock Entry",
    "link_fieldname": "custom_fabric_return_conversion"
   }
  ],
- "modified": "2025-11-01 22:21:20.366807",
+ "modified": "2025-11-03 21:32:12.233246",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Return Conversion",
