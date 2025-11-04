@@ -52,24 +52,23 @@ def get_conditions_dn(filters, doctype):
     return " AND ".join(conditions) if conditions else "1=1"
 
 def get_conditions_return(filters):
-    conditions = []
-    values = {}
+    return_conditions = ["frc.docstatus = 1"]
 
-    if filters.get("from_date") and filters.get("to_date"):
-        conditions.append("frc.posting_date BETWEEN %(from_date)s AND %(to_date)s")
-        values.update({
-            "from_date": filters["from_date"],
-            "to_date": filters["to_date"]
-        })
+    if filters.get("from_date"):
+        return_conditions.append("frc.posting_date >= %(from_date)s")
+    if filters.get("to_date"):
+        return_conditions.append("frc.posting_date <= %(to_date)s")
     if filters.get("customer"):
-        conditions.append("frc.customer = %(customer)s")
-        values["customer"] = filters["customer"]
-    if filters.get("yarn_count"):
-        conditions.append("frci.yarn_count = %(yarn_count)s")
-        values["yarn_count"] = filters["yarn_count"]
+        return_conditions.append("frc.customer = %(customer)s")
+    if filters.get("item_code"):
+        return_conditions.append("frci.yarn_count = %(item_code)s")
 
-    where_clause = " AND " + " AND ".join(conditions) if conditions else ""
-    return where_clause, values
+    # Return same way as first function — as SQL-safe condition string and value dict
+    return " AND ".join(return_conditions) if return_conditions else "1=1"
+
+
+
+
 
 
 def get_opening_qty(filters):
@@ -211,25 +210,30 @@ def get_data(filters):
     stock_balance_row = [{"posting_date": "", "stock_entry_name": "<span style='font-size: 12px;font-weight: bold;'>Stock Balance</span>", "item_code": "", "qty":  (total_qty_se + opening_qty) - total_qty_dn , "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": "", "consumption": ""}]
 
     fabric_return_query = """
-        SELECT
-            frc.name AS conversion_no,
-            frc.posting_date,
-            frc.customer,
-            frci.yarn_count as fabric_item,
-            frci.yarn_qty as fabric_qty
-        FROM
-            `tabFabric Return Conversion` AS frc
-        INNER JOIN
-            `tabFabric Return Conversion Item` AS frci
-            ON frci.parent = frc.name
-        WHERE
-            frc.docstatus = 1
-            {conditions}
-        ORDER BY
-            frc.posting_date DESC
-    """
+    SELECT
+        frc.name AS conversion_no,
+        frc.posting_date,
+        frc.customer,
+        frci.yarn_count AS fabric_item,
+        frci.yarn_qty AS fabric_qty
+    FROM
+        `tabFabric Return Conversion` AS frc
+    INNER JOIN
+        `tabFabric Return Conversion Item` AS frci
+        ON frci.parent = frc.name
+    WHERE
+        {conditions_return}
+    ORDER BY
+        frc.posting_date DESC
+    """.format(conditions_return=get_conditions_return(filters))
 
-    fabric_return_result = frappe.db.sql(fabric_return_query.format(conditions = get_conditions_return(filters)[0]), get_conditions_return(filters)[1], as_dict=1)
+    fabric_return_result = frappe.db.sql(
+        fabric_return_query,
+        filters,
+        as_dict=1
+    )
+
+
     total_qty_fabric_return = 0
     for i in fabric_return_result:
         total_qty_fabric_return += i.get('fabric_qty',0)

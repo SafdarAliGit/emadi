@@ -34,12 +34,12 @@ frappe.ui.form.on('Fabric Return Conversion', {
 			};
 		});
 	},
-	quality: function(frm) {
-        if (frm.doc.quality && frm.doc.qty) {
+	weaving_contract: function(frm) {
+        if (frm.doc.qty) {
             frappe.call({
-                method: "emadi.emadi.events.fetch_fabric_construction_items.fetch_fabric_construction_items",
+                method: "emadi.emadi.events.fetch_weaving_contract_items.fetch_weaving_contract_items",
                 args: {
-                    quality: frm.doc.quality,
+                    weaving_contract: frm.doc.weaving_contract,
                     qty: frm.doc.qty
                 },
                 callback: function(r) {
@@ -50,6 +50,8 @@ frappe.ui.form.on('Fabric Return Conversion', {
                             row.for = item.for;
                             row.yarn_count = item.yarn_count;
                             row.consumption = item.consumption;
+                            row.uom = item.uom;
+                            row.brand = item.brand;
                             row.yarn_qty = item.yarn_qty;
                         });
                         frm.refresh_field("fabric_return_conversion_item");
@@ -60,7 +62,7 @@ frappe.ui.form.on('Fabric Return Conversion', {
     },
     qty: function(frm) {
         // Recalculate when qty changes
-        frm.trigger("quality");
+        frm.trigger("weaving_contract");
     }
 });
 

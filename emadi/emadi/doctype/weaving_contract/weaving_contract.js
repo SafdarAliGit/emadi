@@ -6,10 +6,7 @@ frappe.ui.form.on('Weaving Contract', {
 
 		if (frm.doc.docstatus == 1 && frm.doc.custom_status == "Close") {
 			frm.add_custom_button(__('OPEN'), function() {
-				frappe.confirm(
-					'Are you sure you want to OPEN this weaving contract?',
-					function() {
-						// OK pressed
+			
 						frappe.call({
 							method: "emadi.emadi.events.open_weaving_contract.open_weaving_contract",
 							args: {
@@ -22,27 +19,21 @@ frappe.ui.form.on('Weaving Contract', {
 								}
 							}
 						});
-					},
-					function() {
-						// Cancel pressed - do nothing
-					}
-				);
+					
+				
 			}).css('background-color', 'green')
 			  .css('color', '#ffffff')
 			  .css('font-weight', 'bold');
 		}
 		if (frm.doc.docstatus == 1) {
 		frm.add_custom_button(__("Fabric Return Conversion"), function() {
-			frappe.confirm(
-				'Are you sure you want to create Fabric Return Conversion for this weaving contract?',
-				function() {
-					// On confirm — open new Fabric Return Conversion document
-					frappe.new_doc('Fabric Return Conversion');
-				},
-				function() {
-					// Cancel pressed - do nothing
-				}
-			);
+			frappe.new_doc('Fabric Return Conversion',{
+				"fabric_item":frm.doc.construction,
+				"customer":frm.doc.weaver,
+				
+			});
+					
+			
 		})
 		.css('background-color', 'gray')
 		.css('color', '#ffffff')
