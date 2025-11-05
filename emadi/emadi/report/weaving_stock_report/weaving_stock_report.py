@@ -237,12 +237,15 @@ def get_data(filters):
 
 
     total_qty_fabric_return = 0
+    total_qty = 0
     for i in fabric_return_result:
         total_qty_fabric_return += i.get('fabric_qty',0)
-    fabric_return_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": "", "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": total_qty_fabric_return, "consumption": ""}]
+        total_qty += i.get('qty',0)
+
+    fabric_return_total = [{"posting_date": "", "stock_entry_name": "<span style='font-weight: bold;'>Total Qty</span>", "item_code": "", "qty": total_qty, "about": "", "t_warehouse": "", "fabric_item": "", "fabric_qty": total_qty_fabric_return, "consumption": ""}]
     fabric_return_result.extend(fabric_return_total)
     
-    stock_balance_row[0]['qty'] += total_qty_fabric_return
+    stock_balance_row[0]['qty'] += total_qty
     data.extend(weaving_stock_result)
     data.extend(dn_stock_result)
     data.extend(fabric_return_result)
