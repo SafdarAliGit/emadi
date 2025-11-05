@@ -30,6 +30,7 @@ frappe.ui.form.on('Weaving Contract', {
 			frappe.new_doc('Fabric Return Conversion',{
 				"fabric_item":frm.doc.construction,
 				"customer":frm.doc.weaver,
+				"weaving_contract":frm.doc.name,
 				
 			});
 					

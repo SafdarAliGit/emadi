@@ -211,11 +211,13 @@ def get_data(filters):
 
     fabric_return_query = """
     SELECT
-        frc.name AS conversion_no,
+        frc.name AS stock_entry_name,
         frc.posting_date,
         frc.customer,
-        frci.yarn_count AS fabric_item,
-        frci.yarn_qty AS fabric_qty
+        frc.fabric_item,
+        frc.qty AS fabric_qty,
+        frci.yarn_count AS item_code,
+        frci.yarn_qty AS qty
     FROM
         `tabFabric Return Conversion` AS frc
     INNER JOIN
