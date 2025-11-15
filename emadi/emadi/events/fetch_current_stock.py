@@ -1,11 +1,11 @@
 import frappe
 
 @frappe.whitelist()
-def fetch_current_stock(item_code, warehouse, set_no=None):
+def fetch_current_stock(item_code, warehouse, set_no=None, posting_date=None):
     """
     Fetch current stock for a given item and warehouse.
     - If set_no (Batch) is provided, fetch batch_qty from Batch (after validating item_code).
-    - Otherwise, fetch latest stock from Stock Ledger Entry.
+    - Otherwise, fetch latest stock from Stock Ledger Entry up to the posting_date.
     """
     try:
         if set_no:
@@ -15,26 +15,37 @@ def fetch_current_stock(item_code, warehouse, set_no=None):
                 frappe.throw(f"Batch {set_no} does not belong to item {item_code}")
             
             batch_qty = frappe.db.get_value("Batch", set_no, "batch_qty")
-            # Return the batch quantity
             return batch_qty or 0
 
         else:
-            # Fetch latest qty and valuation rate from Stock Ledger Entry
-            # More robust query that ensures we get the actual current stock
-            result = frappe.db.sql(
+            # Build query based on whether posting_date is provided
+            if posting_date:
+                query = """
+                    SELECT qty_after_transaction AS current_stock,
+                           valuation_rate as rate
+                    FROM `tabStock Ledger Entry`
+                    WHERE item_code = %s 
+                      AND warehouse = %s 
+                      AND is_cancelled = 0
+                      AND posting_date <= %s
+                    ORDER BY posting_date DESC, posting_time DESC, creation DESC
+                    LIMIT 1
                 """
-                SELECT qty_after_transaction AS current_stock,
-                       valuation_rate as rate
-                FROM `tabStock Ledger Entry`
-                WHERE item_code = %s 
-                  AND warehouse = %s 
-                  AND is_cancelled = 0
-                ORDER BY posting_date DESC, posting_time DESC
-                LIMIT 1
-                """,
-                (item_code, warehouse),
-                as_dict=True
-            )
+                params = (item_code, warehouse, posting_date)
+            else:
+                query = """
+                    SELECT qty_after_transaction AS current_stock,
+                           valuation_rate as rate
+                    FROM `tabStock Ledger Entry`
+                    WHERE item_code = %s 
+                      AND warehouse = %s 
+                      AND is_cancelled = 0
+                    ORDER BY posting_date DESC, posting_time DESC, creation DESC
+                    LIMIT 1
+                """
+                params = (item_code, warehouse)
+            
+            result = frappe.db.sql(query, params, as_dict=True)
             
             if result:
                 return {
