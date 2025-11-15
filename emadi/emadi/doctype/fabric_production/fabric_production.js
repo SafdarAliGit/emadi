@@ -87,6 +87,7 @@ frappe.ui.form.on('Fabric Production Item', {
                 frappe.model.set_value(cdt, cdn, 'available_qty', available);
                 frappe.model.set_value(cdt, cdn, 'valuation_rate', rate);
                 frappe.model.set_value(cdt, cdn, 'rate_per_meter', row.consumption * rate);
+                frappe.model.set_value(cdt, cdn, 'amount', row.consumption * rate * yarnQty)
 
                 recalculate_rate(frm);
             },

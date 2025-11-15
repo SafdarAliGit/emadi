@@ -21,7 +21,8 @@
   "set_no",
   "warp_weight",
   "beem_rate",
-  "rate_per_meter"
+  "rate_per_meter",
+  "amount"
  ],
  "fields": [
   {
@@ -130,12 +131,19 @@
    "fieldtype": "Currency",
    "in_list_view": 1,
    "label": "Rate (Meter)"
+  },
+  {
+   "default": "0",
+   "fieldname": "amount",
+   "fieldtype": "Currency",
+   "label": "Amount",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-08-18 22:03:44.519788",
+ "modified": "2025-11-15 19:00:46.141983",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production Item",
