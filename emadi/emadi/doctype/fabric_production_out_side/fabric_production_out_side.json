@@ -22,7 +22,7 @@
   "section_break_uu7bd",
   "supplier",
   "column_break_rppe9",
-  "weaving_charges",
+  "weaving_charges_per_meter",
   "column_break_oczod",
   "amount",
   "section_break_mausg",
@@ -40,7 +40,9 @@
   "section_break_xesiv",
   "fabric_production_other_charges_item",
   "section_break_bntrw",
-  "total_charges"
+  "total_charges_per_meter",
+  "column_break_mdj1i",
+  "fabric_rate_per_meter"
  ],
  "fields": [
   {
@@ -200,11 +202,6 @@
    "fieldtype": "Column Break"
   },
   {
-   "fieldname": "weaving_charges",
-   "fieldtype": "Currency",
-   "label": "Weaving Charges"
-  },
-  {
    "fieldname": "column_break_oczod",
    "fieldtype": "Column Break"
   },
@@ -231,9 +228,25 @@
   },
   {
    "default": "0",
-   "fieldname": "total_charges",
+   "fieldname": "total_charges_per_meter",
    "fieldtype": "Currency",
-   "label": "Total Charges",
+   "label": "Charges/Mtr",
+   "read_only": 1
+  },
+  {
+   "fieldname": "weaving_charges_per_meter",
+   "fieldtype": "Currency",
+   "label": "Weaving Charges/Mtr"
+  },
+  {
+   "fieldname": "column_break_mdj1i",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "fabric_rate_per_meter",
+   "fieldtype": "Currency",
+   "label": "Fabric Rate/Mtr",
    "read_only": 1
   }
  ],
@@ -246,7 +259,7 @@
    "link_fieldname": "custom_fabric_production_out_side"
   }
  ],
- "modified": "2025-12-01 22:07:22.608200",
+ "modified": "2025-12-03 08:12:28.714243",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production Out Side",

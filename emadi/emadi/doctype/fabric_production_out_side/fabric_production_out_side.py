@@ -26,7 +26,17 @@ class FabricProductionOutSide(Document):
 			doc.posting_time = self.posting_time
 			doc.custom_fabric_production_out_side = self.name
 			target_warehouse = self.target_warehouse
-		
+			# additional costs
+			if self.fabric_production_other_charges_item:
+				for row in self.fabric_production_other_charges_item:
+					if not row.amount:
+						continue
+					
+					it = doc.append("additional_costs", {})
+					it.expense_account = row.account
+					it.description = row.detail or ""
+					it.amount = row.amount
+
 			# Append source item
 			it = doc.append("items", {})
 			it.t_warehouse = target_warehouse

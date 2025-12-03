@@ -34,11 +34,9 @@ frappe.ui.form.on('Fabric Production Out Side', {
 			};
 		});
 	},
-    weaving_charges: function(frm) {
-        var weaving_charges = frm.doc.weaving_charges;
-        var qty = frm.doc.qty || 0;
-        var amount = weaving_charges * qty;
-        frm.set_value("amount", amount);
+    weaving_charges_per_meter: function(frm, cdt, cdn) {
+        weaving_charges_per_meter(frm, cdt, cdn)
+        fabric_rate_per_meter(frm, cdt, cdn);
     },
 	quality: function(frm) {
         if (frm.doc.quality && frm.doc.qty) {
@@ -64,9 +62,12 @@ frappe.ui.form.on('Fabric Production Out Side', {
             });
         }
     },
-    qty: function(frm) {
+    qty: function(frm,cdt,cdn) {
         // Recalculate when qty changes
         frm.trigger("quality");
+        weaving_charges_per_meter(frm, cdt, cdn)
+        total_charges_per_meter(frm,cdt,cdn);
+        fabric_rate_per_meter(frm, cdt, cdn);
     }
 });
 
@@ -96,6 +97,7 @@ frappe.ui.form.on('Fabric Production Out Side Item', {
                 frappe.model.set_value(cdt, cdn, 'amount', rate * yarnQty);
 
                 recalculate_rate(frm);
+                fabric_rate_per_meter(frm, cdt, cdn);
             },
             error: err => {
                 frappe.msgprint({
@@ -140,18 +142,42 @@ function recalculate_rate(frm) {
     }
   }
 frappe.ui.form.on('Fabric Production Other Charges Item', {
-    amount: function(frm, cdt, cdn) {
-
-        let total_charges = 0;
-
-        // Loop through all rows of the child table
-        (frm.doc.fabric_production_other_charges_item || []).forEach(row => {
-            total_charges += row.amount || 0;
-        });
-
-        // Set total in parent doctype
-        frm.set_value('total_charges', total_charges);
+    amount: function (frm, cdt, cdn) {
+        total_charges_per_meter(frm, cdt, cdn);
+        fabric_rate_per_meter(frm, cdt, cdn);
     }
 });
 
-    
+
+    function total_charges_per_meter(frm, cdt, cdn) {
+        let total_charges_per_meter = 0;
+        let qty = frm.doc.qty || 1;
+
+        // Ensure child table exists
+        if (frm.doc.fabric_production_other_charges_item) {
+            frm.doc.fabric_production_other_charges_item.forEach(row => {
+                total_charges_per_meter += flt(row.amount);
+            });
+        }
+
+        // Avoid divide by zero
+        let per_meter = qty ? (total_charges_per_meter / qty) : 0;
+
+        frm.set_value('total_charges_per_meter', per_meter);
+    }
+
+    function weaving_charges_per_meter(frm, cdt, cdn) {
+        var weaving_charges_per_meter = frm.doc.weaving_charges_per_meter;
+        var qty = frm.doc.qty || 0;
+        var amount = weaving_charges_per_meter * qty;
+        frm.set_value("amount", amount);
+    }
+
+    function fabric_rate_per_meter(frm, cdt, cdn) {
+        var weaving_charges_per_meter = frm.doc.weaving_charges_per_meter || 0;
+        var finish_rate = frm.doc.finish_rate || 0;
+        var total_charges_per_meter = frm.doc.total_charges_per_meter || 0;
+        
+        var fabric_rate_per_meter = weaving_charges_per_meter + finish_rate + total_charges_per_meter;
+        frm.set_value("fabric_rate_per_meter", fabric_rate_per_meter);
+    }
