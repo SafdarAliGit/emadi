@@ -54,21 +54,20 @@ frappe.query_reports["Material Flow"] = {
 				};
 			}
 		},
-		{
-			"fieldname": "fabric_item",
-			"label": "Fabric Item",
-			"fieldtype": "Link",
-			"options": "Item",
-			// "reqd": 1,
-			"get_query": function() {
-				return {
-					"filters": {
-						"is_stock_item": 1,
-						"item_group": "Fabric"
-					}
-				};
-			}
-		},
+	{
+    "fieldname": "fabric_item",
+    "label": "Fabric Item",
+    "fieldtype": "MultiSelectList",
+    "options": "Item",
+
+    get_data: function(txt) {
+        return frappe.db.get_link_options("Item", txt, {
+            "is_stock_item": 1,
+            "item_group": "Fabric"
+        });
+    }
+},
+
 		{
 			"fieldname": "from_date",
 			"label": "From Date",
