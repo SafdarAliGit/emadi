@@ -25,6 +25,8 @@
   "weaving_charges_per_meter",
   "column_break_oczod",
   "amount",
+  "column_break_mzfuu",
+  "expense_account",
   "section_break_mausg",
   "valuation_type",
   "section_break_fv4bb",
@@ -248,6 +250,16 @@
    "fieldtype": "Currency",
    "label": "Fabric Rate/Mtr",
    "read_only": 1
+  },
+  {
+   "fieldname": "column_break_mzfuu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "expense_account",
+   "fieldtype": "Link",
+   "label": "Expense Account",
+   "options": "Account"
   }
  ],
  "index_web_pages_for_search": 1,
@@ -259,7 +271,7 @@
    "link_fieldname": "custom_fabric_production_out_side"
   }
  ],
- "modified": "2025-12-03 08:12:28.714243",
+ "modified": "2025-12-08 20:56:29.114957",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Production Out Side",
