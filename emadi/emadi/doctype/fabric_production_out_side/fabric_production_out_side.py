@@ -48,8 +48,8 @@ class FabricProductionOutSide(Document):
 			else:
 				it.allow_zero_valuation_rate = 0
 				it.set_basic_rate_manually = 1
-				it.basic_rate = self.finish_rate
-				it.basic_amount = self.finish_rate * self.qty
+				it.basic_rate = self.fabric_rate_per_meter
+				it.basic_amount = self.fabric_rate_per_meter * self.qty
 			
 				
 			# Append target items using a loop
@@ -70,7 +70,7 @@ class FabricProductionOutSide(Document):
 					
 
 			try:
-				if self.valuation_type == 0 and self.finish_rate > 0:
+				if self.valuation_type == 0 and self.fabric_rate_per_meter > 0:
 					doc.save()
 				elif self.valuation_type == 1:
 					doc.save()
