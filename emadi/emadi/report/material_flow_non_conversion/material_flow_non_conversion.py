@@ -29,37 +29,37 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        opening_qty_filter_yarn += " AND sri.`item_code` = %(yarn_count)s"
-        conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
+        opening_qty_filter_yarn += " AND sri.`item_code` IN %(yarn_count)s"
+        conditions += " AND sed.`for` = 'Warp' AND sed.item_code IN %(yarn_count)s"
         
     if filters.get("brand"):
         conditions2 += " AND sri.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        opening_qty_filter_beam += " AND sri.`item_code` = %(yarn_count_weft)s"
-        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
-        opening_qty_filter_purchase_receipt += " AND pri.`item_code` = %(yarn_count_weft)s"
+        opening_qty_filter_beam += " AND sri.`item_code` IN %(yarn_count_weft)s"
+        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code IN %(yarn_count_weft)s"
+        opening_qty_filter_purchase_receipt += " AND pri.`item_code` IN %(yarn_count_weft)s"
 
         
     if filters.get("yarn_count_weft"):
-        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
+        weft_production_conditions += " AND fpi.yarn_count IN %(yarn_count_weft)s"
     if filters.get("fabric_item"):
-        weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        weft_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        warp_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        warp_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        sizing_program_conditions += " AND sp.fabric_construction = %(fabric_item)s"
+        sizing_program_conditions += " AND sp.fabric_construction IN %(fabric_item)s"
     
     if filters.get("fabric_item"):
-        delivery_conditions += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_conditions += " AND dn.fabric_item IN %(fabric_item)s"
     if filters.get("brand"):
         delivery_conditions += " AND bid.brand = %(brand)s"
 
     # if filters.get("customer"):
     #     delivery_conditions_master += " AND dn.customer = %(customer)s"
     if filters.get("fabric_item"):
-        delivery_conditions_master += " AND sii.item_code = %(fabric_item)s"
+        delivery_conditions_master += " AND sii.item_code IN %(fabric_item)s"
 
     
     data = []

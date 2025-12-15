@@ -29,33 +29,33 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
+        conditions += " AND sed.`for` = 'Warp' AND sed.item_code IN %(yarn_count)s"
 
     if filters.get("brand"):
         conditions2 += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
+        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code IN %(yarn_count_weft)s"
         
     if filters.get("yarn_count_weft"):
-        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
+        weft_production_conditions += " AND fpi.yarn_count IN %(yarn_count_weft)s"
     if filters.get("fabric_item"):
-        weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        weft_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        warp_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        warp_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        sizing_program_conditions += " AND sp.fabric_construction = %(fabric_item)s"
+        sizing_program_conditions += " AND sp.fabric_construction IN %(fabric_item)s"
     
     if filters.get("fabric_item"):
-        delivery_conditions += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_conditions += " AND dn.fabric_item IN %(fabric_item)s"
     if filters.get("brand"):
         delivery_conditions += " AND bid.brand = %(brand)s"
 
     if filters.get("customer"):
         delivery_conditions_master += " AND dn.customer = %(customer)s"
     if filters.get("fabric_item"):
-        delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_conditions_master += " AND dn.fabric_item IN %(fabric_item)s"
 
     data = []
     data.append({
@@ -368,27 +368,44 @@ def execute(filters=None):
 
     if delivery_data:
         delivery_data.append({
-            "posting_date": "<b>Yarn Balance(Customer)</b>",
-            "yarn_item": "",
-            "purpose": "",
-            "brand": "",
-            "bags": "<b>" + str((round(yarn_received_warp[0].get("lbs", 0) - round(delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return else 0,2), 2)) if yarn_received_warp[0].get("lbs", 0)>0 else 0) + "</b>",
-            "lbs": "<b>" + str(round(yarn_received_weft[0].get("lbs", 0) - delivery_data[0].get("lbs", 0), 2)) + "</b>",
-            "meter": "<b>" + str(
-    round(
-        (
-            (yarn_received_warp[0].get("meter", 0) - delivery_data[0].get("meter", 0))
-            if yarn_received_warp and delivery_data and yarn_received_warp[0].get("meter", 0) > 0
-            else 0
-        )
-        - (round(delivery_fabric_qty_with_return[0].yarn_item, 2)
-           if delivery_fabric_qty_with_return else 0),
-        2
-    )
-) + "</b>"
-,
-    "gate_pass": ""
+        "posting_date": "<b>Yarn Balance(Customer)</b>",
+        "yarn_item": "",
+        "purpose": "",
+        "brand": "",
+        "bags": "<b>" + str(
+            (
+                round(
+                    (yarn_received_warp[0].get("lbs") or 0)
+                    - round(
+                        (delivery_fabric_qty_with_return[0].yarn_item if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item is not None else 0),
+                        2
+                    ),
+                    2
+                )
+                if yarn_received_warp and (yarn_received_warp[0].get("lbs") or 0) > 0
+                else 0
+            )
+        ) + "</b>",
+        "lbs": "<b>" + str(
+            round(
+                ((yarn_received_weft[0].get("lbs") or 0) - (delivery_data[0].get("lbs") or 0)),
+                2
+            )
+        ) + "</b>",
+        "meter": "<b>" + str(
+            round(
+                (
+                    ((yarn_received_warp[0].get("meter") or 0) - (delivery_data[0].get("meter") or 0))
+                    if yarn_received_warp and delivery_data and (yarn_received_warp[0].get("meter") or 0) > 0
+                    else 0
+                )
+                - (round(delivery_fabric_qty_with_return[0].yarn_item, 2) if delivery_fabric_qty_with_return and delivery_fabric_qty_with_return[0].yarn_item is not None else 0),
+                2
+            )
+        ) + "</b>",
+        "gate_pass": ""
         })
+
         # delivery_data.append({
         #     "posting_date": "<b>Yarn Balance(Customer)</b>",
         #     "yarn_item": "",

@@ -28,15 +28,15 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
+        conditions += " AND sed.`for` = 'Warp' AND sed.item_code IN %(yarn_count)s"
 
     if filters.get("brand"):
         conditions2 += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
+        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code IN %(yarn_count_weft)s"
         
     if filters.get("yarn_count_weft"):
-        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
+        weft_production_conditions += " AND fpi.yarn_count IN %(yarn_count_weft)s"
     if filters.get("fabric_item"):
         weft_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 

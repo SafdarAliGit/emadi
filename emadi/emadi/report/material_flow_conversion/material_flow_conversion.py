@@ -30,7 +30,7 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count"):
-        conditions += " AND sed.`for` = 'Warp' AND sed.item_code = %(yarn_count)s"
+        conditions += " AND sed.`for` = 'Warp' AND sed.item_code IN %(yarn_count)s"
     if filters.get("from_date"):
         conditions += " AND se.posting_date >= %(from_date)s"
     if filters.get("to_date"):
@@ -39,25 +39,25 @@ def execute(filters=None):
     if filters.get("brand"):
         conditions2 += " AND sed.brand = %(brand)s"
     if filters.get("yarn_count_weft"):
-        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code = %(yarn_count_weft)s"
+        conditions2 += " AND sed.`for` = 'Weft' AND sed.item_code IN %(yarn_count_weft)s"
     if filters.get("from_date"):
         conditions2 += " AND se.posting_date >= %(from_date)s"
     if filters.get("to_date"):
         conditions2 += " AND se.posting_date <= %(to_date)s"
     
     if filters.get("yarn_count_weft"):
-        weft_production_conditions += " AND fpi.yarn_count = %(yarn_count_weft)s"
+        weft_production_conditions += " AND fpi.yarn_count IN %(yarn_count_weft)s"
     if filters.get("fabric_item"):
-        weft_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        weft_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        warp_production_conditions += " AND fp.fabric_item = %(fabric_item)s"
+        warp_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        sizing_program_conditions += " AND sp.fabric_construction = %(fabric_item)s"
+        sizing_program_conditions += " AND sp.fabric_construction IN %(fabric_item)s"
     
     if filters.get("fabric_item"):
-        delivery_conditions += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_conditions += " AND dn.fabric_item IN %(fabric_item)s"
     if filters.get("brand"):
         delivery_conditions += " AND bid.brand = %(brand)s"
     if filters.get("from_date"):
@@ -68,10 +68,10 @@ def execute(filters=None):
     if filters.get("customer"):
         delivery_conditions_master += " AND dn.customer = %(customer)s"
     if filters.get("fabric_item"):
-        delivery_conditions_master += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_conditions_master += " AND dn.fabric_item IN %(fabric_item)s"
 
     if filters.get("fabric_item"):
-        delivery_note_conditions += " AND dn.fabric_item = %(fabric_item)s"
+        delivery_note_conditions += " AND dn.fabric_item IN %(fabric_item)s"
     if filters.get("from_date"):
         delivery_note_conditions += " AND dn.posting_date >= %(from_date)s"
     if filters.get("to_date"):
