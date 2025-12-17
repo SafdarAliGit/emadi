@@ -22,8 +22,6 @@
 #     delivery_conditions_master = ""
 #     delivery_conditions = ""
 #     delivery_note_conditions = ""
-#     stock_balance_conditions = ""
-#     stock_balance_to_date = ""
 
 #     p = filters.get("p")
 
@@ -41,9 +39,6 @@
 #         weft_production_conditions += " AND fpi.yarn_count IN %(yarn_count_weft)s"
 #     if filters.get("fabric_item"):
 #         weft_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
-
-#     if filters.get("fabric_item"):
-#         stock_balance_conditions += "AND item_code IN %(fabric_item)s"
 
 #     if filters.get("fabric_item"):
 #         warp_production_conditions += " AND fp.fabric_item IN %(fabric_item)s"
@@ -67,8 +62,6 @@
 #         delivery_note_conditions += " AND dn.posting_date >= %(from_date)s"
 #     if filters.get("to_date"):
 #         delivery_note_conditions += " AND dn.posting_date <= %(to_date)s"
-#     if filters.get("to_date"):
-#         stock_balance_to_date += "AND posting_date <= %(to_date)s"
 #     if filters.get("customer"):
 #         delivery_note_conditions += " AND dn.customer = %(customer)s"
 
@@ -509,33 +502,7 @@
 #            "meter": "<b>" + str(sum(row["meter"] or 0 for row in delivery_note_data)) + "</b>"
 #         })
 
-#     stock_balance_data = frappe.db.sql(f"""
-#         SELECT
-#             "Stock Balance" as posting_date,
-#             "" as gate_pass,
-#             item_code as yarn_item,
-#             qty_after_transaction as meter
-#         FROM (
-#             SELECT
-#                 item_code,
-#                 qty_after_transaction,
-#                 ROW_NUMBER() OVER (
-#                     PARTITION BY item_code
-#                     ORDER BY posting_date DESC, posting_time DESC
-#                 ) AS rn
-#             FROM
-#                 `tabStock Ledger Entry`
-#             WHERE
-#                 {stock_balance_conditions}
-#                 {stock_balance_to_date}
-#                 AND is_cancelled = 0
-#         ) t
-#         WHERE
-#             rn = 1;
-#     """, filters, as_dict=True) 
-
 #     data.extend(delivery_note_data)
-#     data.extend(stock_balance_data)
 #     return columns, data
 
 

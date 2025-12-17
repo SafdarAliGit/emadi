@@ -23,6 +23,8 @@ def execute(filters=None):
     warp_production_conditions = ""
     delivery_conditions_master = ""
     delivery_conditions = ""
+    stock_balance_conditions = ""
+    stock_balance_to_date = ""
 
     p = filters.get("p")
 
@@ -50,6 +52,9 @@ def execute(filters=None):
 
     if filters.get("fabric_item"):
         sizing_program_conditions += " AND sp.fabric_construction IN %(fabric_item)s"
+
+    if filters.get("fabric_item"):
+        stock_balance_conditions += " AND item_code IN %(fabric_item)s"
     
     if filters.get("fabric_item"):
         delivery_conditions += " AND dn.fabric_item IN %(fabric_item)s"
@@ -562,9 +567,47 @@ def execute(filters=None):
     ) + " Mtr</b>",
     "gate_pass": ""
         })
-        
+
+    stock_balance_data = frappe.db.sql(f"""
+        SELECT
+            "" as posting_date,
+            "" as gate_pass,
+            item_code as yarn_item,
+            qty_after_transaction as meter
+        FROM (
+            SELECT
+                item_code,
+                qty_after_transaction,
+                ROW_NUMBER() OVER (
+                    PARTITION BY item_code
+                    ORDER BY posting_date DESC, posting_time DESC
+                ) AS rn
+            FROM
+                `tabStock Ledger Entry`
+            WHERE
+                is_cancelled = 0
+                {stock_balance_conditions}
+        ) t
+        WHERE
+            rn = 1
+    """, filters or {}, as_dict=True)    
 
     data.extend(delivery_data)
+
+    if stock_balance_data:
+        delivery_note_data = [{
+            "posting_date": "<b>Stock Balance</b>",
+            "gate_pass": "",
+            "yarn_item": "",
+            "brand": "",
+            "bags": "",
+            "lbs": "",
+            "meter": "",
+            "purpose": "",
+            "yarn_count": ""
+        }]
+    data.extend(delivery_note_data + stock_balance_data)
+
     return columns, data
 
 
