@@ -4,13 +4,14 @@
 frappe.ui.form.on('Fabric Construction', {
 	refresh: function(frm) {
 
-		frm.set_query('quality', function() {
+		frm.set_query('quality', function () {
 			return {
-				"filters": {
-					"item_group": "Fabric"
-				}
-			}
+				filters: [
+					["item_group", "=", "Fabric"]
+				]
+			};
 		});
+
 		frm.set_query('fabric_item', function() {
 			return {
 				"filters": {

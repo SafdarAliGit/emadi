@@ -13,6 +13,8 @@
   "fabric_item",
   "column_break_rlujg",
   "fabric_type",
+  "column_break_r4zpu",
+  "enabled",
   "section_break_lpno9",
   "fabric_construction_item",
   "amended_from"
@@ -68,12 +70,22 @@
    "options": "Item",
    "reqd": 1,
    "unique": 1
+  },
+  {
+   "fieldname": "column_break_r4zpu",
+   "fieldtype": "Column Break"
+  },
+  {
+   "default": "1",
+   "fieldname": "enabled",
+   "fieldtype": "Check",
+   "label": "Enabled"
   }
  ],
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-06-23 09:52:59.707312",
+ "modified": "2026-01-02 19:50:35.130681",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Construction",

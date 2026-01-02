@@ -7,6 +7,7 @@ app_description = "this is app for emadi weaving"
 app_email = "safdar211@gmail.com"
 app_license = "mit"
 
+
 # Includes in <head>
 # ------------------
 
@@ -122,7 +123,10 @@ doctype_js = {"Delivery Note" : "public/js/dn.js","Stock Entry" : "public/js/sto
 doc_events = {
     "Delivery Note": {
         "on_submit": "emadi.emadi.events.create_dn.onsubmit"
-    }
+    },
+    # "Fabric Construction": {
+    #     "on_update": "emadi.emadi.events.sync_item_enabled.sync_item_enabled"
+    # }
 }
 
 # Scheduled Tasks

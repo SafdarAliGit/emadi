@@ -33,7 +33,14 @@ frappe.ui.form.on('Fabric Production', {
 				}
 			};
 		});
-	},
+        // frm.set_query('quality', function() {
+        //         return {
+        //             "filters": [
+        //                 ["enabled", "=", 1 ]
+        //             ]
+        //         };
+        //     });
+        },
 	quality: function(frm) {
         if (frm.doc.quality && frm.doc.qty) {
             frappe.call({
