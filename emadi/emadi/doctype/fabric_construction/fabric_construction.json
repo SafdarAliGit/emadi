@@ -76,6 +76,7 @@
    "fieldtype": "Column Break"
   },
   {
+   "allow_on_submit": 1,
    "default": "1",
    "fieldname": "enabled",
    "fieldtype": "Check",
@@ -85,7 +86,7 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2026-01-02 19:50:35.130681",
+ "modified": "2026-01-05 15:26:59.886580",
  "modified_by": "Administrator",
  "module": "Emadi",
  "name": "Fabric Construction",
